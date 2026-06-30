@@ -31,6 +31,7 @@ cluster/secrets.*.env
 *.swp
 .idea/
 .vscode/
+.cursor/
 
 # Docker volumes (if bind-mounted)
 /data/

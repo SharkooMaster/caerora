@@ -39,9 +39,6 @@ spec:
             - name: media
               mountPath: /var/www/media
               readOnly: true
-            - name: static
-              mountPath: /var/www/static
-              readOnly: true
           readinessProbe:
             tcpSocket:
               port: 8080
@@ -60,6 +57,3 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: media
-        - name: static
-          persistentVolumeClaim:
-            claimName: static

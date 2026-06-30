@@ -4,17 +4,17 @@ kind: Kustomization
 namespace: caerora-dev
 
 resources:
-  - ../../base
+- ../../base
 
 patches:
-  - path: configmap-patch.yaml
-  - path: ingress-patch.yaml
+- path: configmap-patch.yaml
+- path: ingress-patch.yaml
 
 # Image tags are bumped by CI (build-deploy workflow) on pushes to `develop`.
 images:
-  - name: caerora-backend
-    newName: ghcr.io/sharkoomaster/caerora-backend
-    newTag: latest
-  - name: caerora-frontend
-    newName: ghcr.io/sharkoomaster/caerora-frontend
-    newTag: latest
+- name: caerora-backend
+  newName: ghcr.io/sharkoomaster/caerora-backend
+  newTag: dev-13f20e086a70
+- name: caerora-frontend
+  newName: ghcr.io/sharkoomaster/caerora-frontend
+  newTag: dev-13f20e086a70

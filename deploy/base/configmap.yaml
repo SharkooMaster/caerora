@@ -6,8 +6,13 @@ data:
   # ---- Django ----
   DJANGO_SETTINGS_MODULE: "caerora.settings.prod"
   DJANGO_DEBUG: "0"
-  # Web/worker pods skip startup migrations; the migrate Job handles them.
-  RUN_STARTUP_TASKS: "0"
+  # The backend pod runs migrate + ensure_superuser on startup (single replica,
+  # so no races). Set to "0" only if you add a dedicated migrate Job and scale
+  # the backend beyond one replica.
+  RUN_STARTUP_TASKS: "1"
+  # Static is baked into the image at build time and served by WhiteNoise, so we
+  # skip collectstatic at startup (no slow writes to a networked RWX volume).
+  COLLECT_STATIC: "0"
   # Behind ingress-nginx (TLS terminated upstream).
   SESSION_COOKIE_SECURE: "1"
   CSRF_COOKIE_SECURE: "1"

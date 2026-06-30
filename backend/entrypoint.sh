@@ -17,17 +17,21 @@ else:
 print("Postgres is up.")
 PY
 
-# Only run migrations / collectstatic / seed in the web container, not the worker.
-# In Kubernetes these are handled by a dedicated migrate Job, so the web pods
-# set RUN_STARTUP_TASKS=0 to skip them (avoids races across replicas). Docker
-# Compose leaves it unset, preserving the original single-container behaviour.
+# Run migrations / collectstatic / seed only in the web container, not the worker.
+# RUN_STARTUP_TASKS (default 1) keeps the original single-container behaviour for
+# Docker Compose. COLLECT_STATIC (default 1) runs collectstatic at startup; in
+# Kubernetes it is set to 0 because static is baked into the image at build time
+# and served by WhiteNoise, so we avoid a slow collectstatic onto a RWX volume.
 RUN_STARTUP_TASKS="${RUN_STARTUP_TASKS:-1}"
+COLLECT_STATIC="${COLLECT_STATIC:-1}"
 if [[ "$RUN_STARTUP_TASKS" == "1" && ( "$*" == *"gunicorn"* || "$*" == *"runserver"* ) ]]; then
     echo "Applying migrations..."
     python manage.py migrate --noinput
 
-    echo "Collecting static files..."
-    python manage.py collectstatic --noinput
+    if [[ "$COLLECT_STATIC" == "1" ]]; then
+        echo "Collecting static files..."
+        python manage.py collectstatic --noinput
+    fi
 
     if [[ -n "$DJANGO_SUPERUSER_USERNAME" && -n "$DJANGO_SUPERUSER_PASSWORD" ]]; then
         echo "Ensuring superuser exists..."

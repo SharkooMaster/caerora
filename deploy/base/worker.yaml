@@ -15,7 +15,9 @@ spec:
       containers:
         - name: worker
           image: caerora-backend:latest
-          command: ["celery", "-A", "caerora", "worker", "--loglevel=info"]
+          # Pin concurrency: Celery's prefork pool otherwise spawns one child per
+          # host CPU (32 here), each loading Django, which OOMKills the pod.
+          command: ["celery", "-A", "caerora", "worker", "--loglevel=info", "--concurrency=2"]
           envFrom:
             - configMapRef:
                 name: caerora-config
