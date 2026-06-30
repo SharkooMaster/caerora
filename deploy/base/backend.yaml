@@ -33,7 +33,10 @@ spec:
       containers:
         - name: backend
           image: caerora-backend:latest
-          command:
+          # Use args (not command) so the image ENTRYPOINT (entrypoint.sh) runs:
+          # it waits for Postgres, then (RUN_STARTUP_TASKS=1) migrates,
+          # collectstatic and ensures the superuser before exec'ing gunicorn.
+          args:
             - gunicorn
             - caerora.wsgi:application
             - --bind
