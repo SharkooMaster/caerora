@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caerora-config
+data:
+  DJANGO_ALLOWED_HOSTS: "dev.caerora.com,backend"
+  SITE_URL: "https://dev.caerora.com"
+  FRONTEND_ORIGIN: "https://dev.caerora.com"
+  BACKEND_ORIGIN: "https://dev.caerora.com"
+  MEDIA_PUBLIC_BASE_URL: "https://dev.caerora.com"
+  SECURE_HSTS_SECONDS: "0"

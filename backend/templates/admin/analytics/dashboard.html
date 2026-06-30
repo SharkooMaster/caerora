@@ -1,0 +1,75 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<style>
+  .ca-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:20px 0;}
+  .ca-card{background:#fff;border:1px solid #eadfd9;border-radius:12px;padding:18px 20px;}
+  .ca-card .label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8D7470;}
+  .ca-card .value{font-size:26px;color:#5B3B4A;margin-top:6px;font-weight:600;}
+  .ca-funnel-row{display:flex;align-items:center;gap:12px;margin:6px 0;}
+  .ca-bar{height:26px;background:linear-gradient(90deg,#B88F93,#5B3B4A);border-radius:6px;min-width:2px;}
+  .ca-funnel-step{width:200px;color:#2B2424;}
+  .ca-funnel-count{width:80px;text-align:right;color:#8D7470;}
+  table.ca{width:100%;border-collapse:collapse;margin-top:10px;}
+  table.ca th,table.ca td{text-align:left;padding:8px 10px;border-bottom:1px solid #f0e7e2;font-size:13px;}
+  .ca-range a{margin-right:10px;}
+  h2.ca{color:#5B3B4A;margin-top:30px;}
+</style>
+
+<div class="ca-range">
+  Window:
+  {% for r in ranges %}
+    <a href="?days={{ r }}">{% if r == days %}<strong>{{ r }}d</strong>{% else %}{{ r }}d{% endif %}</a>
+  {% endfor %}
+</div>
+
+<div class="ca-kpis">
+  <div class="ca-card"><div class="label">Sessions</div><div class="value">{{ kpis.sessions }}</div></div>
+  <div class="ca-card"><div class="label">Page views</div><div class="value">{{ kpis.page_views }}</div></div>
+  <div class="ca-card"><div class="label">Conversion rate</div><div class="value">{{ kpis.conversion_rate }}%</div></div>
+  <div class="ca-card"><div class="label">CTR (list to product)</div><div class="value">{{ kpis.ctr }}%</div></div>
+  <div class="ca-card"><div class="label">Revenue</div><div class="value">{{ kpis.revenue }}</div></div>
+  <div class="ca-card"><div class="label">Purchases</div><div class="value">{{ kpis.purchases }}</div></div>
+  <div class="ca-card"><div class="label">Avg order value</div><div class="value">{{ kpis.avg_order_value }}</div></div>
+  <div class="ca-card"><div class="label">Avg time on product</div><div class="value">{{ kpis.avg_time_on_product_seconds }}s</div></div>
+</div>
+
+<h2 class="ca">Funnel</h2>
+{% with first=funnel.0.count %}
+{% for step in funnel %}
+  <div class="ca-funnel-row">
+    <div class="ca-funnel-step">{{ step.step }}</div>
+    <div class="ca-bar" style="width:{% if first %}{% widthratio step.count first 480 %}{% else %}2{% endif %}px;"></div>
+    <div class="ca-funnel-count">{{ step.count }}</div>
+  </div>
+{% endfor %}
+{% endwith %}
+
+<h2 class="ca">Funnel conversion rates</h2>
+<table class="ca">
+  <tr><th>View &rarr; Cart</th><th>Cart &rarr; Checkout</th><th>Checkout &rarr; Purchase</th></tr>
+  <tr><td>{{ kpis.view_to_cart_rate }}%</td><td>{{ kpis.cart_to_checkout_rate }}%</td><td>{{ kpis.checkout_to_purchase_rate }}%</td></tr>
+</table>
+
+<h2 class="ca">Campaign attribution</h2>
+<table class="ca">
+  <tr><th>Source</th><th>Campaign</th><th>Sessions</th><th>Purchases</th><th>Revenue</th><th>Conv. rate</th></tr>
+  {% for row in attribution %}
+  <tr>
+    <td>{{ row.source }}</td><td>{{ row.campaign }}</td><td>{{ row.sessions }}</td>
+    <td>{{ row.purchases }}</td><td>{{ row.revenue }}</td><td>{{ row.conversion_rate }}%</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="6">No attribution data yet.</td></tr>
+  {% endfor %}
+</table>
+
+<h2 class="ca">Most viewed products</h2>
+<table class="ca">
+  <tr><th>Product</th><th>Views</th></tr>
+  {% for p in top_products %}
+  <tr><td>{{ p.name }}</td><td>{{ p.views }}</td></tr>
+  {% empty %}
+  <tr><td colspan="2">No product views yet.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

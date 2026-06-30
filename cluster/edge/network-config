@@ -1,0 +1,18 @@
+version: 2
+ethernets:
+  lan:
+    match:
+      macaddress: "52:54:00:60:00:59"
+    set-name: lan
+    addresses:
+      - 192.168.50.59/24
+    routes:
+      - to: default
+        via: 192.168.50.1
+    nameservers:
+      addresses: [192.168.50.1, 1.1.1.1]
+  mgmt:
+    match:
+      macaddress: "52:54:00:60:00:5a"
+    set-name: mgmt
+    dhcp4: true

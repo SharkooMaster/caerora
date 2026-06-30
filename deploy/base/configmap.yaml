@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caerora-config
+data:
+  # ---- Django ----
+  DJANGO_SETTINGS_MODULE: "caerora.settings.prod"
+  DJANGO_DEBUG: "0"
+  # Web/worker pods skip startup migrations; the migrate Job handles them.
+  RUN_STARTUP_TASKS: "0"
+  # Behind ingress-nginx (TLS terminated upstream).
+  SESSION_COOKIE_SECURE: "1"
+  CSRF_COOKIE_SECURE: "1"
+  SECURE_HSTS_SECONDS: "0"
+
+  # ---- Database (password lives in the Secret) ----
+  POSTGRES_DB: "caerora"
+  POSTGRES_USER: "caerora"
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+
+  # ---- Redis / Celery ----
+  REDIS_URL: "redis://redis:6379/0"
+  CELERY_BROKER_URL: "redis://redis:6379/1"
+  CELERY_RESULT_BACKEND: "redis://redis:6379/2"
+
+  # ---- Email ----
+  EMAIL_FROM: "Caerora <hello@caerora.com>"
+  ADMIN_NOTIFICATION_EMAIL: "orders@caerora.com"
+
+  # ---- Stripe (non-secret) ----
+  STRIPE_DEFAULT_CURRENCY: "eur"
+
+  # ---- Superuser (password lives in the Secret) ----
+  DJANGO_SUPERUSER_USERNAME: "admin"
+  DJANGO_SUPERUSER_EMAIL: "admin@caerora.com"
+
+  # ---- Frontend SSR (server-to-server, in-cluster) ----
+  INTERNAL_API_BASE_URL: "http://backend:8000/api"
+
+  # ---- Per-environment values (overridden in overlays) ----
+  DJANGO_ALLOWED_HOSTS: "caerora.com,www.caerora.com,backend"
+  SITE_URL: "https://caerora.com"
+  FRONTEND_ORIGIN: "https://caerora.com"
+  BACKEND_ORIGIN: "https://caerora.com"
+  MEDIA_PUBLIC_BASE_URL: "https://caerora.com"

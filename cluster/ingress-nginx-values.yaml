@@ -1,0 +1,27 @@
+# Helm values for a DEDICATED ingress-nginx, isolated from the cluster's
+# existing Traefik. It owns its own IngressClass (caerora-nginx) and a dedicated
+# MetalLB IP (192.168.50.75, free in the 192.168.50.70-80 pool). Traefik is
+# never touched.
+controller:
+  ingressClassResource:
+    name: caerora-nginx
+    enabled: true
+    default: false
+    controllerValue: "k8s.io/caerora-nginx"
+  ingressClass: caerora-nginx
+  # Only manage Ingresses that explicitly set ingressClassName: caerora-nginx.
+  watchIngressWithoutClass: false
+  electionID: caerora-nginx-leader
+  service:
+    type: LoadBalancer
+    annotations:
+      metallb.io/loadBalancerIPs: "192.168.50.75"
+  config:
+    use-forwarded-headers: "true"
+    proxy-body-size: "25m"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  admissionWebhooks:
+    enabled: true

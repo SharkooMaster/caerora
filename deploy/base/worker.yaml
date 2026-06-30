@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: caerora-backend:latest
+          command: ["celery", "-A", "caerora", "worker", "--loglevel=info"]
+          envFrom:
+            - configMapRef:
+                name: caerora-config
+            - secretRef:
+                name: caerora-secrets
+          volumeMounts:
+            - name: media
+              mountPath: /app/media
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "celery -A caerora inspect ping -d celery@$HOSTNAME"
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 192Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: media

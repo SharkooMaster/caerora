@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #faf7f4;
+  color: #2b2424;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-full px-7 py-3 text-xs font-medium uppercase tracking-widest transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-espresso text-ivory hover:bg-plum;
+  }
+  .btn-outline {
+    @apply btn border border-espresso/30 text-espresso hover:border-espresso hover:bg-espresso hover:text-ivory;
+  }
+  .btn-rose {
+    @apply btn bg-rose text-white hover:bg-plum;
+  }
+
+  .heading-serif {
+    @apply font-serif font-light text-espresso;
+  }
+
+  .eyebrow {
+    @apply text-[11px] uppercase tracking-widest text-taupe;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-taupe/30 bg-white px-4 py-3 text-sm text-espresso outline-none transition focus:border-rose focus:ring-1 focus:ring-rose/40;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs uppercase tracking-wider text-taupe;
+  }
+
+  .card {
+    @apply rounded-xl border border-taupe/10 bg-white;
+  }
+}
