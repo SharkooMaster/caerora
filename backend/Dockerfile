@@ -18,5 +18,10 @@ COPY . .
 
 RUN chmod +x entrypoint.sh && mkdir -p media staticfiles
 
+# Collect static at build time so the image ships ready-to-serve assets
+# (WhiteNoise serves them at runtime). This avoids a slow collectstatic onto a
+# networked RWX volume on every pod start. No DB/secrets are needed here.
+RUN DJANGO_SETTINGS_MODULE=caerora.settings.prod python manage.py collectstatic --noinput
+
 ENTRYPOINT ["./entrypoint.sh"]
 CMD ["gunicorn", "caerora.wsgi:application", "--bind", "0.0.0.0:8000"]

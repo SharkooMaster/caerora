@@ -33,9 +33,7 @@ spec:
       containers:
         - name: backend
           image: caerora-backend:latest
-          # Use args (not command) so the image ENTRYPOINT (entrypoint.sh) runs:
-          # it waits for Postgres, then (RUN_STARTUP_TASKS=1) migrates,
-          # collectstatic and ensures the superuser before exec'ing gunicorn.
+          # Use args (not command) so the image ENTRYPOINT (entrypoint.sh) runs.
           args:
             - gunicorn
             - caerora.wsgi:application
@@ -45,6 +43,9 @@ spec:
             - "3"
             - --timeout
             - "120"
+          # The image ENTRYPOINT runs first: wait for Postgres, migrate and
+          # ensure the superuser (collectstatic is baked in at build time), then
+          # exec gunicorn. WhiteNoise serves /django-static from the image.
           envFrom:
             - configMapRef:
                 name: caerora-config
@@ -55,11 +56,9 @@ spec:
           volumeMounts:
             - name: media
               mountPath: /app/media
-            - name: static
-              mountPath: /app/staticfiles
-          # Startup runs migrate + collectstatic + ensure_superuser before
-          # gunicorn binds :8000, which can take a while on first boot. Gate
-          # liveness/readiness behind a generous startup budget (up to ~6 min).
+          # Startup runs migrate + ensure_superuser before gunicorn binds :8000,
+          # which can take a while on first boot. Gate liveness/readiness behind
+          # a generous startup budget (up to ~6 min).
           startupProbe:
             tcpSocket:
               port: 8000
@@ -85,6 +84,3 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: media
-        - name: static
-          persistentVolumeClaim:
-            claimName: static
