@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import type { ProductDetail, ProductVariant } from "@/lib/types";
 import { formatMoney } from "@/lib/format";
 import { RatingSummary } from "./Rating";
 import { useCart } from "@/lib/cart";
 import { track } from "@/lib/tracker";
+import { SmartImage } from "./SmartImage";
+import { productImage, CATEGORY_IMAGES } from "@/lib/images";
 
 export function ProductDetailView({ product }: { product: ProductDetail }) {
   const firstAvailable = product.variants.find((v) => v.stock > 0) || product.variants[0];
@@ -14,6 +15,15 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   const [added, setAdded] = useState(false);
   const addItem = useCart((s) => s.addItem);
   const enteredAt = useRef<number>(Date.now());
+
+  // Build a normalized gallery of image URLs, preferring curated editorial
+  // photography, then a category shot, then any real API media.
+  const curated = productImage(product.slug, product.category?.slug);
+  const categoryShot = product.category?.slug ? CATEGORY_IMAGES[product.category.slug] : undefined;
+  const apiImages = product.images.map((i) => i.image).filter((s): s is string => !!s);
+  const gallery: string[] = Array.from(
+    new Set([curated, categoryShot, ...apiImages].filter((s): s is string => !!s)),
+  );
 
   // view_item on mount + product_dwell on unmount (time-on-product).
   useEffect(() => {
@@ -39,7 +49,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
       productName: product.name,
       variantName: variant.name,
       price: parseFloat(variant.price),
-      image: product.images[0]?.image || null,
+      image: gallery[0] || null,
     });
     track({
       event_type: "add_to_cart",
@@ -52,19 +62,19 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
     setTimeout(() => setAdded(false), 1500);
   }
 
-  const images = product.images.length ? product.images : [];
   const compareAt = variant?.compare_at_price ? parseFloat(variant.compare_at_price) : null;
   const price = variant ? parseFloat(variant.price) : 0;
+  const active = Math.min(activeImage, Math.max(gallery.length - 1, 0));
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
       {/* Gallery */}
       <div>
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-cream">
-          {images[activeImage]?.image ? (
-            <Image
-              src={images[activeImage].image as string}
-              alt={images[activeImage].alt_text || product.name}
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-cream shadow-card">
+          {gallery[active] ? (
+            <SmartImage
+              src={gallery[active]}
+              alt={product.name}
               fill
               priority
               className="object-cover"
@@ -76,17 +86,18 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
             </div>
           )}
         </div>
-        {images.length > 1 && (
+        {gallery.length > 1 && (
           <div className="mt-3 flex gap-3">
-            {images.map((img, i) => (
+            {gallery.map((img, i) => (
               <button
-                key={img.id}
+                key={img}
                 onClick={() => setActiveImage(i)}
+                aria-label={`View image ${i + 1}`}
                 className={`relative h-20 w-16 overflow-hidden rounded-md border ${
-                  i === activeImage ? "border-rose" : "border-transparent"
+                  i === active ? "border-rose" : "border-transparent"
                 }`}
               >
-                {img.image && <Image src={img.image} alt="" fill className="object-cover" sizes="64px" />}
+                <SmartImage src={img} alt="" fill className="object-cover" sizes="64px" />
               </button>
             ))}
           </div>

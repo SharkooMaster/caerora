@@ -4,6 +4,8 @@ const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8091/a
 const patterns = [
   { protocol: "http", hostname: "localhost" },
   { protocol: "http", hostname: "backend" },
+  // Curated editorial/product photography (loaded unoptimized straight from the CDN).
+  { protocol: "https", hostname: "images.unsplash.com" },
 ];
 
 try {

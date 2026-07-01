@@ -33,8 +33,13 @@ export default async function ShopPage({
     <div className="container-page py-12">
       <ProductListTracker list={category || "all"} />
       <div className="mb-8 text-center">
-        <p className="eyebrow">The collection</p>
-        <h1 className="heading-serif mt-2 text-4xl">Shop all</h1>
+        <p className="eyebrow-rose">The collection</p>
+        <h1 className="heading-serif mt-2 text-4xl md:text-5xl">
+          {category ? categories.find((c) => c.slug === category)?.name ?? "Shop all" : "Shop all"}
+        </h1>
+        <p className="mt-3 text-sm text-taupe">
+          {products.length} {products.length === 1 ? "product" : "products"} &middot; clean, cruelty-free, fairly priced
+        </p>
       </div>
 
       <div className="mb-10 flex flex-wrap items-center justify-center gap-3 text-xs uppercase tracking-wider">

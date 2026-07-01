@@ -34,6 +34,9 @@ body {
   .btn-rose {
     @apply btn bg-rose text-white hover:bg-plum;
   }
+  .btn-lg {
+    @apply px-9 py-3.5 text-[13px];
+  }
 
   .heading-serif {
     @apply font-serif font-light text-espresso;
@@ -41,6 +44,23 @@ body {
 
   .eyebrow {
     @apply text-[11px] uppercase tracking-widest text-taupe;
+  }
+  .eyebrow-rose {
+    @apply text-[11px] font-medium uppercase tracking-widest text-rose;
+  }
+
+  /* Product / editorial cards that lift on hover */
+  .lift {
+    @apply transition-all duration-300 hover:-translate-y-1;
+  }
+
+  /* Small icon chip used in trust rows and value props */
+  .icon-chip {
+    @apply flex h-11 w-11 items-center justify-center rounded-full bg-ivory p-2.5 text-plum ring-1 ring-taupe/15;
+  }
+
+  .section {
+    @apply py-16 md:py-24;
   }
 
   .input {
