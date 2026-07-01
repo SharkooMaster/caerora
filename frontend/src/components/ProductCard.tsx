@@ -5,11 +5,15 @@ import { formatMoney } from "@/lib/format";
 import { RatingSummary } from "./Rating";
 import { track } from "@/lib/tracker";
 import { SmartImage } from "./SmartImage";
-import { productImage } from "@/lib/images";
+import { demoProductImage, categoryImage } from "@/lib/images";
 
 export function ProductCard({ product, position }: { product: ProductListItem; position?: number }) {
-  // Prefer curated editorial photography, then any real API media.
-  const image = productImage(product.slug, product.category?.slug) || product.primary_image;
+  // Real supplier photo wins; demo slugs get curated art; category shot is the
+  // last-resort fallback so a product is never image-less.
+  const image =
+    demoProductImage(product.slug) ||
+    product.primary_image ||
+    categoryImage(product.category?.slug);
   return (
     <Link
       href={`/product/${product.slug}`}

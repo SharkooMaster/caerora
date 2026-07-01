@@ -28,7 +28,10 @@ export const CATEGORY_IMAGES: Record<string, string> = {
   skin: u("1571781926291-c477ebfd024b", 900, 1100),
 };
 
-const PRODUCT_IMAGES: Record<string, string> = {
+// Placeholder art for the demo catalog only, keyed by the seeded demo slugs.
+// Real dropship SKUs won't match these slugs, so their supplier photos always
+// take precedence (see ProductCard / ProductDetailView ordering).
+const DEMO_PRODUCT_IMAGES: Record<string, string> = {
   "velvet-matte-lipstick": u("1596462502278-27bfdc403348", 900, 1125),
   "glass-lip-oil": u("1522337660859-02fbefca4702", 900, 1125),
   "luminous-silk-foundation": u("1601049541289-9b1b7bbbfe19", 900, 1125),
@@ -39,15 +42,14 @@ const PRODUCT_IMAGES: Record<string, string> = {
   "overnight-renewal-cream": u("1599305090598-fe179d501227", 900, 1125),
 };
 
-// Prefer a curated per-product image, then a category image. Returns undefined
-// when nothing matches so callers can fall back to API media / a text mark.
-export function productImage(
-  slug?: string | null,
-  categorySlug?: string | null,
-): string | undefined {
-  if (slug && PRODUCT_IMAGES[slug]) return PRODUCT_IMAGES[slug];
-  if (categorySlug && CATEGORY_IMAGES[categorySlug]) return CATEGORY_IMAGES[categorySlug];
-  return undefined;
+// Explicit demo-only override (known seeded slugs). Undefined for real SKUs.
+export function demoProductImage(slug?: string | null): string | undefined {
+  return slug ? DEMO_PRODUCT_IMAGES[slug] : undefined;
+}
+
+// Editorial fallback by category, used only when a product has no supplier image.
+export function categoryImage(categorySlug?: string | null): string | undefined {
+  return categorySlug ? CATEGORY_IMAGES[categorySlug] : undefined;
 }
 
 export function isUnsplash(src?: string | null): boolean {

@@ -31,11 +31,11 @@ export const metadata: Metadata = {
     template: "%s | Caerora",
   },
   description:
-    "Caerora is a modern beauty brand rooted in elegance, simplicity and confidence. Clean, cruelty-free makeup that feels luxurious and is priced fairly.",
-  keywords: ["Caerora", "makeup", "clean beauty", "lipstick", "foundation", "cruelty-free"],
+    "Caerora is a curated edit of clean, modern beauty. Hand-picked makeup and skincare, chosen for quality and delivered with care.",
+  keywords: ["Caerora", "makeup", "clean beauty", "curated beauty", "skincare", "beauty edit"],
   openGraph: {
     title: "Caerora | Beauty. Elevated.",
-    description: "Clean, cruelty-free makeup that feels luxurious and is priced fairly.",
+    description: "A curated edit of clean, modern beauty \u2014 hand-picked and delivered with care.",
     url: siteUrl,
     siteName: "Caerora",
     images: [{ url: IMAGES.og, width: 1200, height: 630 }],

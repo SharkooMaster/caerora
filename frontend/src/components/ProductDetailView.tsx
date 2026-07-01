@@ -6,7 +6,7 @@ import { RatingSummary } from "./Rating";
 import { useCart } from "@/lib/cart";
 import { track } from "@/lib/tracker";
 import { SmartImage } from "./SmartImage";
-import { productImage, CATEGORY_IMAGES } from "@/lib/images";
+import { demoProductImage, categoryImage } from "@/lib/images";
 
 export function ProductDetailView({ product }: { product: ProductDetail }) {
   const firstAvailable = product.variants.find((v) => v.stock > 0) || product.variants[0];
@@ -16,14 +16,16 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   const addItem = useCart((s) => s.addItem);
   const enteredAt = useRef<number>(Date.now());
 
-  // Build a normalized gallery of image URLs, preferring curated editorial
-  // photography, then a category shot, then any real API media.
-  const curated = productImage(product.slug, product.category?.slug);
-  const categoryShot = product.category?.slug ? CATEGORY_IMAGES[product.category.slug] : undefined;
+  // Known demo slugs use curated art (their DB images are placeholders); real
+  // SKUs use their supplier images; a category shot is the last-resort fallback.
+  const demo = demoProductImage(product.slug);
   const apiImages = product.images.map((i) => i.image).filter((s): s is string => !!s);
-  const gallery: string[] = Array.from(
-    new Set([curated, categoryShot, ...apiImages].filter((s): s is string => !!s)),
-  );
+  const chosen = demo
+    ? [demo, categoryImage(product.category?.slug)]
+    : apiImages.length
+      ? apiImages
+      : [categoryImage(product.category?.slug)];
+  const gallery: string[] = Array.from(new Set(chosen.filter((s): s is string => !!s)));
 
   // view_item on mount + product_dwell on unmount (time-on-product).
   useEffect(() => {

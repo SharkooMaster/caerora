@@ -38,7 +38,7 @@ export default async function ShopPage({
           {category ? categories.find((c) => c.slug === category)?.name ?? "Shop all" : "Shop all"}
         </h1>
         <p className="mt-3 text-sm text-taupe">
-          {products.length} {products.length === 1 ? "product" : "products"} &middot; clean, cruelty-free, fairly priced
+          {products.length} {products.length === 1 ? "product" : "products"} &middot; a hand-picked edit, delivered with care
         </p>
       </div>
 
