@@ -4,7 +4,7 @@ import { api } from "@/lib/api";
 import type { ProductDetail, Review } from "@/lib/types";
 import { ProductDetailView } from "@/components/ProductDetailView";
 import { ProductReviews } from "@/components/ProductReviews";
-import { productImage } from "@/lib/images";
+import { demoProductImage } from "@/lib/images";
 
 export const revalidate = 120;
 
@@ -23,8 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const product = await getProduct(params.slug);
   if (!product) return { title: "Product not found" };
-  const image =
-    productImage(product.slug, product.category?.slug) || product.images[0]?.image || undefined;
+  const image = demoProductImage(product.slug) || product.images[0]?.image || undefined;
   return {
     title: product.meta_title || product.name,
     description: product.meta_description || product.tagline || product.description.slice(0, 160),

@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 };
 
 const PILLARS = [
-  { icon: LeafIcon, title: "Clean", body: "Vegan, cruelty-free and dermatologist-tested formulas that love your skin back." },
-  { icon: HeartIcon, title: "Fair", body: "Luxury quality without the luxury markup. We price honestly, always." },
-  { icon: SparkleIcon, title: "Considered", body: "Sustainable packaging and thoughtful shade ranges made for everyone." },
+  { icon: SparkleIcon, title: "Curated", body: "A tight, considered edit \u2014 we choose quality over clutter, so you never have to sift through thousands of products." },
+  { icon: HeartIcon, title: "Trusted", body: "Shop with confidence: secure checkout, tracked delivery and a no-fuss 30-day return policy on every order." },
+  { icon: LeafIcon, title: "Considered", body: "Thoughtfully chosen pieces and finishes, for a beauty routine that feels effortless." },
 ];
 
 export default function AboutPage() {
@@ -24,14 +24,13 @@ export default function AboutPage() {
             <p className="eyebrow-rose">Our story</p>
             <h1 className="heading-serif mt-3 text-4xl md:text-6xl">Beauty, elevated.</h1>
             <p className="mt-6 text-sm leading-relaxed text-taupe">
-              Caerora was born from a simple belief: that luxurious, high-performing makeup should be
-              honest and accessible. We obsess over clean formulas, refined shades and sustainable
-              packaging &mdash; then price them fairly, because beauty should never feel like a
-              luxury tax.
+              Caerora began with a simple belief: that discovering beautiful, high-quality makeup
+              shouldn&rsquo;t feel overwhelming. So we do the hunting for you &mdash; hand-picking a
+              tight, considered edit of clean, modern beauty we genuinely love.
             </p>
             <p className="mt-4 text-sm leading-relaxed text-taupe">
-              Every product is dermatologist-tested, cruelty-free and made to be effortlessly
-              wearable. Timeless, refined and uniquely you.
+              Every piece earns its place in the edit: chosen for quality, everyday wearability and
+              finish. Fewer, better products &mdash; delivered with care and backed by easy returns.
             </p>
             <Link href="/shop" className="btn-primary btn-lg mt-8">Shop the collection</Link>
           </div>

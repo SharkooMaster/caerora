@@ -16,7 +16,7 @@ export function Footer() {
         <div className="md:col-span-1">
           <Logo />
           <p className="mt-4 text-xs leading-relaxed text-taupe">
-            Modern beauty rooted in elegance, simplicity and confidence. Beauty, elevated.
+            A curated edit of clean, modern beauty. Hand-picked and delivered with care.
           </p>
           <div className="mt-5 flex gap-3">
             {SOCIALS.map(({ href, label, Icon }) => (

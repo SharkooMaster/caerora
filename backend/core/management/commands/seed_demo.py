@@ -106,15 +106,15 @@ class Command(BaseCommand):
                 name=name,
                 tagline=tagline,
                 description=(
-                    f"{name} by Caerora. {tagline}. Formulated to be clean, "
-                    "cruelty-free and beautifully wearable for every day."
+                    f"{name}. {tagline}. A hand-picked addition to the Caerora edit, "
+                    "chosen for quality and everyday wearability."
                 ),
                 brand_copy=(
-                    "Dermatologist-tested. Cruelty-free. Made with skin-loving ingredients "
-                    "and packaged sustainably. Beauty, elevated."
+                    "Part of our curated edit \u2014 selected for quality, finish and everyday "
+                    "wearability. Shop with confidence: tracked delivery and 30-day returns."
                 ),
-                ingredients="Aqua, Glycerin, Squalane, Tocopherol (Vitamin E), Mica.",
-                how_to_use="Apply to clean skin. Build to desired intensity.",
+                ingredients="Full ingredient list is shown on the product packaging.",
+                how_to_use="Apply to clean skin and build to your desired intensity.",
                 is_featured=random.random() < 0.5,
                 is_active=True,
             )
