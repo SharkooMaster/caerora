@@ -10,11 +10,18 @@ export function Logo({
   className?: string;
 }) {
   const color = variant === "light" ? "text-ivory" : variant === "rose" ? "text-rose" : "text-plum";
+  const rule = variant === "light" ? "bg-ivory/40" : "bg-taupe/40";
   return (
-    <Link href="/" className={`group inline-flex flex-col items-center ${className}`}>
-      <span className={`font-serif text-2xl font-medium tracking-[0.35em] ${color}`}>CAERORA</span>
+    <Link href="/" className={`group inline-flex flex-col items-center ${className}`} aria-label="Caerora home">
+      <span className="mb-1 flex items-center gap-2">
+        <span className={`h-px w-4 ${rule} transition-all duration-300 group-hover:w-6`} />
+        <span className={`font-serif text-2xl font-medium tracking-[0.4em] ${color}`}>CAERORA</span>
+        <span className={`h-px w-4 ${rule} transition-all duration-300 group-hover:w-6`} />
+      </span>
       {withTagline && (
-        <span className="mt-1 text-[9px] uppercase tracking-[0.4em] text-taupe">Beauty. Elevated.</span>
+        <span className={`text-[9px] uppercase tracking-[0.45em] ${variant === "light" ? "text-ivory/70" : "text-taupe"}`}>
+          Beauty. Elevated.
+        </span>
       )}
     </Link>
   );

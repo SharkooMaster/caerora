@@ -1,24 +1,27 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import type { ProductListItem } from "@/lib/types";
 import { formatMoney } from "@/lib/format";
 import { RatingSummary } from "./Rating";
 import { track } from "@/lib/tracker";
+import { SmartImage } from "./SmartImage";
+import { productImage } from "@/lib/images";
 
 export function ProductCard({ product, position }: { product: ProductListItem; position?: number }) {
+  // Prefer curated editorial photography, then any real API media.
+  const image = productImage(product.slug, product.category?.slug) || product.primary_image;
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group block"
+      className="group block lift"
       onClick={() =>
         track({ event_type: "select_item", product_slug: product.slug, meta: { position } })
       }
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-cream">
-        {product.primary_image ? (
-          <Image
-            src={product.primary_image}
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-cream shadow-card">
+        {image ? (
+          <SmartImage
+            src={image}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 25vw"

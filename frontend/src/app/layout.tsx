@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
+import { IMAGES } from "@/lib/images";
 
 const serif = Cormorant_Garamond({
   subsets: ["latin"],
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     description: "Clean, cruelty-free makeup that feels luxurious and is priced fairly.",
     url: siteUrl,
     siteName: "Caerora",
-    images: [{ url: "/brand/hero.png", width: 1024, height: 400 }],
+    images: [{ url: IMAGES.og, width: 1200, height: 630 }],
     type: "website",
   },
   twitter: { card: "summary_large_image", title: "Caerora | Beauty. Elevated." },

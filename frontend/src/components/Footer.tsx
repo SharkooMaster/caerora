@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { NewsletterForm } from "./NewsletterForm";
+import { InstagramIcon, TikTokIcon, PinterestIcon } from "./icons";
+
+const SOCIALS = [
+  { href: "https://instagram.com", label: "Instagram", Icon: InstagramIcon },
+  { href: "https://tiktok.com", label: "TikTok", Icon: TikTokIcon },
+  { href: "https://pinterest.com", label: "Pinterest", Icon: PinterestIcon },
+];
 
 export function Footer() {
   return (
@@ -11,6 +18,20 @@ export function Footer() {
           <p className="mt-4 text-xs leading-relaxed text-taupe">
             Modern beauty rooted in elegance, simplicity and confidence. Beauty, elevated.
           </p>
+          <div className="mt-5 flex gap-3">
+            {SOCIALS.map(({ href, label, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-9 w-9 items-center justify-center rounded-full p-2 text-taupe ring-1 ring-taupe/20 transition hover:bg-plum hover:text-ivory hover:ring-plum"
+              >
+                <Icon />
+              </a>
+            ))}
+          </div>
         </div>
         <div>
           <h4 className="eyebrow mb-4">Shop</h4>
@@ -39,8 +60,16 @@ export function Footer() {
           <NewsletterForm source="footer" />
         </div>
       </div>
-      <div className="border-t border-taupe/15 py-6 text-center text-[11px] uppercase tracking-wider text-taupe">
-        &copy; {new Date().getFullYear()} Caerora &middot; All rights reserved
+      <div className="border-t border-taupe/15">
+        <div className="container-page flex flex-col items-center justify-between gap-3 py-6 text-[11px] uppercase tracking-wider text-taupe sm:flex-row">
+          <span>&copy; {new Date().getFullYear()} Caerora &middot; All rights reserved</span>
+          <span className="flex items-center gap-3 tracking-normal">
+            <span className="rounded border border-taupe/25 px-2 py-1 text-[10px]">VISA</span>
+            <span className="rounded border border-taupe/25 px-2 py-1 text-[10px]">Mastercard</span>
+            <span className="rounded border border-taupe/25 px-2 py-1 text-[10px]">Amex</span>
+            <span className="rounded border border-taupe/25 px-2 py-1 text-[10px]">Klarna</span>
+          </span>
+        </div>
       </div>
     </footer>
   );
