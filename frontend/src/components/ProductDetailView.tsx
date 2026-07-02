@@ -7,6 +7,8 @@ import { useCart } from "@/lib/cart";
 import { track } from "@/lib/tracker";
 import { SmartImage } from "./SmartImage";
 import { demoProductImage, categoryImage } from "@/lib/images";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/config";
+import { TruckIcon, ReturnIcon, LockIcon } from "./icons";
 
 export function ProductDetailView({ product }: { product: ProductDetail }) {
   const firstAvailable = product.variants.find((v) => v.stock > 0) || product.variants[0];
@@ -118,7 +120,12 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
         <div className="mt-5 flex items-baseline gap-3">
           <span className="font-serif text-3xl text-espresso">{formatMoney(price)}</span>
           {compareAt && compareAt > price && (
-            <span className="text-base text-taupe line-through">{formatMoney(compareAt)}</span>
+            <>
+              <span className="text-base text-taupe line-through">{formatMoney(compareAt)}</span>
+              <span className="rounded-full bg-terracotta/10 px-2.5 py-0.5 text-xs font-medium text-terracotta">
+                Save {formatMoney(compareAt - price)}
+              </span>
+            </>
           )}
         </div>
 
@@ -153,14 +160,51 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           </div>
         </div>
 
-        <div className="mt-7 flex gap-3">
+        {/* Honest urgency: only when stock is genuinely low */}
+        {variant && variant.stock > 0 && variant.stock <= 5 && (
+          <p className="mt-4 flex items-center gap-2 text-xs font-medium text-terracotta">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-terracotta opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-terracotta" />
+            </span>
+            Only {variant.stock} left in this shade
+          </p>
+        )}
+
+        <div className="mt-6 flex gap-3">
           <button
             onClick={handleAdd}
             disabled={!variant || variant.stock <= 0}
-            className="btn-primary flex-1"
+            className="btn-primary btn-lg flex-1"
           >
-            {variant && variant.stock > 0 ? (added ? "Added \u2713" : "Add to bag") : "Sold out"}
+            {variant && variant.stock > 0
+              ? added
+                ? "Added to bag \u2713"
+                : `Add to bag \u00b7 ${formatMoney(price)}`
+              : "Sold out"}
           </button>
+        </div>
+
+        {/* Trust signals at the point of decision */}
+        <div className="mt-5 grid grid-cols-3 gap-2 rounded-xl bg-cream/70 p-3 text-center">
+          <div className="flex flex-col items-center gap-1 text-[10px] uppercase tracking-wider text-taupe">
+            <span className="h-[18px] w-[18px] text-plum">
+              <TruckIcon />
+            </span>
+            Free over {formatMoney(FREE_SHIPPING_THRESHOLD)}
+          </div>
+          <div className="flex flex-col items-center gap-1 border-x border-taupe/15 text-[10px] uppercase tracking-wider text-taupe">
+            <span className="h-[18px] w-[18px] text-plum">
+              <ReturnIcon />
+            </span>
+            30-day returns
+          </div>
+          <div className="flex flex-col items-center gap-1 text-[10px] uppercase tracking-wider text-taupe">
+            <span className="h-[18px] w-[18px] text-plum">
+              <LockIcon />
+            </span>
+            Secure checkout
+          </div>
         </div>
 
         <div className="mt-8 space-y-5 border-t border-taupe/15 pt-6 text-sm leading-relaxed text-espresso/90">

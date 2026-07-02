@@ -64,6 +64,13 @@ export interface ReviewStats {
   count: number;
 }
 
+export interface QuickVariant {
+  id: number;
+  name: string;
+  price: string;
+  compare_at_price: string | null;
+}
+
 export interface ProductListItem {
   id: number;
   name: string;
@@ -75,6 +82,8 @@ export interface ProductListItem {
   price_from: string | null;
   in_stock: boolean;
   review_stats: ReviewStats;
+  quick_variant?: QuickVariant | null;
+  variant_count?: number;
 }
 
 export interface ProductDetail {

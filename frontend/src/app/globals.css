@@ -17,16 +17,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Brand-toned text selection */
+::selection {
+  background: rgba(91, 59, 74, 0.9);
+  color: #faf7f4;
+}
+
+/* Visible, on-brand keyboard focus without disturbing mouse users */
+:focus-visible {
+  outline: 2px solid rgba(91, 59, 74, 0.55);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-content px-5 sm:px-8;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center rounded-full px-7 py-3 text-xs font-medium uppercase tracking-widest transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-full px-7 py-3 text-xs font-medium uppercase tracking-widest transition-all duration-300 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
   }
   .btn-primary {
-    @apply btn bg-espresso text-ivory hover:bg-plum;
+    @apply btn bg-espresso text-ivory shadow-[0_10px_28px_-14px_rgba(43,36,36,0.6)] hover:bg-plum hover:shadow-glow;
   }
   .btn-outline {
     @apply btn border border-espresso/30 text-espresso hover:border-espresso hover:bg-espresso hover:text-ivory;

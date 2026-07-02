@@ -42,17 +42,37 @@ class ProductListSerializer(serializers.ModelSerializer):
     in_stock = serializers.BooleanField(read_only=True)
     review_stats = serializers.DictField(read_only=True)
     category = CategorySerializer(read_only=True)
+    quick_variant = serializers.SerializerMethodField()
+    variant_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = (
             "id", "name", "slug", "tagline", "category", "is_featured",
             "primary_image", "price_from", "in_stock", "review_stats",
+            "quick_variant", "variant_count",
         )
 
     def get_primary_image(self, obj):
         img = obj.images.order_by("position", "id").first()
         return absolute_media_url(self.context.get("request"), img.image if img else None)
+
+    def get_quick_variant(self, obj):
+        """First purchasable variant, so cards can offer one-tap add-to-bag."""
+        variant = next(
+            (v for v in obj.variants.all() if v.is_active and v.stock > 0), None
+        )
+        if not variant:
+            return None
+        return {
+            "id": variant.id,
+            "name": variant.name,
+            "price": str(variant.price),
+            "compare_at_price": str(variant.compare_at_price) if variant.compare_at_price else None,
+        }
+
+    def get_variant_count(self, obj):
+        return sum(1 for v in obj.variants.all() if v.is_active)
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):

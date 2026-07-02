@@ -9,12 +9,14 @@ import { Reveal } from "@/components/Reveal";
 import { Marquee } from "@/components/Marquee";
 import { IMAGES, CATEGORY_IMAGES, GALLERY } from "@/lib/images";
 import { TruckIcon, LeafIcon, ReturnIcon, LockIcon, SparkleIcon } from "@/components/icons";
+import { Stars } from "@/components/Rating";
 
 export const revalidate = 120;
 
 async function getHomeProducts(): Promise<{
   bestsellers: ProductListItem[];
   newIn: ProductListItem[];
+  proof: { average: number; count: number } | null;
 }> {
   try {
     const all = await api.products();
@@ -28,9 +30,13 @@ async function getHomeProducts(): Promise<{
     const bestslugs = new Set(bestsellers.map((p) => p.slug));
     const rest = products.filter((p) => !bestslugs.has(p.slug));
     const newIn = (rest.length ? rest : products).slice(0, 4);
-    return { bestsellers, newIn };
+    // Honest, catalog-wide social proof from real approved reviews.
+    const count = products.reduce((n, p) => n + p.review_stats.count, 0);
+    const weighted = products.reduce((s, p) => s + p.review_stats.average * p.review_stats.count, 0);
+    const proof = count > 0 ? { average: weighted / count, count } : null;
+    return { bestsellers, newIn, proof };
   } catch {
-    return { bestsellers: [], newIn: [] };
+    return { bestsellers: [], newIn: [], proof: null };
   }
 }
 
@@ -83,7 +89,7 @@ const STANDARD = [
 ];
 
 export default async function HomePage() {
-  const { bestsellers, newIn } = await getHomeProducts();
+  const { bestsellers, newIn, proof } = await getHomeProducts();
   const { content, testimonials, gallery, categoryImages } = await getSiteData();
 
   const heroEyebrow = content?.hero_eyebrow || "New season beauty";
@@ -133,9 +139,19 @@ export default async function HomePage() {
               <Link href="/about" className="btn-outline btn-lg">Our story</Link>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-taupe">
-              <span className="flex items-center gap-2">
-                <span className="h-4 w-4 text-plum"><SparkleIcon /></span> Clean, cruelty-free formulas
-              </span>
+              {proof ? (
+                <span className="flex items-center gap-2">
+                  <Stars value={proof.average} />
+                  <span>
+                    <span className="font-medium text-espresso">{proof.average.toFixed(1)}</span> from{" "}
+                    {proof.count} verified reviews
+                  </span>
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <span className="h-4 w-4 text-plum"><SparkleIcon /></span> Clean, cruelty-free formulas
+                </span>
+              )}
               <span className="flex items-center gap-2">
                 <span className="h-4 w-4 text-plum"><ReturnIcon /></span> Free 30-day returns
               </span>
