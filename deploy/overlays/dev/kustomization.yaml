@@ -14,7 +14,7 @@ patches:
 images:
 - name: caerora-backend
   newName: ghcr.io/sharkoomaster/caerora-backend
-  newTag: dev-7234de46701a
+  newTag: dev-6d512ba187c3
 - name: caerora-frontend
   newName: ghcr.io/sharkoomaster/caerora-frontend
-  newTag: dev-7234de46701a
+  newTag: dev-6d512ba187c3
