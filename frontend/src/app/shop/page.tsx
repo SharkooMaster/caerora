@@ -8,7 +8,7 @@ export const revalidate = 120;
 
 export const metadata: Metadata = {
   title: "Shop all",
-  description: "Browse the full Caerora collection of clean, cruelty-free makeup.",
+  description: "Shop the full Caerora collection of clean, cruelty-free makeup and skincare.",
 };
 
 async function getData(category?: string) {
@@ -38,7 +38,7 @@ export default async function ShopPage({
           {category ? categories.find((c) => c.slug === category)?.name ?? "Shop all" : "Shop all"}
         </h1>
         <p className="mt-3 text-sm text-taupe">
-          {products.length} {products.length === 1 ? "product" : "products"} &middot; a hand-picked edit, delivered with care
+          {products.length} {products.length === 1 ? "product" : "products"} &middot; clean, cruelty-free beauty with free 30-day returns
         </p>
       </div>
 

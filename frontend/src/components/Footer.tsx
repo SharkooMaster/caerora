@@ -16,7 +16,7 @@ export function Footer() {
         <div className="md:col-span-1">
           <Logo />
           <p className="mt-4 text-xs leading-relaxed text-taupe">
-            A curated edit of clean, modern beauty. Hand-picked and delivered with care.
+            Clean, high-performance makeup and skincare, made for every day.
           </p>
           <div className="mt-5 flex gap-3">
             {SOCIALS.map(({ href, label, Icon }) => (
@@ -55,7 +55,7 @@ export function Footer() {
         <div>
           <h4 className="eyebrow mb-4">Join the list</h4>
           <p className="mb-4 text-sm text-taupe">
-            Early access, beauty edits and 10% off your first order.
+            Early access to new arrivals, beauty tips and 10% off your first order.
           </p>
           <NewsletterForm source="footer" />
         </div>

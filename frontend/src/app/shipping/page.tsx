@@ -14,11 +14,10 @@ export default function ShippingPage() {
         <div>
           <h2 className="font-serif text-xl text-espresso">Shipping</h2>
           <p className="mt-2">
-            Orders are prepared and dispatched by our fulfilment partners. Once dispatched, standard
+            We aim to dispatch orders within 1&ndash;2 business days. Once dispatched, standard
             delivery typically takes 3&ndash;7 business days within the EU and UK, and 7&ndash;14
-            business days for international destinations. Please allow 1&ndash;3 business days for
-            processing before dispatch. Delivery windows are estimates and can vary during busy
-            periods. Free standard shipping applies on EU orders over &euro;45.
+            business days for international destinations. Delivery windows are estimates and can vary
+            during busy periods. Free standard shipping applies on EU orders over &euro;45.
           </p>
         </div>
         <div>

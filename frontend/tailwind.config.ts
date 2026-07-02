@@ -45,11 +45,21 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-8px)" },
         },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        kenburns: {
+          "0%": { transform: "scale(1.08)" },
+          "100%": { transform: "scale(1)" },
+        },
       },
       animation: {
         fadeUp: "fadeUp 0.6s ease-out both",
         "fadeUp-slow": "fadeUp 0.9s ease-out both",
         float: "float 6s ease-in-out infinite",
+        marquee: "marquee 30s linear infinite",
+        kenburns: "kenburns 12s ease-out both",
       },
     },
   },

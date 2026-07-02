@@ -13,6 +13,10 @@ data:
   # Static is baked into the image at build time and served by WhiteNoise, so we
   # skip collectstatic at startup (no slow writes to a networked RWX volume).
   COLLECT_STATIC: "0"
+  # Seed the demo catalog on startup. seed_demo is idempotent (it skips once any
+  # product exists), so this safely populates an empty store on first rollout and
+  # is a no-op thereafter. Real products, once added, always take precedence.
+  SEED_ON_START: "1"
   # Behind ingress-nginx (TLS terminated upstream).
   SESSION_COOKIE_SECURE: "1"
   CSRF_COOKIE_SECURE: "1"
