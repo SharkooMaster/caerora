@@ -8,6 +8,8 @@ class Category(TimeStampedModel):
     name = models.CharField(max_length=120, unique=True)
     slug = models.SlugField(max_length=140, unique=True, blank=True)
     description = models.TextField(blank=True)
+    # Optional tile image shown in the storefront "Shop by category" grid.
+    image = models.ImageField(upload_to="categories/", blank=True, null=True)
     # Ordering within navigation / listings.
     position = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -42,6 +44,11 @@ class Product(TimeStampedModel):
     is_active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
     position = models.PositiveIntegerField(default=0)
+
+    # Internal sourcing info — NEVER exposed through the public API. Only staff
+    # can see where a product is bought/dropshipped from.
+    supplier_url = models.URLField(max_length=500, blank=True)
+    supplier_notes = models.TextField(blank=True)
 
     # SEO
     meta_title = models.CharField(max_length=200, blank=True)

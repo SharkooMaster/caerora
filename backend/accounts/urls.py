@@ -7,6 +7,7 @@ from .views import (
     my_orders,
     newsletter_signup,
     record_consent,
+    unsubscribe,
 )
 
 urlpatterns = [
@@ -16,5 +17,6 @@ urlpatterns = [
     path("auth/me/", me, name="me"),
     path("auth/orders/", my_orders, name="my-orders"),
     path("newsletter/", newsletter_signup, name="newsletter"),
+    path("newsletter/unsubscribe/<uuid:token>/", unsubscribe, name="newsletter-unsubscribe"),
     path("consent/", record_consent, name="consent"),
 ]

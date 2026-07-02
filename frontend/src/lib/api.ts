@@ -1,11 +1,14 @@
 import type {
   Category,
+  GalleryImageT,
   Order,
   Paginated,
   ProductDetail,
   ProductListItem,
   Review,
   ShippingOptions,
+  SiteContentData,
+  Testimonial,
 } from "./types";
 
 // Browser uses the public base URL (through nginx). Server-side rendering uses
@@ -79,4 +82,10 @@ export const api = {
 
   trackEvents: (events: unknown) =>
     request<{ created: number }>("/events/", { method: "POST", body: JSON.stringify(events) }),
+
+  siteContent: () => request<SiteContentData>("/site-content/"),
+
+  testimonials: () => request<Testimonial[]>("/testimonials/"),
+
+  gallery: () => request<GalleryImageT[]>("/gallery/"),
 };

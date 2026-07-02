@@ -3,6 +3,42 @@ export interface Category {
   name: string;
   slug: string;
   description?: string;
+  image?: string | null;
+}
+
+export interface SiteContentData {
+  promo_bar_text: string;
+  hero_eyebrow: string;
+  hero_title: string;
+  hero_title_accent: string;
+  hero_subtitle: string;
+  hero_cta_label: string;
+  hero_cta_href: string;
+  hero_image: string | null;
+  brand_band_title: string;
+  brand_band_body: string;
+  brand_band_image: string | null;
+  newsletter_title: string;
+  newsletter_body: string;
+  og_image: string | null;
+}
+
+export interface Testimonial {
+  id: number;
+  author_name: string;
+  handle: string;
+  quote: string;
+  rating: number;
+  photo: string | null;
+  position: number;
+}
+
+export interface GalleryImageT {
+  id: number;
+  image: string | null;
+  alt_text: string;
+  link_url: string;
+  position: number;
 }
 
 export interface ProductImage {

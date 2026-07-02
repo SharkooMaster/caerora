@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
-import type { ProductListItem } from "@/lib/types";
+import type { Category, GalleryImageT, ProductListItem, SiteContentData, Testimonial } from "@/lib/types";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductListTracker } from "@/components/ProductListTracker";
 import { NewsletterForm } from "@/components/NewsletterForm";
@@ -34,6 +34,25 @@ async function getHomeProducts(): Promise<{
   }
 }
 
+async function getSiteData(): Promise<{
+  content: SiteContentData | null;
+  testimonials: Testimonial[];
+  gallery: GalleryImageT[];
+  categoryImages: Record<string, string>;
+}> {
+  const [content, testimonials, gallery, categories] = await Promise.all([
+    api.siteContent().catch(() => null),
+    api.testimonials().catch(() => [] as Testimonial[]),
+    api.gallery().catch(() => [] as GalleryImageT[]),
+    api.categories().catch(() => [] as Category[]),
+  ]);
+  const categoryImages: Record<string, string> = {};
+  for (const c of categories) {
+    if (c.image) categoryImages[c.slug] = c.image;
+  }
+  return { content, testimonials, gallery, categoryImages };
+}
+
 const TRUST = [
   { icon: TruckIcon, title: "Free shipping", body: "On orders over \u20ac45" },
   { icon: LeafIcon, title: "Clean formulas", body: "Cruelty-free & vegan" },
@@ -65,6 +84,30 @@ const STANDARD = [
 
 export default async function HomePage() {
   const { bestsellers, newIn } = await getHomeProducts();
+  const { content, testimonials, gallery, categoryImages } = await getSiteData();
+
+  const heroEyebrow = content?.hero_eyebrow || "New season beauty";
+  const heroTitle = content?.hero_title || "Beauty,";
+  const heroAccent = content?.hero_title_accent || "elevated.";
+  const heroSubtitle =
+    content?.hero_subtitle ||
+    "Clean, high-performance makeup and skincare, designed to feel like you and made to last. Discover the collection your everyday routine has been missing.";
+  const heroCtaLabel = content?.hero_cta_label || "Shop the collection";
+  const heroCtaHref = content?.hero_cta_href || "/shop";
+  const heroImage = content?.hero_image || IMAGES.hero;
+
+  const brandTitle = content?.brand_band_title;
+  const brandBody = content?.brand_band_body;
+  const brandImage = content?.brand_band_image || IMAGES.editorialDark;
+
+  const newsletterTitle = content?.newsletter_title || "Get 10% off your first order";
+  const newsletterBody =
+    content?.newsletter_body ||
+    "Early access to launches, beauty edits and members-only offers. No spam, unsubscribe anytime.";
+
+  const galleryImages = gallery.length
+    ? gallery.map((g) => g.image).filter((s): s is string => Boolean(s))
+    : GALLERY;
 
   return (
     <>
@@ -76,18 +119,17 @@ export default async function HomePage() {
         </div>
         <div className="container-page relative grid items-center gap-10 py-12 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-20 lg:py-24">
           <div className="animate-fadeUp">
-            <p className="eyebrow-rose">New season beauty</p>
+            <p className="eyebrow-rose">{heroEyebrow}</p>
             <h1 className="display mt-5 text-[3.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
-              Beauty,
+              {heroTitle}
               <br />
-              <span className="display-accent text-plum">elevated.</span>
+              <span className="display-accent text-plum">{heroAccent}</span>
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-taupe">
-              Clean, high-performance makeup and skincare, designed to feel like you and made to last.
-              Discover the collection your everyday routine has been missing.
+              {heroSubtitle}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/shop" className="btn-primary btn-lg">Shop the collection</Link>
+              <Link href={heroCtaHref} className="btn-primary btn-lg">{heroCtaLabel}</Link>
               <Link href="/about" className="btn-outline btn-lg">Our story</Link>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-taupe">
@@ -103,7 +145,7 @@ export default async function HomePage() {
           <div className="relative animate-fadeUp-slow">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-taupe/10">
               <SmartImage
-                src={IMAGES.hero}
+                src={heroImage}
                 alt="Caerora beauty look"
                 fill
                 priority
@@ -187,7 +229,7 @@ export default async function HomePage() {
               className={`group relative aspect-[4/5] overflow-hidden rounded-2xl bg-cream md:aspect-auto ${c.span}`}
             >
               <SmartImage
-                src={CATEGORY_IMAGES[c.slug]}
+                src={categoryImages[c.slug] || CATEGORY_IMAGES[c.slug]}
                 alt={c.name}
                 fill
                 className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
@@ -236,7 +278,7 @@ export default async function HomePage() {
       {/* ── Cinematic brand band ─────────────────────────── */}
       <section className="relative isolate my-16 overflow-hidden md:my-24">
         <SmartImage
-          src={IMAGES.editorialDark}
+          src={brandImage}
           alt="Caerora editorial"
           fill
           className="object-cover object-center"
@@ -246,12 +288,16 @@ export default async function HomePage() {
         <div className="container-page relative py-24 md:py-36">
           <Reveal className="max-w-xl text-ivory">
             <p className="text-[11px] uppercase tracking-widest text-champagne">The Caerora promise</p>
-            <h2 className="mt-5 font-serif text-4xl font-light leading-[1.1] md:text-6xl">
-              Beauty that feels <span className="italic">timeless</span>, refined and uniquely you.
-            </h2>
+            {brandTitle ? (
+              <h2 className="mt-5 font-serif text-4xl font-light leading-[1.1] md:text-6xl">{brandTitle}</h2>
+            ) : (
+              <h2 className="mt-5 font-serif text-4xl font-light leading-[1.1] md:text-6xl">
+                Beauty that feels <span className="italic">timeless</span>, refined and uniquely you.
+              </h2>
+            )}
             <p className="mt-6 max-w-md text-sm leading-relaxed text-ivory/85">
-              Every Caerora product is made for real life &mdash; clean, high-performance formulas,
-              considered design and shades that work on you. Beauty worth reaching for.
+              {brandBody ||
+                "Every Caerora product is made for real life \u2014 clean, high-performance formulas, considered design and shades that work on you. Beauty worth reaching for."}
             </p>
             <Link
               href="/shop"
@@ -280,6 +326,38 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Testimonials ─────────────────────────────────── */}
+      {testimonials.length > 0 && (
+        <section className="border-t border-taupe/10 bg-cream">
+          <div className="container-page section">
+            <Reveal className="mb-12 text-center">
+              <p className="eyebrow-rose">Loved &amp; trusted</p>
+              <h2 className="display mt-2 text-4xl md:text-5xl">What people are saying</h2>
+            </Reveal>
+            <div className="grid gap-6 md:grid-cols-3">
+              {testimonials.slice(0, 6).map((t, i) => (
+                <Reveal key={t.id} delay={i * 100} className="rounded-2xl bg-ivory p-7 shadow-card">
+                  <div className="text-rose" aria-label={`${t.rating} stars`}>
+                    {"\u2605".repeat(t.rating)}{"\u2606".repeat(Math.max(0, 5 - t.rating))}
+                  </div>
+                  <p className="mt-4 font-serif text-lg leading-relaxed text-espresso">&ldquo;{t.quote}&rdquo;</p>
+                  <div className="mt-5 flex items-center gap-3">
+                    {t.photo && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={t.photo} alt="" className="h-10 w-10 rounded-full object-cover" />
+                    )}
+                    <div>
+                      <p className="text-sm font-medium text-espresso">{t.author_name}</p>
+                      {t.handle && <p className="text-xs text-taupe">{t.handle}</p>}
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── @caerora gallery ─────────────────────────────── */}
       <section className="border-t border-taupe/10 bg-cream">
         <div className="container-page section">
@@ -289,7 +367,7 @@ export default async function HomePage() {
             <p className="mt-3 text-sm text-taupe">Tag <span className="text-espresso">@caerora</span> for a chance to be featured.</p>
           </Reveal>
           <Reveal className="grid grid-cols-3 gap-3 md:grid-cols-6">
-            {GALLERY.map((src, i) => (
+            {galleryImages.map((src, i) => (
               <Link
                 key={i}
                 href="/shop"
@@ -317,11 +395,10 @@ export default async function HomePage() {
           <Reveal className="text-ivory">
             <p className="text-[11px] uppercase tracking-widest text-champagne">Join the list</p>
             <h2 className="mt-3 font-serif text-4xl font-light leading-tight md:text-5xl">
-              Get 10% off your first order
+              {newsletterTitle}
             </h2>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-ivory/80">
-              Early access to launches, beauty edits and members-only offers. No spam, unsubscribe
-              anytime.
+              {newsletterBody}
             </p>
           </Reveal>
           <Reveal delay={120} className="md:justify-self-end md:w-full md:max-w-md">

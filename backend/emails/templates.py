@@ -73,6 +73,33 @@ def order_shipped_html(order) -> str:
     return _wrapper(inner)
 
 
+def newsletter_html(body_html: str, unsubscribe_url: str = "") -> str:
+    """Wrap admin-authored newsletter body in the branded shell with an
+    unsubscribe footer (required for marketing email compliance)."""
+    unsub = ""
+    if unsubscribe_url:
+        unsub = (
+            f'<br><a href="{unsubscribe_url}" style="color:{BRAND["taupe"]};'
+            'text-decoration:underline;">Unsubscribe</a>'
+        )
+    return f"""
+    <div style="background:{BRAND['ivory']};padding:40px 0;font-family:Georgia,'Times New Roman',serif;color:{BRAND['espresso']};">
+      <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #efe7e2;">
+        <div style="padding:28px 36px;text-align:center;border-bottom:1px solid #f1e9e4;">
+          <div style="font-size:26px;letter-spacing:6px;color:{BRAND['plum']};font-weight:600;">CAERORA</div>
+          <div style="font-size:10px;letter-spacing:3px;color:{BRAND['taupe']};margin-top:6px;">BEAUTY. ELEVATED.</div>
+        </div>
+        <div style="padding:32px 36px;font-size:15px;line-height:1.7;">
+          {body_html}
+        </div>
+        <div style="padding:20px 36px;text-align:center;font-size:11px;color:{BRAND['taupe']};border-top:1px solid #f1e9e4;">
+          Caerora &middot; You received this because you subscribed to Caerora updates.{unsub}
+        </div>
+      </div>
+    </div>
+    """
+
+
 def admin_new_order_html(order) -> str:
     inner = f"""
       <p>New paid order <strong>{order.number}</strong></p>

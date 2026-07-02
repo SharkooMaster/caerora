@@ -77,6 +77,26 @@ def newsletter_signup(request):
     return Response({"detail": "Subscribed."}, status=status.HTTP_201_CREATED)
 
 
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def unsubscribe(request, token):
+    from django.http import HttpResponse
+
+    updated = NewsletterSubscriber.objects.filter(unsubscribe_token=token).update(is_active=False)
+    message = (
+        "You have been unsubscribed. We are sorry to see you go."
+        if updated
+        else "This unsubscribe link is no longer valid."
+    )
+    html = (
+        "<html><body style=\"font-family:Georgia,serif;background:#FAF7F4;color:#2B2424;"
+        "text-align:center;padding:80px 20px;\">"
+        "<div style=\"font-size:26px;letter-spacing:6px;color:#5B3B4A;font-weight:600;\">CAERORA</div>"
+        f"<p style=\"margin-top:24px;font-size:16px;\">{message}</p></body></html>"
+    )
+    return HttpResponse(html)
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def record_consent(request):

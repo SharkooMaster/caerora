@@ -6,9 +6,14 @@ from .models import Category, Product, ProductImage, ProductVariant
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = Category
-        fields = ("id", "name", "slug", "description", "position")
+        fields = ("id", "name", "slug", "description", "position", "image")
+
+    def get_image(self, obj):
+        return absolute_media_url(self.context.get("request"), obj.image)
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

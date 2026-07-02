@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     "emails",
     "accounts",
     "analytics",
+    "content",
+    "adminapi",
 ]
 
 MIDDLEWARE = [

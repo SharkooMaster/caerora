@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.db import models
 
@@ -8,9 +10,40 @@ class NewsletterSubscriber(TimeStampedModel):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
     source = models.CharField(max_length=120, blank=True, help_text="Where the signup happened.")
+    # Opaque token for one-click unsubscribe links in emails.
+    unsubscribe_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def __str__(self):
         return self.email
+
+
+class NewsletterCampaign(TimeStampedModel):
+    """A newsletter broadcast composed and sent from the admin dashboard."""
+
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        SENDING = "sending", "Sending"
+        SENT = "sent", "Sent"
+        FAILED = "failed", "Failed"
+
+    subject = models.CharField(max_length=200)
+    preheader = models.CharField(max_length=200, blank=True)
+    # Body authored in the admin (HTML). Wrapped in the branded email shell on send.
+    body_html = models.TextField(blank=True)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.DRAFT)
+    scheduled_at = models.DateTimeField(null=True, blank=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    recipients_count = models.PositiveIntegerField(default=0)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="newsletter_campaigns",
+    )
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"{self.subject} ({self.status})"
 
 
 class ConsentRecord(TimeStampedModel):

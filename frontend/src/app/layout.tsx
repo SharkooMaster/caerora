@@ -7,6 +7,8 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { CartFab } from "@/components/CartFab";
 import { CookieConsent } from "@/components/CookieConsent";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
+import { AppShell } from "@/components/AppShell";
+import { api } from "@/lib/api";
 import { IMAGES } from "@/lib/images";
 
 const serif = Cormorant_Garamond({
@@ -45,17 +47,29 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Caerora | Beauty. Elevated." },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const promoText = await api
+    .siteContent()
+    .then((c) => c.promo_bar_text || undefined)
+    .catch(() => undefined);
+
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
       <body className="font-sans">
-        <AnalyticsProvider />
-        <Header />
-        <main className="min-h-[70vh]">{children}</main>
-        <Footer />
-        <CartDrawer />
-        <CartFab />
-        <CookieConsent />
+        <AppShell
+          analytics={<AnalyticsProvider />}
+          header={<Header promoText={promoText} />}
+          footer={<Footer />}
+          overlays={
+            <>
+              <CartDrawer />
+              <CartFab />
+              <CookieConsent />
+            </>
+          }
+        >
+          {children}
+        </AppShell>
       </body>
     </html>
   );
