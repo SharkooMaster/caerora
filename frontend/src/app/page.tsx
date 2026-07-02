@@ -67,7 +67,11 @@ export default async function HomePage() {
     <>
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-hero-glow">
-        <div className="container-page grid items-center gap-10 py-14 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-20 lg:py-24">
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -right-16 top-8 h-72 w-72 rounded-full bg-rose/20 blur-3xl animate-float" />
+          <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-champagne/25 blur-3xl" />
+        </div>
+        <div className="container-page relative grid items-center gap-10 py-12 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-20 lg:py-24">
           <div className="animate-fadeUp">
             <p className="eyebrow-rose">New season beauty</p>
             <h1 className="display mt-5 text-[3.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
@@ -192,7 +196,7 @@ export default async function HomePage() {
                   <p className="font-serif text-2xl md:text-3xl">{c.name}</p>
                   <p className="text-[11px] uppercase tracking-widest text-ivory/80">{c.copy}</p>
                 </div>
-                <span className="mb-1 translate-x-2 text-sm uppercase tracking-widest opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                <span className="mb-1 text-sm uppercase tracking-widest transition-all duration-300 md:translate-x-2 md:opacity-0 md:group-hover:translate-x-0 md:group-hover:opacity-100">
                   Shop &rarr;
                 </span>
               </div>
