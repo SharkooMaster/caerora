@@ -19,9 +19,12 @@ async function getHomeProducts(): Promise<{
   try {
     const all = await api.products();
     const products = all.results;
+    // Always fill a row of 4: lead with featured, then top up with the rest so
+    // the grid never renders a lopsided/empty column.
     const featured = products.filter((p) => p.is_featured);
-    const bestsellers = (featured.length ? featured : products).slice(0, 4);
-    // Anything not already surfaced as a bestseller, otherwise fall back to the top.
+    const featuredSlugs = new Set(featured.map((p) => p.slug));
+    const filler = products.filter((p) => !featuredSlugs.has(p.slug));
+    const bestsellers = [...featured, ...filler].slice(0, 4);
     const bestslugs = new Set(bestsellers.map((p) => p.slug));
     const rest = products.filter((p) => !bestslugs.has(p.slug));
     const newIn = (rest.length ? rest : products).slice(0, 4);
