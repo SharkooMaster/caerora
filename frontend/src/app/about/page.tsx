@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 };
 
 const PILLARS = [
-  { icon: SparkleIcon, title: "Curated", body: "A tight, considered edit \u2014 we choose quality over clutter, so you never have to sift through thousands of products." },
-  { icon: HeartIcon, title: "Trusted", body: "Shop with confidence: secure checkout, tracked delivery and a no-fuss 30-day return policy on every order." },
-  { icon: LeafIcon, title: "Considered", body: "Thoughtfully chosen pieces and finishes, for a beauty routine that feels effortless." },
+  { icon: LeafIcon, title: "Clean", body: "High-performance formulas made with clean, cruelty-free and vegan ingredients \u2014 kind to your skin and to the planet." },
+  { icon: SparkleIcon, title: "Considered", body: "Thoughtful design and shades made to flatter real skin, for a beauty routine that feels effortless." },
+  { icon: HeartIcon, title: "Trusted", body: "Shop with confidence: secure checkout, fast tracked delivery and a no-fuss 30-day return policy on every order." },
 ];
 
 export default function AboutPage() {
@@ -24,13 +24,13 @@ export default function AboutPage() {
             <p className="eyebrow-rose">Our story</p>
             <h1 className="heading-serif mt-3 text-4xl md:text-6xl">Beauty, elevated.</h1>
             <p className="mt-6 text-sm leading-relaxed text-taupe">
-              Caerora began with a simple belief: that discovering beautiful, high-quality makeup
-              shouldn&rsquo;t feel overwhelming. So we do the hunting for you &mdash; hand-picking a
-              tight, considered edit of clean, modern beauty we genuinely love.
+              Caerora began with a simple belief: that beauty should feel elevated, effortless and
+              truly yours. We create clean, high-performance makeup and skincare that earns its place
+              in your everyday routine.
             </p>
             <p className="mt-4 text-sm leading-relaxed text-taupe">
-              Every piece earns its place in the edit: chosen for quality, everyday wearability and
-              finish. Fewer, better products &mdash; delivered with care and backed by easy returns.
+              From weightless colour to skin-loving essentials, every Caerora product is designed for
+              real life &mdash; beautiful to use, made to last and backed by easy 30-day returns.
             </p>
             <Link href="/shop" className="btn-primary btn-lg mt-8">Shop the collection</Link>
           </div>

@@ -21,7 +21,7 @@ export function Header() {
   return (
     <>
       <div className="bg-espresso py-2 text-center text-[11px] uppercase tracking-widest text-ivory/90">
-        Free shipping over &euro;45 &middot; Hand-picked beauty &middot; 30-day easy returns
+        Free shipping over &euro;45 &middot; New season beauty in now &middot; 30-day easy returns
       </div>
       <header className="sticky top-0 z-40 border-b border-taupe/10 bg-ivory/85 backdrop-blur">
         <div className="container-page flex items-center justify-between py-4">
