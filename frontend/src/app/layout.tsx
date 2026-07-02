@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
+import { CartFab } from "@/components/CartFab";
 import { CookieConsent } from "@/components/CookieConsent";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { IMAGES } from "@/lib/images";
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="min-h-[70vh]">{children}</main>
         <Footer />
         <CartDrawer />
+        <CartFab />
         <CookieConsent />
       </body>
     </html>

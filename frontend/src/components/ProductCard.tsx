@@ -37,10 +37,10 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
           </div>
         )}
 
-        {/* Hover scrim + shop prompt */}
-        <div className="absolute inset-0 bg-gradient-to-t from-espresso/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        {/* Scrim + shop prompt: always visible on touch, hover-reveal on desktop */}
+        <div className="absolute inset-0 bg-gradient-to-t from-espresso/40 via-transparent to-transparent transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100" />
         {product.in_stock && (
-          <div className="pointer-events-none absolute inset-x-4 bottom-4 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <div className="pointer-events-none absolute inset-x-3 bottom-3 transition-all duration-300 md:translate-y-3 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100">
             <span className="block rounded-full bg-ivory/95 py-2.5 text-center text-[11px] font-medium uppercase tracking-widest text-espresso shadow-card backdrop-blur">
               Shop now
             </span>
