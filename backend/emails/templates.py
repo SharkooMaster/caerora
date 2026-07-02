@@ -1,4 +1,5 @@
 """Minimal, brand-styled HTML email templates (inline styles for client support)."""
+from django.conf import settings
 
 BRAND = {
     "ivory": "#FAF7F4",
@@ -7,6 +8,21 @@ BRAND = {
     "taupe": "#8D7470",
     "plum": "#5B3B4A",
 }
+
+
+def _order_url(order) -> str:
+    site = getattr(settings, "SITE_URL", "").rstrip("/")
+    return f"{site}/order/{order.number}" if site else ""
+
+
+def _button(href: str, label: str) -> str:
+    return f"""
+      <div style="text-align:center;margin:28px 0 8px;">
+        <a href="{href}" style="display:inline-block;background:{BRAND['espresso']};color:{BRAND['ivory']};
+           text-decoration:none;padding:14px 34px;border-radius:999px;font-size:12px;
+           letter-spacing:2px;text-transform:uppercase;">{label}</a>
+      </div>
+    """
 
 
 def _wrapper(inner: str) -> str:
@@ -40,6 +56,8 @@ def _items_table(order):
 
 
 def order_confirmation_html(order) -> str:
+    order_url = _order_url(order)
+    button = _button(order_url, "View your order") if order_url else ""
     inner = f"""
       <p>Hi {order.first_name},</p>
       <p>Thank you for your order. We are preparing it with care and will let you know the moment it ships.</p>
@@ -56,18 +74,29 @@ def order_confirmation_html(order) -> str:
         {order.address_line1} {order.address_line2}<br>
         {order.postal_code} {order.city}, {order.country}
       </p>
+      {button}
+      <p style="text-align:center;font-size:12px;color:{BRAND['taupe']};">
+        You can check your order status and tracking any time on this page.
+      </p>
     """
     return _wrapper(inner)
 
 
 def order_shipped_html(order) -> str:
+    order_url = _order_url(order)
     tracking = ""
     if order.tracking_number:
-        tracking = f"<p>Tracking number: <strong>{order.tracking_number}</strong></p>"
+        tracking = f"""
+        <p style="text-align:center;margin:20px 0 4px;">
+          <span style="font-size:12px;letter-spacing:2px;color:{BRAND['taupe']};">TRACKING NUMBER</span><br>
+          <strong style="font-size:18px;letter-spacing:1px;">{order.tracking_number}</strong>
+        </p>"""
+    button = _button(order_url, "Track your order") if order_url else ""
     inner = f"""
       <p>Hi {order.first_name},</p>
       <p>Great news - your Caerora order <strong>{order.number}</strong> is on its way.</p>
       {tracking}
+      {button}
       <p>We hope you love it. Beauty, elevated.</p>
     """
     return _wrapper(inner)

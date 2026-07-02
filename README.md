@@ -57,7 +57,7 @@ All configuration is via environment variables — see [`.env.example`](.env.exa
 | Async | `REDIS_URL`, `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` |
 | Payments | `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` |
 | Email | `RESEND_API_KEY`, `EMAIL_FROM`, `ADMIN_NOTIFICATION_EMAIL` |
-| Ads (public) | `NEXT_PUBLIC_GA4_MEASUREMENT_ID`, `NEXT_PUBLIC_META_PIXEL_ID` |
+| Ads (public) | `NEXT_PUBLIC_GA4_MEASUREMENT_ID`, `NEXT_PUBLIC_META_PIXEL_ID`, `NEXT_PUBLIC_TIKTOK_PIXEL_ID`, `NEXT_PUBLIC_GOOGLE_ADS_ID`, `NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL` |
 | Ads (server) | `GA4_API_SECRET`, `META_CAPI_ACCESS_TOKEN`, `META_CAPI_PIXEL_ID` |
 | Frontend | `NEXT_PUBLIC_API_BASE_URL`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` |
 
@@ -72,11 +72,15 @@ For local testing: `stripe listen --forward-to localhost:8091/api/payments/webho
 
 ## Marketing & ad integration
 
-1. Set `NEXT_PUBLIC_GA4_MEASUREMENT_ID` and `NEXT_PUBLIC_META_PIXEL_ID` to enable client-side GA4 +
-   Meta Pixel (loaded only after the visitor consents).
-2. Set `GA4_API_SECRET` and `META_CAPI_*` to enable server-side purchase conversions from the Stripe
-   webhook (more reliable than browser-only tracking).
-3. UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, ...) are captured automatically and
+1. Set `NEXT_PUBLIC_GA4_MEASUREMENT_ID`, `NEXT_PUBLIC_META_PIXEL_ID` and `NEXT_PUBLIC_TIKTOK_PIXEL_ID`
+   to enable client-side GA4 + Meta Pixel + TikTok Pixel (loaded only after the visitor consents;
+   Google tags run with Consent Mode v2 signals).
+2. Set `NEXT_PUBLIC_GOOGLE_ADS_ID` (AW-…) and `NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL` to fire the
+   Google Ads purchase conversion on the thank-you page.
+3. Set `GA4_API_SECRET` and `META_CAPI_*` to enable server-side purchase conversions from the Stripe
+   webhook (more reliable than browser-only tracking). Client + server purchases are deduplicated by
+   the order number (GA4 `transaction_id`, Meta `event_id`).
+4. UTM parameters (`utm_source`, `utm_medium`, `utm_campaign`, ...) are captured automatically and
    attached to events and orders, so the admin dashboard can break down performance by campaign.
 
 ## Deployment (Kubernetes + CI/CD)

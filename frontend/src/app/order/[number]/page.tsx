@@ -6,6 +6,27 @@ import { api } from "@/lib/api";
 import type { Order } from "@/lib/types";
 import { formatMoney } from "@/lib/format";
 import { useCart } from "@/lib/cart";
+import { trackPurchase } from "@/lib/tracker";
+
+const STEPS = [
+  { key: "placed", label: "Order placed" },
+  { key: "processing", label: "Preparing" },
+  { key: "shipped", label: "Shipped" },
+  { key: "delivered", label: "Delivered" },
+] as const;
+
+function stepIndex(order: Order): number {
+  switch (order.fulfillment_status) {
+    case "delivered":
+      return 3;
+    case "shipped":
+      return 2;
+    case "processing":
+      return 1;
+    default:
+      return 0;
+  }
+}
 
 export default function OrderConfirmationPage() {
   const params = useParams<{ number: string }>();
@@ -23,6 +44,11 @@ export default function OrderConfirmationPage() {
         const o = await api.order(number);
         if (!active) return;
         setOrder(o);
+        if (o.payment_status === "paid") {
+          // Client-side conversion for the ad pixels; deduped against the
+          // server-side event by transaction/event id (the order number).
+          trackPurchase(o.number, parseFloat(o.total), o.currency);
+        }
         // Poll a few times while the Stripe webhook confirms payment.
         if (o.payment_status === "pending" && tries < 6) {
           tries += 1;
@@ -55,6 +81,8 @@ export default function OrderConfirmationPage() {
   }
 
   const paid = order.payment_status === "paid";
+  const cancelled = order.fulfillment_status === "cancelled";
+  const current = stepIndex(order);
 
   return (
     <div className="container-page max-w-2xl py-16">
@@ -72,7 +100,54 @@ export default function OrderConfirmationPage() {
         <p className="mt-4 text-sm uppercase tracking-wider text-espresso">Order {order.number}</p>
       </div>
 
-      <div className="card mt-10 p-6">
+      {/* Fulfilment timeline — this page doubles as the tracking page linked from emails */}
+      {!cancelled && (
+        <div className="card mt-10 p-6">
+          <div className="flex items-center">
+            {STEPS.map((s, i) => (
+              <div key={s.key} className={`flex items-center ${i > 0 ? "flex-1" : ""}`}>
+                {i > 0 && (
+                  <div className={`h-px flex-1 ${i <= current ? "bg-plum" : "bg-taupe/20"}`} />
+                )}
+                <div className="flex flex-col items-center px-1">
+                  <span
+                    className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] ${
+                      i < current
+                        ? "bg-plum text-ivory"
+                        : i === current
+                          ? "bg-espresso text-ivory"
+                          : "bg-taupe/15 text-taupe"
+                    }`}
+                  >
+                    {i < current ? "\u2713" : i + 1}
+                  </span>
+                  <span
+                    className={`mt-1.5 whitespace-nowrap text-[10px] uppercase tracking-wider ${
+                      i <= current ? "text-espresso" : "text-taupe"
+                    }`}
+                  >
+                    {s.label}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          {order.tracking_number && (
+            <div className="mt-6 rounded-xl bg-cream/70 p-4 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-taupe">Tracking number</p>
+              <p className="mt-1 select-all font-medium tracking-wide text-espresso">{order.tracking_number}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {cancelled && (
+        <div className="card mt-10 border-terracotta/30 p-6 text-center text-sm text-terracotta">
+          This order was cancelled. If you have questions, reply to your order email.
+        </div>
+      )}
+
+      <div className="card mt-6 p-6">
         <ul className="space-y-3">
           {order.items.map((it, i) => (
             <li key={i} className="flex justify-between text-sm">

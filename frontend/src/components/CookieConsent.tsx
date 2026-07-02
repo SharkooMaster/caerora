@@ -82,7 +82,7 @@ export function CookieConsent() {
               <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} />
             </label>
             <label className="flex items-center justify-between">
-              <span>Marketing <span className="text-taupe">(Meta &amp; Google ads)</span></span>
+              <span>Marketing <span className="text-taupe">(Meta, Google &amp; TikTok ads)</span></span>
               <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} />
             </label>
             <button onClick={savePrefs} className="btn-rose mt-2 px-5 py-2">Save preferences</button>

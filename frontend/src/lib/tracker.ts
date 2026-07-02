@@ -10,9 +10,17 @@ declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
     fbq?: (...args: unknown[]) => void;
+    ttq?: {
+      track: (event: string, props?: Record<string, unknown>, opts?: { event_id?: string }) => void;
+      page: () => void;
+      load: (id: string) => void;
+    };
     dataLayer?: unknown[];
   }
 }
+
+const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+const GOOGLE_ADS_PURCHASE_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
 
 function uuid(): string {
   if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
@@ -107,6 +115,12 @@ const META_MAP: Record<string, string> = {
   begin_checkout: "InitiateCheckout",
   purchase: "Purchase",
 };
+const TIKTOK_MAP: Record<string, string> = {
+  view_item: "ViewContent",
+  add_to_cart: "AddToCart",
+  begin_checkout: "InitiateCheckout",
+  purchase: "CompletePayment",
+};
 
 export function track(payload: TrackPayload) {
   if (typeof window === "undefined") return;
@@ -123,7 +137,7 @@ export function track(payload: TrackPayload) {
   };
   api.trackEvents(body).catch(() => {});
 
-  // Forward to GA4 / Meta only with analytics/marketing consent.
+  // Forward to ad platforms only with analytics/marketing consent.
   if (consent.analytics && window.gtag && GA_MAP[payload.event_type]) {
     window.gtag("event", GA_MAP[payload.event_type], {
       value: payload.value,
@@ -136,5 +150,58 @@ export function track(payload: TrackPayload) {
       value: payload.value,
       currency: payload.currency?.toUpperCase(),
     });
+  }
+  if (consent.marketing && window.ttq && TIKTOK_MAP[payload.event_type]) {
+    window.ttq.track(TIKTOK_MAP[payload.event_type], {
+      value: payload.value,
+      currency: payload.currency?.toUpperCase(),
+    });
+  }
+}
+
+const PURCHASED_KEY = "caerora-purchased-orders";
+
+/**
+ * Fire the purchase conversion on the thank-you page, exactly once per order.
+ * Uses the order number as transaction/event id so platforms dedup this
+ * against the server-side event (GA4 Measurement Protocol / Meta CAPI).
+ */
+export function trackPurchase(orderNumber: string, value: number, currency: string) {
+  if (typeof window === "undefined") return;
+  let seen: string[] = [];
+  try {
+    seen = JSON.parse(localStorage.getItem(PURCHASED_KEY) || "[]");
+  } catch (e) {
+    seen = [];
+  }
+  if (seen.includes(orderNumber)) return;
+  localStorage.setItem(PURCHASED_KEY, JSON.stringify([...seen.slice(-19), orderNumber]));
+
+  const consent = readConsent();
+  const cur = currency.toUpperCase();
+
+  // First-party purchase events are recorded server-side by the Stripe
+  // webhook, so here we only feed the ad pixels.
+  if (consent.analytics && window.gtag) {
+    window.gtag("event", "purchase", {
+      transaction_id: orderNumber,
+      value,
+      currency: cur,
+    });
+    // Google Ads conversion (needs the AW- tag + a conversion label).
+    if (GOOGLE_ADS_ID && GOOGLE_ADS_PURCHASE_LABEL) {
+      window.gtag("event", "conversion", {
+        send_to: `${GOOGLE_ADS_ID}/${GOOGLE_ADS_PURCHASE_LABEL}`,
+        transaction_id: orderNumber,
+        value,
+        currency: cur,
+      });
+    }
+  }
+  if (consent.marketing && window.fbq) {
+    window.fbq("track", "Purchase", { value, currency: cur }, { eventID: orderNumber });
+  }
+  if (consent.marketing && window.ttq) {
+    window.ttq.track("CompletePayment", { value, currency: cur }, { event_id: orderNumber });
   }
 }
