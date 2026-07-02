@@ -46,6 +46,7 @@ class Command(BaseCommand):
         path = Path(options["json_path"])
         if not path.exists():
             raise CommandError(f"{path} does not exist")
+        self.base_dir = path.parent
         items = json.loads(path.read_text())
         rate = Decimal(str(options["currency_rate"]))
 
@@ -125,6 +126,13 @@ class Command(BaseCommand):
         return 5000 + ProductVariant.objects.count()
 
     def _download(self, url: str) -> bytes | None:
+        # Local file path (relative to the JSON file) or remote URL.
+        if not url.startswith("http"):
+            local = self.base_dir / url
+            if local.exists():
+                return local.read_bytes()
+            self.stderr.write(f"    image file not found: {local}")
+            return None
         try:
             resp = requests.get(url, timeout=30, headers={"User-Agent": USER_AGENT})
             resp.raise_for_status()

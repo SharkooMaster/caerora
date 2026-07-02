@@ -212,6 +212,52 @@ def cmd_search(args: argparse.Namespace) -> None:
     print(f"Wrote {len(found)} raw candidates to {out} - now run the `screen` subcommand on it")
 
 
+IMG_RE = re.compile(r"https://ae0\d\.alicdn\.com/kf/[A-Za-z0-9]+/[^\"']+?\.(?:jpg|png|webp)")
+UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+
+
+def harvest_images(item_url: str, limit: int = 4) -> list[str]:
+    """Pull the supplier's own gallery photos straight off an AliExpress item page."""
+    import requests
+
+    resp = requests.get(item_url, timeout=25, headers={"User-Agent": UA})
+    resp.raise_for_status()
+    seen, urls = set(), []
+    for m in IMG_RE.finditer(resp.text):
+        url = m.group(0)
+        # Skip tiny UI sprites like .../208x824.png
+        if re.search(r"/\d+x\d+\.(png|jpg|webp)$", url):
+            continue
+        key = url.split("/kf/")[1].split("/")[0]
+        if key in seen:
+            continue
+        seen.add(key)
+        urls.append(url)
+        if len(urls) >= limit:
+            break
+    return urls
+
+
+def cmd_images(args: argparse.Namespace) -> None:
+    """Fill each product's `images` list with photos scraped from its supplier_url."""
+    path = Path(args.input)
+    items = json.loads(path.read_text())
+    for item in items:
+        url = item.get("supplier_url", "")
+        if "/item/" not in url:
+            print(f"  skip (no item URL): {item.get('name')}")
+            continue
+        try:
+            imgs = harvest_images(url, args.limit)
+        except Exception as exc:
+            print(f"  FAIL {item.get('name')}: {exc}")
+            continue
+        item["images"] = imgs
+        print(f"  {item.get('name')}: {len(imgs)} images")
+    path.write_text(json.dumps(items, indent=2))
+    print(f"Updated {path}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -225,6 +271,11 @@ def main() -> None:
     p_search.add_argument("terms", nargs="+")
     p_search.add_argument("-o", "--output", default="raw_candidates.json")
     p_search.set_defaults(func=cmd_search)
+
+    p_images = sub.add_parser("images", help="Harvest supplier gallery photos into the JSON")
+    p_images.add_argument("input", help="sourced_products.json (updated in place)")
+    p_images.add_argument("--limit", type=int, default=4, help="Max photos per product")
+    p_images.set_defaults(func=cmd_images)
 
     args = parser.parse_args()
     args.func(args)
