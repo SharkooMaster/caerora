@@ -41,6 +41,9 @@ export interface AdminOrderItem {
   unit_price: string;
   quantity: number;
   line_total: string;
+  supplier_url: string;
+  supplier_cost: string | null;
+  supplier_notes: string;
 }
 
 export interface AdminOrderDetail extends AdminOrderListItem {
@@ -57,6 +60,7 @@ export interface AdminOrderDetail extends AdminOrderListItem {
   shipping_total: string;
   tax_total: string;
   discount_total: string;
+  discount_code: string;
   shipping_method: string;
   paid_at: string | null;
   shipped_at: string | null;
@@ -122,6 +126,7 @@ export interface AdminProduct {
   position: number;
   supplier_url: string;
   supplier_notes: string;
+  supplier_cost: string | null;
   meta_title: string;
   meta_description: string;
   variants: AdminVariant[];
@@ -198,6 +203,19 @@ export interface AdminSubscriber {
   email: string;
   is_active: boolean;
   source: string;
+  created_at: string;
+}
+
+export interface AdminDiscount {
+  id: number;
+  code: string;
+  percent_off: number;
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+  max_uses: number | null;
+  used_count: number;
+  min_subtotal: string;
   created_at: string;
 }
 

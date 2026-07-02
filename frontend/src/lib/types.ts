@@ -154,6 +154,7 @@ export interface Order {
   shipping_total: string;
   tax_total: string;
   discount_total: string;
+  discount_code?: string;
   total: string;
   shipping_method: string;
   payment_status: string;

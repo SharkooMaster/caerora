@@ -1,3 +1,5 @@
+from decimal import Decimal, InvalidOperation
+
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -5,7 +7,7 @@ from rest_framework.response import Response
 
 from payments.services import create_payment_intent_for_order
 
-from .models import Order
+from .models import DiscountCode, Order
 from .serializers import CheckoutSerializer, OrderSerializer
 from .services import CheckoutError, create_order_from_payload
 
@@ -35,6 +37,34 @@ def checkout(request):
         },
         status=status.HTTP_201_CREATED,
     )
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def validate_discount(request):
+    """Check a promo code before checkout so the UI can show the saving instantly."""
+    code = (request.GET.get("code") or "").strip().upper()
+    if not code:
+        return Response({"valid": False, "detail": "Enter a code."}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        subtotal = Decimal(request.GET.get("subtotal") or "0")
+    except InvalidOperation:
+        subtotal = Decimal("0")
+
+    discount = DiscountCode.objects.filter(code=code).first()
+    if not discount:
+        return Response({"valid": False, "detail": "That discount code is not valid."})
+    ok, reason = discount.check_usable(subtotal)
+    if not ok:
+        return Response({"valid": False, "detail": reason})
+
+    amount = (subtotal * discount.percent_off / Decimal("100")).quantize(Decimal("0.01"))
+    return Response({
+        "valid": True,
+        "code": discount.code,
+        "percent_off": discount.percent_off,
+        "discount": str(amount),
+    })
 
 
 @api_view(["GET"])

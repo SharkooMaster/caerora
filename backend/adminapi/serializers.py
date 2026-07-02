@@ -6,7 +6,7 @@ from accounts.models import NewsletterCampaign, NewsletterSubscriber
 from catalog.models import Category, Product, ProductImage, ProductVariant
 from content.models import GalleryImage, SiteContent, Testimonial
 from core.utils import absolute_media_url
-from orders.models import Order, OrderItem
+from orders.models import DiscountCode, Order, OrderItem
 from reviews.models import Review
 
 User = get_user_model()
@@ -40,10 +40,31 @@ class StaffUserSerializer(serializers.ModelSerializer):
 
 class AdminOrderItemSerializer(serializers.ModelSerializer):
     line_total = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    supplier_url = serializers.SerializerMethodField()
+    supplier_cost = serializers.SerializerMethodField()
+    supplier_notes = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
-        fields = ("id", "product_name", "variant_name", "sku", "unit_price", "quantity", "line_total")
+        fields = (
+            "id", "product_name", "variant_name", "sku", "unit_price", "quantity", "line_total",
+            "supplier_url", "supplier_cost", "supplier_notes",
+        )
+
+    def _product(self, obj):
+        return obj.variant.product if obj.variant_id else None
+
+    def get_supplier_url(self, obj):
+        product = self._product(obj)
+        return product.supplier_url if product else ""
+
+    def get_supplier_cost(self, obj):
+        product = self._product(obj)
+        return str(product.supplier_cost) if product and product.supplier_cost is not None else None
+
+    def get_supplier_notes(self, obj):
+        product = self._product(obj)
+        return product.supplier_notes if product else ""
 
 
 class AdminOrderListSerializer(serializers.ModelSerializer):
@@ -73,7 +94,7 @@ class AdminOrderDetailSerializer(serializers.ModelSerializer):
             "first_name", "last_name", "address_line1", "address_line2",
             "city", "postal_code", "region", "country",
             "currency", "subtotal", "shipping_total", "tax_total", "discount_total", "total",
-            "shipping_method", "payment_status", "fulfillment_status",
+            "discount_code", "shipping_method", "payment_status", "fulfillment_status",
             "paid_at", "shipped_at", "tracking_number", "admin_notes",
             "stripe_payment_intent_id", "marketing_opt_in",
             "utm_source", "utm_medium", "utm_campaign",
@@ -172,7 +193,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
             "id", "category", "name", "slug", "tagline", "description",
             "brand_copy", "ingredients", "how_to_use",
             "is_active", "is_featured", "position",
-            "supplier_url", "supplier_notes",
+            "supplier_url", "supplier_notes", "supplier_cost",
             "meta_title", "meta_description",
             "variants", "images", "primary_image",
             "created_at", "updated_at",
@@ -280,3 +301,21 @@ class AdminCampaignSerializer(serializers.ModelSerializer):
             "scheduled_at", "sent_at", "recipients_count", "created_at",
         )
         read_only_fields = ("status", "sent_at", "recipients_count", "created_at")
+
+
+# ---------- Discounts ----------
+
+class AdminDiscountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiscountCode
+        fields = (
+            "id", "code", "percent_off", "is_active",
+            "starts_at", "ends_at", "max_uses", "used_count",
+            "min_subtotal", "created_at",
+        )
+        read_only_fields = ("used_count", "created_at")
+
+    def validate_percent_off(self, value):
+        if not 1 <= value <= 100:
+            raise serializers.ValidationError("Percent off must be between 1 and 100.")
+        return value

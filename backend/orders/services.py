@@ -5,7 +5,7 @@ from django.db import transaction
 from catalog.models import ProductVariant
 from shipping.models import ShippingRate, ShippingZone
 
-from .models import Order, OrderItem
+from .models import DiscountCode, Order, OrderItem
 
 
 class CheckoutError(Exception):
@@ -64,10 +64,23 @@ def create_order_from_payload(data: dict) -> Order:
 
     shipping_total = _money(shipping_rate.effective_price(subtotal))
 
-    # Tax (per-zone VAT on subtotal)
-    tax_total = _money(subtotal * (zone.tax_rate / Decimal("100")))
+    # Discount code (percentage off the merchandise subtotal)
+    discount_total = Decimal("0")
+    code_str = (data.get("discount_code") or "").strip().upper()
+    if code_str:
+        discount = DiscountCode.objects.filter(code=code_str).first()
+        if not discount:
+            raise CheckoutError("That discount code is not valid.")
+        ok, reason = discount.check_usable(subtotal)
+        if not ok:
+            raise CheckoutError(reason)
+        discount_total = _money(subtotal * discount.percent_off / Decimal("100"))
 
-    total = _money(subtotal + shipping_total + tax_total)
+    # Tax (per-zone VAT on the discounted subtotal)
+    taxable = max(Decimal("0"), subtotal - discount_total)
+    tax_total = _money(taxable * (zone.tax_rate / Decimal("100")))
+
+    total = _money(subtotal - discount_total + shipping_total + tax_total)
 
     order = Order.objects.create(
         user=data.get("user"),
@@ -85,6 +98,8 @@ def create_order_from_payload(data: dict) -> Order:
         subtotal=subtotal,
         shipping_total=shipping_total,
         tax_total=tax_total,
+        discount_total=discount_total,
+        discount_code=code_str if discount_total > 0 else "",
         total=total,
         shipping_method=shipping_rate.name,
         marketing_opt_in=bool(data.get("marketing_opt_in")),
@@ -128,5 +143,13 @@ def mark_order_paid(order: Order, payment_intent_id: str = ""):
             ProductVariant.objects.filter(pk=item.variant_id).update(
                 stock=max(0, item.variant.stock - item.quantity)
             )
+
+    # Count the promo redemption only once payment is confirmed.
+    if order.discount_code:
+        from django.db.models import F
+
+        DiscountCode.objects.filter(code=order.discount_code).update(
+            used_count=F("used_count") + 1
+        )
 
     return order

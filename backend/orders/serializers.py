@@ -22,6 +22,7 @@ class CheckoutSerializer(serializers.Serializer):
     shipping_rate_id = serializers.IntegerField(required=False, allow_null=True)
     items = CheckoutItemSerializer(many=True)
     marketing_opt_in = serializers.BooleanField(required=False, default=False)
+    discount_code = serializers.CharField(required=False, allow_blank=True, max_length=40)
     # Attribution
     anonymous_id = serializers.CharField(required=False, allow_blank=True, max_length=64)
     utm_source = serializers.CharField(required=False, allow_blank=True, max_length=120)
@@ -47,5 +48,5 @@ class OrderSerializer(serializers.ModelSerializer):
             "address_line1", "address_line2", "city", "postal_code", "region", "country",
             "currency", "subtotal", "shipping_total", "tax_total", "discount_total", "total",
             "shipping_method", "payment_status", "fulfillment_status", "tracking_number",
-            "created_at", "items",
+            "discount_code", "created_at", "items",
         )

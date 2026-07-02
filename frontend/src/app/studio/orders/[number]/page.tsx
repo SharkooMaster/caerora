@@ -77,7 +77,20 @@ export default function OrderDetailPage() {
               <tbody>
                 {order.items.map((it) => (
                   <tr key={it.id} className="border-b border-taupe/10 last:border-0">
-                    <td className="p-4">{it.product_name} <span className="text-taupe">/ {it.variant_name}</span></td>
+                    <td className="p-4">
+                      {it.product_name} <span className="text-taupe">/ {it.variant_name}</span>
+                      {it.supplier_url && (
+                        <a
+                          href={it.supplier_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-1 block text-xs font-medium text-rose underline underline-offset-2 hover:text-terracotta"
+                        >
+                          Buy from supplier ↗{it.supplier_cost ? ` (~${formatMoney(it.supplier_cost, order.currency)}/unit)` : ""}
+                        </a>
+                      )}
+                      {it.supplier_notes && <p className="mt-0.5 text-xs text-taupe">{it.supplier_notes}</p>}
+                    </td>
                     <td className="p-4 text-taupe">{it.sku}</td>
                     <td className="p-4">{it.quantity}</td>
                     <td className="p-4 text-right">{formatMoney(it.line_total, order.currency)}</td>
@@ -87,6 +100,12 @@ export default function OrderDetailPage() {
             </table>
             <div className="space-y-1 border-t border-taupe/15 p-4 text-sm">
               <Row label="Subtotal" value={formatMoney(order.subtotal, order.currency)} />
+              {parseFloat(order.discount_total) > 0 && (
+                <Row
+                  label={`Discount${order.discount_code ? ` (${order.discount_code})` : ""}`}
+                  value={`-${formatMoney(order.discount_total, order.currency)}`}
+                />
+              )}
               <Row label={`Shipping (${order.shipping_method})`} value={formatMoney(order.shipping_total, order.currency)} />
               <Row label="Tax" value={formatMoney(order.tax_total, order.currency)} />
               <Row label="Total" value={formatMoney(order.total, order.currency)} bold />

@@ -49,9 +49,15 @@ export default function CheckoutPage() {
   const [clientSecret, setClientSecret] = useState("");
   const [publishableKey, setPublishableKey] = useState("");
   const [orderNumber, setOrderNumber] = useState("");
-  const [orderTotals, setOrderTotals] = useState<{ shipping: number; tax: number; total: number } | null>(null);
+  const [orderTotals, setOrderTotals] = useState<{ shipping: number; tax: number; discount: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Promo code
+  const [promoInput, setPromoInput] = useState("");
+  const [promo, setPromo] = useState<{ code: string; percent: number; amount: number } | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [promoBusy, setPromoBusy] = useState(false);
 
   const subtotal = lines.reduce((s, l) => s + l.price * l.quantity, 0);
   const selectedRate = rates.find((r) => r.id === rateId);
@@ -80,6 +86,32 @@ export default function CheckoutPage() {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
+  async function applyPromo() {
+    const code = promoInput.trim().toUpperCase();
+    if (!code) return;
+    setPromoBusy(true);
+    setPromoError(null);
+    try {
+      const res = await api.validateDiscount(code, subtotal);
+      if (res.valid) {
+        setPromo({ code: res.code!, percent: res.percent_off!, amount: parseFloat(res.discount || "0") });
+      } else {
+        setPromo(null);
+        setPromoError(res.detail || "That code is not valid.");
+      }
+    } catch {
+      setPromoError("Could not check that code. Please try again.");
+    } finally {
+      setPromoBusy(false);
+    }
+  }
+
+  function removePromo() {
+    setPromo(null);
+    setPromoInput("");
+    setPromoError(null);
+  }
+
   async function submitDetails(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -91,6 +123,7 @@ export default function CheckoutPage() {
         shipping_rate_id: rateId,
         items: lines.map((l) => ({ variant_id: l.variantId, quantity: l.quantity })),
         anonymous_id: getAnonId(),
+        discount_code: promo?.code || "",
         ...utm,
       });
       setClientSecret(res.client_secret);
@@ -99,6 +132,7 @@ export default function CheckoutPage() {
       setOrderTotals({
         shipping: parseFloat(res.order.shipping_total),
         tax: parseFloat(res.order.tax_total),
+        discount: parseFloat(res.order.discount_total || "0"),
         total: parseFloat(res.order.total),
       });
       setCurrency(res.order.currency);
@@ -123,7 +157,8 @@ export default function CheckoutPage() {
   }
 
   const taxEstimate = orderTotals?.tax ?? 0;
-  const total = orderTotals?.total ?? subtotal + shippingCost;
+  const discountAmount = orderTotals?.discount ?? promo?.amount ?? 0;
+  const total = orderTotals?.total ?? subtotal - discountAmount + shippingCost;
 
   return (
     <div className="container-page py-12">
@@ -235,8 +270,47 @@ export default function CheckoutPage() {
               </li>
             ))}
           </ul>
+          {/* Promo code */}
+          <div className="mt-5 border-t border-taupe/15 pt-4">
+            {promo ? (
+              <div className="flex items-center justify-between rounded-lg bg-rose/10 px-3 py-2 text-sm">
+                <span className="text-espresso">
+                  Code <span className="font-medium">{promo.code}</span> applied (-{promo.percent}%)
+                </span>
+                <button type="button" onClick={removePromo} className="text-xs uppercase tracking-wider text-taupe hover:text-terracotta">
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  className="input flex-1"
+                  placeholder="Discount code"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); applyPromo(); } }}
+                />
+                <button
+                  type="button"
+                  onClick={applyPromo}
+                  disabled={promoBusy || !promoInput.trim()}
+                  className="btn-outline shrink-0 px-4 disabled:opacity-50"
+                >
+                  {promoBusy ? "..." : "Apply"}
+                </button>
+              </div>
+            )}
+            {promoError && <p className="mt-2 text-xs text-terracotta">{promoError}</p>}
+          </div>
+
           <div className="mt-5 space-y-2 border-t border-taupe/15 pt-4 text-sm">
             <div className="flex justify-between"><span className="text-taupe">Subtotal</span><span>{formatMoney(subtotal, currency)}</span></div>
+            {discountAmount > 0 && (
+              <div className="flex justify-between text-rose">
+                <span>Discount{promo ? ` (${promo.code})` : ""}</span>
+                <span>-{formatMoney(discountAmount, currency)}</span>
+              </div>
+            )}
             <div className="flex justify-between"><span className="text-taupe">Shipping</span><span>{shippingCost === 0 ? "Free" : formatMoney(shippingCost, currency)}</span></div>
             {taxEstimate > 0 && (
               <div className="flex justify-between"><span className="text-taupe">Tax</span><span>{formatMoney(taxEstimate, currency)}</span></div>

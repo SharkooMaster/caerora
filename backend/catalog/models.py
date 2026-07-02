@@ -49,6 +49,10 @@ class Product(TimeStampedModel):
     # can see where a product is bought/dropshipped from.
     supplier_url = models.URLField(max_length=500, blank=True)
     supplier_notes = models.TextField(blank=True)
+    supplier_cost = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text="Single-unit cost from the supplier (internal, for margin tracking).",
+    )
 
     # SEO
     meta_title = models.CharField(max_length=200, blank=True)

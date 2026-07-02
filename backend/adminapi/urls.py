@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     CampaignViewSet,
     CategoryViewSet,
+    DiscountViewSet,
     GalleryViewSet,
     OrderViewSet,
     ProductImageViewSet,
@@ -30,6 +31,7 @@ router.register("gallery", GalleryViewSet, basename="admin-gallery")
 router.register("testimonials", TestimonialViewSet, basename="admin-testimonials")
 router.register("subscribers", SubscriberViewSet, basename="admin-subscribers")
 router.register("campaigns", CampaignViewSet, basename="admin-campaigns")
+router.register("discounts", DiscountViewSet, basename="admin-discounts")
 
 urlpatterns = [
     path("auth/login/", StaffLoginView.as_view(), name="admin-login"),

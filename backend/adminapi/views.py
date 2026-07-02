@@ -19,7 +19,7 @@ from emails.tasks import (
     send_newsletter_test,
     send_order_shipped_email,
 )
-from orders.models import Order
+from orders.models import DiscountCode, Order
 from reviews.models import Review
 
 from .permissions import IsStaffUser
@@ -27,6 +27,7 @@ from .pagination import StaffPagination
 from .serializers import (
     AdminCampaignSerializer,
     AdminCategorySerializer,
+    AdminDiscountSerializer,
     AdminGalleryImageSerializer,
     AdminOrderDetailSerializer,
     AdminOrderListSerializer,
@@ -87,7 +88,7 @@ class OrderViewSet(
     ordering = ("-created_at",)
 
     def get_queryset(self):
-        return Order.objects.all().prefetch_related("items")
+        return Order.objects.all().prefetch_related("items__variant__product")
 
     def get_serializer_class(self):
         if self.action in ("update", "partial_update"):
@@ -308,6 +309,16 @@ class CampaignViewSet(StaffViewSet):
             return Response({"detail": "email is required."}, status=status.HTTP_400_BAD_REQUEST)
         send_newsletter_test.delay(campaign.id, email)
         return Response({"detail": f"Test sent to {email}."})
+
+
+# ---------- Discounts ----------
+
+class DiscountViewSet(StaffViewSet):
+    serializer_class = AdminDiscountSerializer
+    queryset = DiscountCode.objects.all()
+    filterset_fields = {"is_active": ["exact"]}
+    search_fields = ("code",)
+    ordering = ("-created_at",)
 
 
 # ---------- Dashboard ----------

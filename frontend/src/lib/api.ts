@@ -71,6 +71,11 @@ export const api = {
 
   order: (number: string) => request<Order>(`/orders/${number}/`),
 
+  validateDiscount: (code: string, subtotal: number) =>
+    request<{ valid: boolean; detail?: string; code?: string; percent_off?: number; discount?: string }>(
+      `/discount/validate/?code=${encodeURIComponent(code)}&subtotal=${subtotal.toFixed(2)}`,
+    ),
+
   newsletter: (email: string, source = "site") =>
     request<{ detail: string }>("/newsletter/", {
       method: "POST",

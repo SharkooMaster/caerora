@@ -45,6 +45,7 @@ export default function ProductEditorPage() {
         brand_copy: product.brand_copy, ingredients: product.ingredients, how_to_use: product.how_to_use,
         is_active: product.is_active, is_featured: product.is_featured, position: product.position,
         supplier_url: product.supplier_url, supplier_notes: product.supplier_notes,
+        supplier_cost: product.supplier_cost || null,
         meta_title: product.meta_title, meta_description: product.meta_description,
       };
       const updated = await adminApi.patch<AdminProduct>(`/products/${id}/`, payload);
@@ -120,6 +121,8 @@ export default function ProductEditorPage() {
             <p className="mb-4 text-xs text-taupe">Never shown on the storefront or public API. Where you buy/fulfil this product from.</p>
             <label className="label">Supplier link</label>
             <input className="input" placeholder="https://supplier.example.com/product/123" value={product.supplier_url} onChange={(e) => set("supplier_url", e.target.value)} />
+            <label className="label mt-4">Unit cost from supplier</label>
+            <input type="number" min={0} step="0.01" className="input" placeholder="e.g. 4.20" value={product.supplier_cost ?? ""} onChange={(e) => set("supplier_cost", e.target.value)} />
             <label className="label mt-4">Supplier notes</label>
             <textarea className="input min-h-[70px]" value={product.supplier_notes} onChange={(e) => set("supplier_notes", e.target.value)} />
             {product.supplier_url && (

@@ -160,6 +160,12 @@ export default function OrderConfirmationPage() {
         </ul>
         <div className="mt-5 space-y-2 border-t border-taupe/15 pt-4 text-sm">
           <div className="flex justify-between"><span className="text-taupe">Subtotal</span><span>{formatMoney(order.subtotal, order.currency)}</span></div>
+          {parseFloat(order.discount_total) > 0 && (
+            <div className="flex justify-between text-rose">
+              <span>Discount{order.discount_code ? ` (${order.discount_code})` : ""}</span>
+              <span>-{formatMoney(order.discount_total, order.currency)}</span>
+            </div>
+          )}
           <div className="flex justify-between"><span className="text-taupe">Shipping ({order.shipping_method})</span><span>{formatMoney(order.shipping_total, order.currency)}</span></div>
           {parseFloat(order.tax_total) > 0 && (
             <div className="flex justify-between"><span className="text-taupe">Tax</span><span>{formatMoney(order.tax_total, order.currency)}</span></div>

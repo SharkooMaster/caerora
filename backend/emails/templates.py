@@ -58,6 +58,14 @@ def _items_table(order):
 def order_confirmation_html(order) -> str:
     order_url = _order_url(order)
     button = _button(order_url, "View your order") if order_url else ""
+    discount_row = ""
+    if order.discount_total and order.discount_total > 0:
+        label = f"Discount ({order.discount_code})" if order.discount_code else "Discount"
+        discount_row = (
+            f'<tr><td style="color:{BRAND["rose"]};">{label}</td>'
+            f'<td style="text-align:right;color:{BRAND["rose"]};">'
+            f"-{order.currency.upper()} {order.discount_total:.2f}</td></tr>"
+        )
     inner = f"""
       <p>Hi {order.first_name},</p>
       <p>Thank you for your order. We are preparing it with care and will let you know the moment it ships.</p>
@@ -65,6 +73,7 @@ def order_confirmation_html(order) -> str:
       <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;">
         {_items_table(order)}
         <tr><td style="padding-top:14px;border-top:1px solid #eee;">Subtotal</td><td style="padding-top:14px;border-top:1px solid #eee;text-align:right;">{order.currency.upper()} {order.subtotal:.2f}</td></tr>
+        {discount_row}
         <tr><td>Shipping ({order.shipping_method})</td><td style="text-align:right;">{order.currency.upper()} {order.shipping_total:.2f}</td></tr>
         <tr><td>Tax</td><td style="text-align:right;">{order.currency.upper()} {order.tax_total:.2f}</td></tr>
         <tr><td style="font-weight:bold;padding-top:8px;">Total</td><td style="font-weight:bold;text-align:right;padding-top:8px;">{order.currency.upper()} {order.total:.2f}</td></tr>
