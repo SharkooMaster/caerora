@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { loadStripe, Stripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -8,11 +8,12 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 
-const pk = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-let stripePromise: Promise<Stripe | null> | null = null;
-function getStripe() {
-  if (!stripePromise && pk) stripePromise = loadStripe(pk);
-  return stripePromise;
+// Cache one Stripe promise per publishable key so we never re-init on re-render.
+const stripeCache: Record<string, Promise<Stripe | null>> = {};
+function getStripe(key?: string) {
+  if (!key) return null;
+  if (!stripeCache[key]) stripeCache[key] = loadStripe(key);
+  return stripeCache[key];
 }
 
 function PayForm({ orderNumber }: { orderNumber: string }) {
@@ -51,11 +52,16 @@ function PayForm({ orderNumber }: { orderNumber: string }) {
 export function CheckoutPayment({
   clientSecret,
   orderNumber,
+  publishableKey,
 }: {
   clientSecret: string;
   orderNumber: string;
+  publishableKey?: string;
 }) {
-  const promise = getStripe();
+  // Prefer the key the backend returns with the order; fall back to the
+  // build-time public env var when present.
+  const key = publishableKey || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  const promise = useMemo(() => getStripe(key), [key]);
   if (!clientSecret || !promise) {
     return (
       <div className="card p-5 text-sm text-taupe">

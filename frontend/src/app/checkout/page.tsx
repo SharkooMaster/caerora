@@ -47,6 +47,7 @@ export default function CheckoutPage() {
   const [rateId, setRateId] = useState<number | null>(null);
   const [step, setStep] = useState<"details" | "payment">("details");
   const [clientSecret, setClientSecret] = useState("");
+  const [publishableKey, setPublishableKey] = useState("");
   const [orderNumber, setOrderNumber] = useState("");
   const [orderTotals, setOrderTotals] = useState<{ shipping: number; tax: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -93,6 +94,7 @@ export default function CheckoutPage() {
         ...utm,
       });
       setClientSecret(res.client_secret);
+      setPublishableKey(res.publishable_key || "");
       setOrderNumber(res.order.number);
       setOrderTotals({
         shipping: parseFloat(res.order.shipping_total),
@@ -210,7 +212,7 @@ export default function CheckoutPage() {
                 &larr; Back to details
               </button>
               <h2 className="eyebrow mb-4">Payment</h2>
-              <CheckoutPayment clientSecret={clientSecret} orderNumber={orderNumber} />
+              <CheckoutPayment clientSecret={clientSecret} orderNumber={orderNumber} publishableKey={publishableKey} />
               {!clientSecret && (
                 <Link href={`/order/${orderNumber}`} className="btn-outline mt-4 w-full">
                   View order
