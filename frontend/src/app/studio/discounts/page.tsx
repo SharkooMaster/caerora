@@ -67,7 +67,7 @@ function NewDiscountForm({ onCreated }: { onCreated: () => void }) {
 
   return (
     <Card className="mb-6">
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <input className="input uppercase" placeholder="Code (e.g. SUMMER26)" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value })} />
         <div className="flex items-center gap-2">
           <input type="number" min={1} max={100} className="input" value={form.percent_off} onChange={(e) => setForm({ ...form, percent_off: Number(e.target.value) })} />
@@ -127,7 +127,7 @@ function DiscountRow({ discount, onChange }: { discount: AdminDiscount; onChange
           Used {d.used_count}{d.max_uses !== null ? ` / ${d.max_uses}` : ""} times
         </span>
       </div>
-      <div className="mt-3 grid gap-2 sm:grid-cols-4">
+      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-4">
         <div className="flex items-center gap-2">
           <input type="number" min={1} max={100} className="input" value={d.percent_off} onChange={(e) => setD({ ...d, percent_off: Number(e.target.value) })} />
           <span className="text-xs text-taupe">%</span>

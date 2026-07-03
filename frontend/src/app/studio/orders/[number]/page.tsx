@@ -65,7 +65,7 @@ export default function OrderDetailPage() {
         <span className="text-sm text-taupe">{new Date(order.created_at).toLocaleString()}</span>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card className="p-0">
             <table className="w-full text-sm">

@@ -61,7 +61,7 @@ export default function SiteContentPage() {
 
         <Card>
           <h3 className="mb-4 font-serif text-lg">Hero</h3>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div><label className="label">Eyebrow</label><input className="input" value={c.hero_eyebrow} onChange={(e) => set("hero_eyebrow", e.target.value)} /></div>
             <div><label className="label">CTA label</label><input className="input" value={c.hero_cta_label} onChange={(e) => set("hero_cta_label", e.target.value)} /></div>
             <div><label className="label">Title</label><input className="input" value={c.hero_title} onChange={(e) => set("hero_title", e.target.value)} /></div>

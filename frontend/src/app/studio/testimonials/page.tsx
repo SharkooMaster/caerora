@@ -67,7 +67,7 @@ function TestimonialRow({ item, onChange }: { item: AdminTestimonial; onChange: 
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.target.value = ""; }} />
         <div className="flex-1 space-y-2">
-          <div className="grid gap-2 sm:grid-cols-4">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
             <input className="input sm:col-span-2" value={t.author_name} onChange={(e) => setT({ ...t, author_name: e.target.value })} placeholder="Name" />
             <input className="input" value={t.handle} onChange={(e) => setT({ ...t, handle: e.target.value })} placeholder="@handle / location" />
             <select className="input" value={t.rating} onChange={(e) => setT({ ...t, rating: Number(e.target.value) })}>

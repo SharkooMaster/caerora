@@ -108,7 +108,7 @@ function CategoryRow({ category, onChange }: { category: AdminCategory; onChange
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.target.value = ""; }} />
         <div className="flex-1 space-y-2">
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             <input className="input" value={c.name} onChange={(e) => setC({ ...c, name: e.target.value })} />
             <input type="number" className="input" value={c.position} onChange={(e) => setC({ ...c, position: Number(e.target.value) })} placeholder="Position" />
             <label className="flex items-center gap-2 text-sm text-taupe"><input type="checkbox" checked={c.is_active} onChange={(e) => setC({ ...c, is_active: e.target.checked })} /> Active</label>

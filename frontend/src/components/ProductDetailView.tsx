@@ -95,7 +95,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   const price = variant ? parseFloat(variant.price) : 0;
 
   return (
-    <div className="grid gap-10 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
       {/* Gallery: swipe, click to enlarge, zoom */}
       <ProductGallery media={gallery} alt={product.name} jumpTo={jump} />
 
@@ -109,7 +109,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           )}
           {product.category && <p className="eyebrow">{product.category.name}</p>}
         </div>
-        <h1 className="heading-serif mt-2 text-4xl">{displayName(product.name, product.brand)}</h1>
+        <h1 className="heading-serif mt-2 text-3xl md:text-4xl">{displayName(product.name, product.brand)}</h1>
         <p className="mt-2 text-taupe">
           {product.tagline}
           {product.volume && (

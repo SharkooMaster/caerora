@@ -134,7 +134,7 @@ export default async function HomePage() {
           <div className="absolute -right-16 top-8 h-72 w-72 rounded-full bg-rose/20 blur-3xl animate-float" />
           <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-champagne/25 blur-3xl" />
         </div>
-        <div className="container-page relative grid items-center gap-10 py-12 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-20 lg:py-24">
+        <div className="container-page relative grid grid-cols-1 items-center gap-10 py-12 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-20 lg:py-24">
           <div className="animate-fadeUp">
             <p className="eyebrow-rose">{heroEyebrow}</p>
             <h1 className="display mt-5 text-[3.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
@@ -199,7 +199,7 @@ export default async function HomePage() {
 
       {/* ── Trust bar ────────────────────────────────────── */}
       <section className="border-b border-taupe/10 bg-cream">
-        <div className="container-page grid gap-6 py-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="container-page grid grid-cols-1 gap-6 py-8 sm:grid-cols-2 lg:grid-cols-4">
           {TRUST.map(({ icon: Icon, title, body }) => (
             <div key={title} className="flex items-center gap-3">
               <span className="icon-chip">
@@ -344,7 +344,7 @@ export default async function HomePage() {
           <p className="eyebrow-rose">The Caerora standard</p>
           <h2 className="display mt-2 text-4xl md:text-5xl">Why Caerora</h2>
         </Reveal>
-        <div className="grid gap-10 md:grid-cols-3 md:gap-12">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-12">
           {STANDARD.map((s, i) => (
             <Reveal key={s.title} delay={i * 120} className="border-t border-taupe/25 pt-6">
               <span className="font-serif text-5xl font-light text-champagne">0{i + 1}</span>
@@ -363,7 +363,7 @@ export default async function HomePage() {
               <p className="eyebrow-rose">Loved &amp; trusted</p>
               <h2 className="display mt-2 text-4xl md:text-5xl">What people are saying</h2>
             </Reveal>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {testimonials.slice(0, 6).map((t, i) => (
                 <Reveal key={t.id} delay={i * 100} className="rounded-2xl bg-ivory p-7 shadow-card">
                   <div className="text-rose" aria-label={`${t.rating} stars`}>
@@ -420,7 +420,7 @@ export default async function HomePage() {
 
       {/* ── Newsletter band ──────────────────────────────── */}
       <section className="border-t border-taupe/10 bg-plum">
-        <div className="container-page grid items-center gap-8 py-16 md:grid-cols-2 md:py-20">
+        <div className="container-page grid grid-cols-1 items-center gap-8 py-16 md:grid-cols-2 md:py-20">
           <Reveal className="text-ivory">
             <p className="text-[11px] uppercase tracking-widest text-champagne">Join the list</p>
             <h2 className="mt-3 font-serif text-4xl font-light leading-tight md:text-5xl">

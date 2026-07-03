@@ -54,7 +54,7 @@ export function ProductReviews({
               Thank you. Your review has been submitted and will appear once approved.
             </p>
           ) : (
-            <form onSubmit={submit} className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={submit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="md:col-span-2">
                 <span className="label">Your rating</span>
                 <div className="flex gap-1">
@@ -93,7 +93,7 @@ export function ProductReviews({
       )}
 
       {reviews.length ? (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {reviews.map((r) => (
             <div key={r.id} className="card p-5">
               <div className="flex items-center justify-between">

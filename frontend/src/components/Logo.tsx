@@ -14,9 +14,13 @@ export function Logo({
   return (
     <Link href="/" className={`group inline-flex flex-col items-center ${className}`} aria-label="Caerora home">
       <span className="mb-1 flex items-center gap-2">
-        <span className={`h-px w-4 ${rule} transition-all duration-300 group-hover:w-6`} />
-        <span className={`font-serif text-2xl font-medium tracking-[0.4em] ${color}`}>CAERORA</span>
-        <span className={`h-px w-4 ${rule} transition-all duration-300 group-hover:w-6`} />
+        <span className={`hidden h-px w-4 sm:block ${rule} transition-all duration-300 group-hover:w-6`} />
+        <span
+          className={`whitespace-nowrap font-serif text-xl font-medium tracking-[0.28em] sm:text-2xl sm:tracking-[0.4em] ${color}`}
+        >
+          CAERORA
+        </span>
+        <span className={`hidden h-px w-4 sm:block ${rule} transition-all duration-300 group-hover:w-6`} />
       </span>
       {withTagline && (
         <span className={`text-[9px] uppercase tracking-[0.45em] ${variant === "light" ? "text-ivory/70" : "text-taupe"}`}>

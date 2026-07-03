@@ -104,11 +104,11 @@ export default function ProductEditorPage() {
       />
       {msg && <p className="mb-4 text-sm text-taupe">{msg}</p>}
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card>
             <h3 className="mb-4 font-serif text-lg">Details</h3>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2"><label className="label">Name</label><input className="input" value={product.name} onChange={(e) => set("name", e.target.value)} /></div>
               <div className="sm:col-span-2"><label className="label">Brand</label><input className="input" value={product.brand || ""} onChange={(e) => set("brand", e.target.value)} placeholder="e.g. NYX Professional Makeup" /></div>
               <div className="sm:col-span-2"><label className="label">Tagline</label><input className="input" value={product.tagline} onChange={(e) => set("tagline", e.target.value)} /></div>

@@ -17,7 +17,7 @@ export default function CartPage() {
           <Link href="/shop" className="btn-primary mt-6">Discover products</Link>
         </div>
       ) : (
-        <div className="grid gap-10 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <ul className="divide-y divide-taupe/15">
               {lines.map((l) => (

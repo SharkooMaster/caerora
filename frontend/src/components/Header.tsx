@@ -89,7 +89,7 @@ export function Header({
       </div>
 
       <header className="sticky top-0 z-40 border-b border-taupe/10 bg-ivory/85 backdrop-blur">
-        <div className="container-page grid grid-cols-3 items-center py-4">
+        <div className="container-page grid grid-cols-[1fr_auto_1fr] items-center gap-2 py-4">
           {/* Left: hamburger (mobile) / nav (desktop) */}
           <div className="flex items-center gap-6">
             <button

@@ -163,7 +163,7 @@ export default function CheckoutPage() {
   return (
     <div className="container-page py-12">
       <h1 className="heading-serif mb-8 text-4xl">Checkout</h1>
-      <div className="grid gap-10 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-5">
         <div className="lg:col-span-3">
           {step === "details" ? (
             <form onSubmit={submitDetails} className="space-y-8">
@@ -189,7 +189,7 @@ export default function CheckoutPage() {
 
               <section>
                 <h2 className="eyebrow mb-4">Shipping address</h2>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <input className="input" placeholder="First name" required value={form.first_name} onChange={(e) => update("first_name", e.target.value)} />
                   <input className="input" placeholder="Last name" required value={form.last_name} onChange={(e) => update("last_name", e.target.value)} />
                   <input className="input sm:col-span-2" placeholder="Address" required value={form.address_line1} onChange={(e) => update("address_line1", e.target.value)} />

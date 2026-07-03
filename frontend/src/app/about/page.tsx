@@ -19,7 +19,7 @@ export default function AboutPage() {
   return (
     <div>
       <section className="bg-hero-glow">
-        <div className="container-page grid items-center gap-12 py-16 md:grid-cols-2 md:py-24">
+        <div className="container-page grid grid-cols-1 items-center gap-12 py-16 md:grid-cols-2 md:py-24">
           <div className="animate-fadeUp">
             <p className="eyebrow-rose">Our story</p>
             <h1 className="heading-serif mt-3 text-4xl md:text-6xl">Beauty, elevated.</h1>
@@ -46,7 +46,7 @@ export default function AboutPage() {
         </div>
       </section>
       <section className="border-t border-taupe/10 bg-cream">
-        <div className="container-page grid gap-8 py-16 sm:grid-cols-3">
+        <div className="container-page grid grid-cols-1 gap-8 py-16 sm:grid-cols-3">
           {PILLARS.map(({ icon: Icon, title, body }) => (
             <div key={title}>
               <span className="icon-chip mb-4">
