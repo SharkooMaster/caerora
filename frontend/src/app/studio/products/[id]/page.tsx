@@ -25,6 +25,13 @@ export default function ProductEditorPage() {
   }
   useEffect(load, [id]);
 
+  /** Re-fetch only images/variants so unsaved edits in other fields survive. */
+  function refreshRelated() {
+    adminApi.get<AdminProduct>(`/products/${id}/`).then((fresh) => {
+      setProduct((p) => (p ? { ...p, images: fresh.images, variants: fresh.variants } : fresh));
+    });
+  }
+
   function set<K extends keyof AdminProduct>(key: K, value: AdminProduct[K]) {
     setProduct((p) => (p ? { ...p, [key]: value } : p));
   }
@@ -60,16 +67,21 @@ export default function ProductEditorPage() {
   }
 
   async function uploadImage(file: File) {
-    const form = new FormData();
-    form.append("product", id);
-    form.append("image", file);
-    await adminApi.postForm<AdminProductImage>("/product-images/", form);
-    load();
+    setMsg("");
+    try {
+      const form = new FormData();
+      form.append("product", id);
+      form.append("image", file);
+      await adminApi.postForm<AdminProductImage>("/product-images/", form);
+      refreshRelated();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Image upload failed");
+    }
   }
 
   async function deleteImage(imgId: number) {
     await adminApi.del(`/product-images/${imgId}/`);
-    load();
+    refreshRelated();
   }
 
   if (!product) return <Spinner />;
@@ -123,7 +135,7 @@ export default function ProductEditorPage() {
             )}
           </Card>
 
-          <VariantsSection productId={id} variants={product.variants} onChange={load} />
+          <VariantsSection productId={id} variants={product.variants} onChange={refreshRelated} />
 
           <Card>
             <h3 className="mb-4 font-serif text-lg">Images</h3>

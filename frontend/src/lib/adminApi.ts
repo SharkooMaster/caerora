@@ -8,6 +8,10 @@ export function getStaffToken(): string | null {
   if (typeof window === "undefined") return null;
   return localStorage.getItem(TOKEN_KEY);
 }
+export function getStaffRefreshToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(REFRESH_KEY);
+}
 export function setStaffTokens(access: string, refresh?: string) {
   localStorage.setItem(TOKEN_KEY, access);
   if (refresh) localStorage.setItem(REFRESH_KEY, refresh);
@@ -32,7 +36,36 @@ function base() {
   return apiBase();
 }
 
-async function req<T>(method: string, path: string, body?: unknown, isForm = false): Promise<T> {
+// Deduplicate concurrent refresh attempts (e.g. several requests 401 at once).
+let refreshing: Promise<boolean> | null = null;
+
+async function tryRefresh(): Promise<boolean> {
+  if (!refreshing) {
+    refreshing = (async () => {
+      const refresh = getStaffRefreshToken();
+      if (!refresh) return false;
+      try {
+        const res = await fetch(`${base()}/admin/auth/refresh/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh }),
+        });
+        if (!res.ok) return false;
+        const data = (await res.json()) as { access?: string; refresh?: string };
+        if (!data.access) return false;
+        setStaffTokens(data.access, data.refresh);
+        return true;
+      } catch {
+        return false;
+      }
+    })().finally(() => {
+      refreshing = null;
+    });
+  }
+  return refreshing;
+}
+
+async function doFetch(method: string, path: string, body?: unknown, isForm = false): Promise<Response> {
   const token = getStaffToken();
   const headers: Record<string, string> = {};
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -45,7 +78,18 @@ async function req<T>(method: string, path: string, body?: unknown, isForm = fal
       payload = JSON.stringify(body);
     }
   }
-  const res = await fetch(`${base()}/admin${path}`, { method, headers, body: payload });
+  return fetch(`${base()}/admin${path}`, { method, headers, body: payload });
+}
+
+async function req<T>(method: string, path: string, body?: unknown, isForm = false): Promise<T> {
+  let res = await doFetch(method, path, body, isForm);
+  if (res.status === 401) {
+    // Access tokens expire after an hour; silently refresh and retry so
+    // staff never lose an in-progress edit to a login redirect.
+    if (await tryRefresh()) {
+      res = await doFetch(method, path, body, isForm);
+    }
+  }
   if (res.status === 401) {
     clearStaffTokens();
     if (typeof window !== "undefined" && !window.location.pathname.endsWith("/studio/login")) {
