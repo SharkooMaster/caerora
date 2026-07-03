@@ -19,6 +19,7 @@ export default function ProductEditorPage() {
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
 
   function load() {
     adminApi.get<AdminProduct>(`/products/${id}/`).then(setProduct);
@@ -67,16 +68,17 @@ export default function ProductEditorPage() {
     router.replace("/studio/products");
   }
 
-  async function uploadImage(file: File) {
-    setMsg("");
+  async function uploadMedia(file: File, kind: "image" | "video") {
+    setMsg(kind === "video" ? "Uploading video..." : "");
     try {
       const form = new FormData();
       form.append("product", id);
-      form.append("image", file);
+      form.append(kind, file);
       await adminApi.postForm<AdminProductImage>("/product-images/", form);
+      setMsg("");
       refreshRelated();
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Image upload failed");
+      setMsg(e instanceof Error ? e.message : "Upload failed");
     }
   }
 
@@ -140,16 +142,32 @@ export default function ProductEditorPage() {
           <VariantsSection productId={id} variants={product.variants} images={product.images} onChange={refreshRelated} />
 
           <Card>
-            <h3 className="mb-4 font-serif text-lg">Images</h3>
+            <h3 className="mb-1 font-serif text-lg">Images & videos</h3>
+            <p className="mb-4 text-xs text-taupe">Both show in the product gallery in this order. Keep videos short (MP4, under ~50 MB).</p>
             <div className="flex flex-wrap gap-3">
               {product.images.map((img) => (
                 <div key={img.id} className="relative h-28 w-24 overflow-hidden rounded-lg bg-cream ring-1 ring-taupe/10">
-                  {img.image_url && <img src={img.image_url} alt={img.alt_text} className="h-full w-full object-cover" />}
+                  {img.video_url ? (
+                    <>
+                      <video src={img.video_url} poster={img.image_url || undefined} muted playsInline preload="metadata" className="h-full w-full bg-espresso object-cover" />
+                      <span className="pointer-events-none absolute bottom-1 left-1 rounded bg-espresso/80 px-1 text-[10px] uppercase tracking-wide text-ivory">Video</span>
+                    </>
+                  ) : (
+                    img.image_url && <img src={img.image_url} alt={img.alt_text} className="h-full w-full object-cover" />
+                  )}
                   <button onClick={() => deleteImage(img.id)} className="absolute right-1 top-1 rounded-full bg-espresso/80 px-1.5 text-xs text-ivory">&times;</button>
                 </div>
               ))}
-              <button onClick={() => fileRef.current?.click()} className="flex h-28 w-24 items-center justify-center rounded-lg border border-dashed border-taupe/40 text-2xl text-taupe hover:bg-cream">+</button>
-              <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadImage(f); e.target.value = ""; }} />
+              <button onClick={() => fileRef.current?.click()} className="flex h-28 w-24 flex-col items-center justify-center rounded-lg border border-dashed border-taupe/40 text-taupe hover:bg-cream">
+                <span className="text-2xl">+</span>
+                <span className="text-[10px] uppercase tracking-wide">Photo</span>
+              </button>
+              <button onClick={() => videoRef.current?.click()} className="flex h-28 w-24 flex-col items-center justify-center rounded-lg border border-dashed border-taupe/40 text-taupe hover:bg-cream">
+                <span className="text-2xl">&#9658;</span>
+                <span className="text-[10px] uppercase tracking-wide">Video</span>
+              </button>
+              <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadMedia(f, "image"); e.target.value = ""; }} />
+              <input ref={videoRef} type="file" accept="video/mp4,video/webm,video/quicktime" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadMedia(f, "video"); e.target.value = ""; }} />
             </div>
           </Card>
         </div>
@@ -280,7 +298,7 @@ function VariantsSection({
                     <option value="">No specific photo</option>
                     {images.map((img, idx) => (
                       <option key={img.id} value={img.id}>
-                        Photo {idx + 1}{img.alt_text ? ` — ${img.alt_text}` : ""}
+                        {img.video_url ? "Video" : "Photo"} {idx + 1}{img.alt_text ? ` — ${img.alt_text}` : ""}
                       </option>
                     ))}
                   </select>

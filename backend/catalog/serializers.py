@@ -22,13 +22,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    video = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductImage
-        fields = ("id", "image", "alt_text", "position")
+        fields = ("id", "image", "video", "alt_text", "position")
 
     def get_image(self, obj):
         return absolute_media_url(self.context.get("request"), obj.image)
+
+    def get_video(self, obj):
+        return absolute_media_url(self.context.get("request"), obj.video)
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):

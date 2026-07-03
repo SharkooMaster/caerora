@@ -93,6 +93,7 @@ export interface AdminProductImage {
   id: number;
   product?: number;
   image_url: string | null;
+  video_url?: string | null;
   alt_text: string;
   position: number;
 }

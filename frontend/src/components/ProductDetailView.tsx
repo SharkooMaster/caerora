@@ -8,7 +8,7 @@ import { track } from "@/lib/tracker";
 import { demoProductImage, categoryImage } from "@/lib/images";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/config";
 import { TruckIcon, ReturnIcon, LockIcon } from "./icons";
-import { ProductGallery } from "./ProductGallery";
+import { ProductGallery, type GalleryMedia } from "./ProductGallery";
 import { displayName } from "./ProductCard";
 
 export function ProductDetailView({ product }: { product: ProductDetail }) {
@@ -19,22 +19,34 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   const enteredAt = useRef<number>(Date.now());
 
   // Known demo slugs use curated art (their DB images are placeholders); real
-  // SKUs use their supplier images; a category shot is the last-resort fallback.
+  // SKUs use their supplier media; a category shot is the last-resort fallback.
   const demo = demoProductImage(product.slug);
-  const apiImages = product.images.map((i) => i.image).filter((s): s is string => !!s);
-  const chosen = demo
-    ? [demo, categoryImage(product.category?.slug)]
-    : apiImages.length
-      ? apiImages
-      : [categoryImage(product.category?.slug)];
-  const gallery: string[] = Array.from(new Set(chosen.filter((s): s is string => !!s)));
+  const apiMedia: GalleryMedia[] = product.images
+    .map((m): GalleryMedia | null =>
+      m.video
+        ? { type: "video", src: m.video, poster: m.image }
+        : m.image
+          ? { type: "image", src: m.image }
+          : null,
+    )
+    .filter((m): m is GalleryMedia => !!m);
+  const fallback = (demo ? [demo, categoryImage(product.category?.slug)] : [categoryImage(product.category?.slug)])
+    .filter((s): s is string => !!s)
+    .map((src): GalleryMedia => ({ type: "image", src }));
+  const seen = new Set<string>();
+  const gallery: GalleryMedia[] = (demo || !apiMedia.length ? fallback : apiMedia).filter((m) => {
+    if (seen.has(m.src)) return false;
+    seen.add(m.src);
+    return true;
+  });
 
   // Variant -> gallery index, so selecting a shade shows its photo.
   const [jump, setJump] = useState<{ index: number } | null>(null);
   function galleryIndexFor(v: ProductVariant): number {
     if (!v.image) return -1;
-    const url = product.images.find((img) => img.id === v.image)?.image;
-    return url ? gallery.indexOf(url) : -1;
+    const row = product.images.find((img) => img.id === v.image);
+    const url = row?.video || row?.image;
+    return url ? gallery.findIndex((m) => m.src === url) : -1;
   }
   function selectVariant(v: ProductVariant) {
     setVariant(v);
@@ -66,7 +78,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
       productName: product.name,
       variantName: variant.name,
       price: parseFloat(variant.price),
-      image: gallery[0] || null,
+      image: gallery.find((m) => m.type === "image")?.src || gallery[0]?.poster || null,
     });
     track({
       event_type: "add_to_cart",
@@ -85,7 +97,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   return (
     <div className="grid gap-10 md:grid-cols-2">
       {/* Gallery: swipe, click to enlarge, zoom */}
-      <ProductGallery images={gallery} alt={product.name} jumpTo={jump} />
+      <ProductGallery media={gallery} alt={product.name} jumpTo={jump} />
 
       {/* Info */}
       <div>

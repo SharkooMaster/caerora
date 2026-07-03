@@ -135,14 +135,27 @@ class AdminVariantSerializer(serializers.ModelSerializer):
 
 class AdminProductImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
+    video_url = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductImage
-        fields = ("id", "product", "image", "image_url", "alt_text", "position")
-        extra_kwargs = {"image": {"write_only": True, "required": False}, "product": {"required": False}}
+        fields = ("id", "product", "image", "image_url", "video", "video_url", "alt_text", "position")
+        extra_kwargs = {
+            "image": {"write_only": True, "required": False},
+            "video": {"write_only": True, "required": False},
+            "product": {"required": False},
+        }
 
     def get_image_url(self, obj):
         return absolute_media_url(self.context.get("request"), obj.image)
+
+    def get_video_url(self, obj):
+        return absolute_media_url(self.context.get("request"), obj.video)
+
+    def validate(self, attrs):
+        if not self.instance and not attrs.get("image") and not attrs.get("video"):
+            raise serializers.ValidationError("Upload an image or a video.")
+        return attrs
 
 
 class AdminCategorySerializer(serializers.ModelSerializer):

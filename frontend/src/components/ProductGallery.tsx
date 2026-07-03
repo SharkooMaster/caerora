@@ -6,17 +6,36 @@ import { ChevronLeftIcon, ChevronRightIcon, CloseIcon, ZoomInIcon } from "./icon
 
 const SWIPE_THRESHOLD = 45;
 
+export interface GalleryMedia {
+  type: "image" | "video";
+  src: string;
+  /** Poster image for video slides. */
+  poster?: string | null;
+}
+
+function PlayBadge({ size = "h-12 w-12" }: { size?: string }) {
+  return (
+    <span
+      className={`pointer-events-none absolute left-1/2 top-1/2 flex ${size} -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-espresso/60 text-ivory backdrop-blur-sm`}
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 h-1/2 w-1/2">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </span>
+  );
+}
+
 /**
- * PDP gallery: swipe between images on touch, arrows on desktop, click the
+ * PDP gallery: swipe between images on touch, arrows on desktop, click an
  * image to open a full-screen lightbox with zoom (click/tap to magnify, move
- * to pan). No dependencies.
+ * to pan). Video slides play inline with native controls. No dependencies.
  */
 export function ProductGallery({
-  images,
+  media,
   alt,
   jumpTo,
 }: {
-  images: string[];
+  media: GalleryMedia[];
   alt: string;
   /** When set (e.g. on variant selection), the gallery scrolls to this index.
    * A fresh object identity re-triggers the jump even for the same index. */
@@ -28,7 +47,7 @@ export function ProductGallery({
   const [origin, setOrigin] = useState({ x: 50, y: 50 });
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
-  const count = images.length;
+  const count = media.length;
   const index = Math.min(active, Math.max(count - 1, 0));
 
   useEffect(() => {
@@ -118,30 +137,41 @@ export function ProductGallery({
     }
   }
 
-  const current = images[index];
+  const current = media[index];
+  const isVideo = current?.type === "video";
 
   return (
     <div>
-      {/* Main image: swipe on touch, arrows on hover, click to enlarge */}
+      {/* Main slide: swipe on touch, arrows on hover, click image to enlarge */}
       <div
         className={`group relative aspect-[4/5] w-full touch-pan-y select-none overflow-hidden rounded-2xl shadow-card ${
-          isUnsplash(current) ? "bg-cream" : "bg-white"
+          current && isUnsplash(current.src) ? "bg-cream" : "bg-white"
         }`}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {current ? (
+        {current && isVideo ? (
+          <video
+            key={current.src}
+            src={current.src}
+            poster={current.poster || undefined}
+            controls
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 h-full w-full bg-espresso object-contain"
+          />
+        ) : current ? (
           <button
             onClick={openLightbox}
             aria-label="Enlarge image"
             className="absolute inset-0 h-full w-full cursor-zoom-in"
           >
             <SmartImage
-              src={current}
+              src={current.src}
               alt={alt}
               fill
               priority
-              className={isUnsplash(current) ? "object-cover" : "object-contain p-6"}
+              className={isUnsplash(current.src) ? "object-cover" : "object-contain p-6"}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </button>
@@ -152,7 +182,7 @@ export function ProductGallery({
         )}
 
         {/* Zoom hint */}
-        {current && (
+        {current && !isVideo && (
           <span className="pointer-events-none absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ivory/90 p-2 text-espresso shadow-card backdrop-blur transition-opacity md:opacity-0 md:group-hover:opacity-100">
             <ZoomInIcon />
           </span>
@@ -181,7 +211,7 @@ export function ProductGallery({
         {/* Mobile position dots */}
         {count > 1 && (
           <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1.5 md:hidden">
-            {images.map((_, i) => (
+            {media.map((_, i) => (
               <span
                 key={i}
                 className={`h-1.5 rounded-full transition-all ${
@@ -196,22 +226,27 @@ export function ProductGallery({
       {/* Thumbnails */}
       {count > 1 && (
         <div className="mt-3 flex gap-3 overflow-x-auto pb-1">
-          {images.map((img, i) => (
+          {media.map((m, i) => (
             <button
-              key={img}
+              key={m.src}
               onClick={() => goTo(i)}
-              aria-label={`View image ${i + 1}`}
+              aria-label={m.type === "video" ? `Play video ${i + 1}` : `View image ${i + 1}`}
               className={`relative h-20 w-16 shrink-0 overflow-hidden rounded-md border bg-white ${
                 i === index ? "border-rose" : "border-taupe/20"
               }`}
             >
-              <SmartImage
-                src={img}
-                alt=""
-                fill
-                className={isUnsplash(img) ? "object-cover" : "object-contain p-1"}
-                sizes="64px"
-              />
+              {m.type === "video" && !m.poster ? (
+                <span className="absolute inset-0 bg-espresso/80" />
+              ) : (
+                <SmartImage
+                  src={m.type === "video" ? (m.poster as string) : m.src}
+                  alt=""
+                  fill
+                  className={isUnsplash(m.src) ? "object-cover" : "object-contain p-1"}
+                  sizes="64px"
+                />
+              )}
+              {m.type === "video" && <PlayBadge size="h-7 w-7" />}
             </button>
           ))}
         </div>
@@ -240,35 +275,49 @@ export function ProductGallery({
           </div>
 
           {/* Stage */}
-          <div
-            className={`relative mx-auto w-full max-w-4xl flex-1 overflow-hidden ${
-              zoomed ? "cursor-zoom-out" : "cursor-zoom-in"
-            }`}
-            onClick={toggleZoom}
-            onMouseMove={panMouse}
-            onTouchStart={onTouchStart}
-            onTouchMove={panTouch}
-            onTouchEnd={(e) => {
-              if (!zoomed) onTouchEnd(e);
-              else touchStart.current = null;
-            }}
-          >
-            <div
-              className="absolute inset-4 transition-transform duration-200 ease-out sm:inset-8"
-              style={{
-                transform: zoomed ? "scale(2.5)" : "scale(1)",
-                transformOrigin: `${origin.x}% ${origin.y}%`,
-              }}
-            >
-              <SmartImage
-                src={current}
-                alt={alt}
-                fill
-                className="object-contain"
-                sizes="100vw"
+          {isVideo ? (
+            <div className="relative mx-auto w-full max-w-4xl flex-1 overflow-hidden">
+              <video
+                key={current.src}
+                src={current.src}
+                poster={current.poster || undefined}
+                controls
+                playsInline
+                autoPlay
+                className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] object-contain sm:inset-8 sm:h-[calc(100%-4rem)] sm:w-[calc(100%-4rem)]"
               />
             </div>
-          </div>
+          ) : (
+            <div
+              className={`relative mx-auto w-full max-w-4xl flex-1 overflow-hidden ${
+                zoomed ? "cursor-zoom-out" : "cursor-zoom-in"
+              }`}
+              onClick={toggleZoom}
+              onMouseMove={panMouse}
+              onTouchStart={onTouchStart}
+              onTouchMove={panTouch}
+              onTouchEnd={(e) => {
+                if (!zoomed) onTouchEnd(e);
+                else touchStart.current = null;
+              }}
+            >
+              <div
+                className="absolute inset-4 transition-transform duration-200 ease-out sm:inset-8"
+                style={{
+                  transform: zoomed ? "scale(2.5)" : "scale(1)",
+                  transformOrigin: `${origin.x}% ${origin.y}%`,
+                }}
+              >
+                <SmartImage
+                  src={current.src}
+                  alt={alt}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Bottom bar: arrows + hint */}
           <div className="flex items-center justify-center gap-6 px-4 py-4 text-ivory">
@@ -282,7 +331,7 @@ export function ProductGallery({
               </button>
             )}
             <span className="text-[11px] uppercase tracking-widest text-ivory/60">
-              {zoomed ? "Move to pan \u00b7 tap to reset" : "Tap image to zoom"}
+              {isVideo ? "" : zoomed ? "Move to pan \u00b7 tap to reset" : "Tap image to zoom"}
             </span>
             {count > 1 && (
               <button

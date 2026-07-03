@@ -81,7 +81,8 @@ class Product(TimeStampedModel):
 
     @property
     def primary_image(self):
-        img = self.images.order_by("position", "id").first()
+        # First actual image (skip video-only rows) for cards/cart/emails.
+        img = self.images.exclude(image="").order_by("position", "id").first()
         return img.image.url if img and img.image else None
 
     @property
@@ -107,8 +108,11 @@ class Product(TimeStampedModel):
 
 
 class ProductImage(TimeStampedModel):
+    """A gallery media row: an image, or a video (with the image as optional poster)."""
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="products/")
+    image = models.ImageField(upload_to="products/", blank=True)
+    video = models.FileField(upload_to="products/videos/", blank=True)
     alt_text = models.CharField(max_length=200, blank=True)
     position = models.PositiveIntegerField(default=0)
 
@@ -116,7 +120,8 @@ class ProductImage(TimeStampedModel):
         ordering = ("position", "id")
 
     def __str__(self):
-        return f"Image for {self.product.name}"
+        kind = "Video" if self.video else "Image"
+        return f"{kind} for {self.product.name}"
 
 
 class ProductVariant(TimeStampedModel):

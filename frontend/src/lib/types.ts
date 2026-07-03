@@ -45,6 +45,8 @@ export interface GalleryImageT {
 export interface ProductImage {
   id: number;
   image: string | null;
+  /** Video URL; when set, this row is a video slide (image acts as poster). */
+  video?: string | null;
   alt_text: string;
   position: number;
 }
