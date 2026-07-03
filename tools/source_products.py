@@ -243,6 +243,9 @@ def cmd_images(args: argparse.Namespace) -> None:
     path = Path(args.input)
     items = json.loads(path.read_text())
     for item in items:
+        if item.get("images") and not args.force:
+            print(f"  skip (has images): {item.get('name')}")
+            continue
         url = item.get("supplier_url", "")
         if "/item/" not in url:
             print(f"  skip (no item URL): {item.get('name')}")
@@ -275,6 +278,7 @@ def main() -> None:
     p_images = sub.add_parser("images", help="Harvest supplier gallery photos into the JSON")
     p_images.add_argument("input", help="sourced_products.json (updated in place)")
     p_images.add_argument("--limit", type=int, default=4, help="Max photos per product")
+    p_images.add_argument("--force", action="store_true", help="Re-harvest even if images exist")
     p_images.set_defaults(func=cmd_images)
 
     args = parser.parse_args()

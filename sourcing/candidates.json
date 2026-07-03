@@ -5,7 +5,7 @@
     "tagline": "De-puff and tighten in two minutes, straight from your freezer",
     "description": "A silicone ice roller that turns plain water (or green tea, or aloe) into a spa-grade cryo facial. Glide it over cheeks, jawline and under-eyes in the morning to visibly reduce puffiness, calm redness and tighten the look of pores \u2014 before makeup or after a long day.",
     "how_to_use": "Fill with water, freeze overnight, and roll over clean skin in upward strokes for 1\u20132 minutes. Use every morning to de-puff, or after sun and workouts to cool and calm.",
-    "unit_cost_usd": 6.30,
+    "unit_cost_usd": 6.3,
     "retail_usd": 24.0,
     "compare_at_usd": 32.0,
     "rating": 4.9,
@@ -15,7 +15,12 @@
     "supplier_notes": "Shop1102942067 Store \u00b7 65.96 SEK \u00b7 4.9\u2605 \u00b7 4,000+ sold \u00b7 free ship >100kr",
     "featured": true,
     "sku_prefix": "IR",
-    "variants": [{ "name": "Rose", "stock": 60 }],
+    "variants": [
+      {
+        "name": "Rose",
+        "stock": 60
+      }
+    ],
     "why": "Instant visible de-puffing - clear morning-routine transformation."
   },
   {
@@ -34,7 +39,12 @@
     "supplier_notes": "Shop1103865490 Store \u00b7 71.85 SEK \u00b7 4.7\u2605 \u00b7 5,000+ sold",
     "featured": true,
     "sku_prefix": "GS",
-    "variants": [{ "name": "Xiuyan Jade", "stock": 60 }],
+    "variants": [
+      {
+        "name": "Xiuyan Jade",
+        "stock": 60
+      }
+    ],
     "why": "Face sculpting and lymphatic drainage - visible definition."
   },
   {
@@ -43,7 +53,7 @@
     "tagline": "The complete two-piece facial massage ritual",
     "description": "Our full jade ritual in one set: a dual-ended jade roller for daily massage and de-puffing, paired with a sculpting gua sha board for jawline and cheekbone definition. The perfect first step into facial massage \u2014 or the perfect gift.",
     "how_to_use": "Morning: roll from the centre of the face outward, large end for cheeks, small end under eyes. Evening: apply oil and sculpt with the gua sha board. Store in the fridge for a cooling ritual.",
-    "unit_cost_usd": 7.50,
+    "unit_cost_usd": 7.5,
     "retail_usd": 29.0,
     "compare_at_usd": 39.0,
     "rating": 4.7,
@@ -53,7 +63,12 @@
     "supplier_notes": "JUSTIN2026 Store \u00b7 78.56 SEK \u00b7 4.7\u2605 \u00b7 2,000+ sold",
     "featured": true,
     "sku_prefix": "JS",
-    "variants": [{ "name": "Jade Set", "stock": 50 }],
+    "variants": [
+      {
+        "name": "Jade Set",
+        "stock": 50
+      }
+    ],
     "why": "Complete ritual set - higher perceived value, giftable."
   },
   {
@@ -62,7 +77,7 @@
     "tagline": "Deep-clean your scalp, boost circulation, love your wash day",
     "description": "A soft-yet-firm silicone scalp brush that lifts away buildup, boosts circulation and turns every shampoo into a head massage. Healthier scalp, happier hair \u2014 and honestly, the most relaxing 60 seconds of your shower.",
     "how_to_use": "Work shampoo into wet hair, then massage the brush in slow circles across your whole scalp for about a minute. Use every wash; also great for distributing scalp treatments.",
-    "unit_cost_usd": 5.20,
+    "unit_cost_usd": 5.2,
     "retail_usd": 18.0,
     "compare_at_usd": 24.0,
     "rating": 4.7,
@@ -72,7 +87,12 @@
     "supplier_notes": "AE-SM Store \u00b7 54.19 SEK \u00b7 4.7\u2605 \u00b7 10,000+ sold \u00b7 free ship >100kr",
     "featured": false,
     "sku_prefix": "SM",
-    "variants": [{ "name": "Blush", "stock": 80 }],
+    "variants": [
+      {
+        "name": "Blush",
+        "stock": 80
+      }
+    ],
     "why": "Scalp health trend, 10k+ sold, cheap to ship."
   },
   {
@@ -91,7 +111,12 @@
     "supplier_notes": "Shop1103780370 Store \u00b7 65.43 SEK \u00b7 4.7\u2605 \u00b7 10,000+ sold",
     "featured": true,
     "sku_prefix": "HC",
-    "variants": [{ "name": "Champagne", "stock": 70 }],
+    "variants": [
+      {
+        "name": "Champagne",
+        "stock": 70
+      }
+    ],
     "why": "Heat-damage-free curls overnight - huge TikTok trend, clear transformation."
   },
   {
@@ -100,7 +125,7 @@
     "tagline": "Perfect light for touch-ups, anywhere",
     "description": "A pocket-sized compact mirror with a soft LED halo \u2014 flattering, daylight-true light for makeup touch-ups on the go.",
     "how_to_use": "Tap to switch on, touch-up, done. USB rechargeable.",
-    "unit_cost_usd": 10.60,
+    "unit_cost_usd": 10.6,
     "retail_usd": 29.0,
     "compare_at_usd": null,
     "rating": 4.6,
@@ -110,7 +135,12 @@
     "supplier_notes": "MIQMI VIP SECOND Store \u00b7 111.27 SEK \u00b7 4.6\u2605 \u00b7 4,000+ sold",
     "featured": false,
     "sku_prefix": "LM",
-    "variants": [{ "name": "Ivory", "stock": 40 }],
+    "variants": [
+      {
+        "name": "Ivory",
+        "stock": 40
+      }
+    ],
     "why": "On-the-go touch-ups; battery adds shipping risk and rating is 4.6."
   },
   {
@@ -119,7 +149,7 @@
     "tagline": "The 8-hour beauty treatment you sleep on",
     "description": "100% natural 19-momme mulberry silk pillowcase that reduces sleep creases, frizz and moisture loss overnight.",
     "how_to_use": "Swap in for your regular pillowcase. Machine wash cold on delicate.",
-    "unit_cost_usd": 23.50,
+    "unit_cost_usd": 23.5,
     "retail_usd": 40.0,
     "compare_at_usd": null,
     "rating": 4.8,
@@ -129,7 +159,12 @@
     "supplier_notes": "townssilk home textile store \u00b7 246.36 SEK \u00b7 4.8\u2605 \u00b7 10,000+ sold \u00b7 real 19-momme silk",
     "featured": false,
     "sku_prefix": "SP",
-    "variants": [{ "name": "Dusty Rose", "stock": 40 }],
+    "variants": [
+      {
+        "name": "Dusty Rose",
+        "stock": 40
+      }
+    ],
     "why": "Beauty-sleep angle, but real silk unit cost is high for our margin gate."
   },
   {
@@ -148,7 +183,252 @@
     "supplier_notes": "Bling Butterfly Store \u00b7 65.44 SEK \u00b7 4.7\u2605 \u00b7 4,000+ sold \u00b7 set incl. gua sha",
     "featured": false,
     "sku_prefix": "IG",
-    "variants": [{ "name": "Rose", "stock": 60 }],
+    "variants": [
+      {
+        "name": "Rose",
+        "stock": 60
+      }
+    ],
     "why": "Instant de-puffing ritual; pairs perfectly with ice roller for bundles."
+  },
+  {
+    "name": "Satin Sleep Scrunchies (Set of 6)",
+    "category": "Hair Accessories",
+    "tagline": "Zero-crease, zero-breakage hair ties in soft neutrals",
+    "description": "Six satin scrunchies in Caerora neutrals that hold your hair without creasing or snapping it. Gentle enough to sleep in, pretty enough to wear out.",
+    "how_to_use": "Wear day or night. Satin glides instead of gripping, so no creases and less breakage.",
+    "unit_cost_usd": 5.08,
+    "retail_usd": 15.0,
+    "compare_at_usd": 19.0,
+    "rating": 4.7,
+    "orders": 10000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005006859849161.html",
+    "supplier_notes": "NanliAccessory Store . 53.36 SEK . 4.7* . 10,000+ sold",
+    "featured": false,
+    "sku_prefix": "SC",
+    "variants": [
+      {
+        "name": "Neutral Set",
+        "stock": 80
+      }
+    ],
+    "why": "Slip sells satin scrunchies at EUR 54; we land at EUR 13.95."
+  },
+  {
+    "name": "Matte Bloom Claw Clip",
+    "category": "Hair Accessories",
+    "tagline": "The effortless updo, in soft matte neutrals",
+    "description": "A sculptural flower claw clip with a strong hold and a soft matte finish. One twist and your hair is done - no pins, no damage, no effort.",
+    "how_to_use": "Twist hair loosely, fold up, clip. Strong spring hold for thick and fine hair alike.",
+    "unit_cost_usd": 4.98,
+    "retail_usd": 15.0,
+    "compare_at_usd": null,
+    "rating": 4.7,
+    "orders": 4000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005007122066165.html",
+    "supplier_notes": "SYTZ Hair Accessories Store . 52.34 SEK . 4.7* . 4,000+ sold",
+    "featured": false,
+    "sku_prefix": "CC",
+    "variants": [
+      {
+        "name": "Matte Neutral",
+        "stock": 80
+      }
+    ],
+    "why": "Kitsch core category; premium look, tiny shipping weight."
+  },
+  {
+    "name": "Quick-Dry Hair Towel Wrap",
+    "category": "Hair Accessories",
+    "tagline": "Cut drying time in half, skip the heat damage",
+    "description": "An ultra-absorbent microfiber turban that wicks water out of your hair in minutes - less blow-drying, less frizz, less breakage. Twist, button, done.",
+    "how_to_use": "Flip hair forward, wrap into the towel, twist and secure on the button. Leave 10-20 minutes.",
+    "unit_cost_usd": 6.47,
+    "retail_usd": 19.0,
+    "compare_at_usd": 25.0,
+    "rating": 4.9,
+    "orders": 100000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005009460640027.html",
+    "supplier_notes": "Paien YHB Store . 67.97 SEK . 4.9* . 100,000+ sold",
+    "featured": false,
+    "sku_prefix": "HT",
+    "variants": [
+      {
+        "name": "Ivory",
+        "stock": 80
+      }
+    ],
+    "why": "100k+ orders, 4.9*, everyday-use product."
+  },
+  {
+    "name": "Reusable Cleansing Pads (Set of 12)",
+    "category": "Face Tools",
+    "tagline": "Softer on skin, kinder to the planet, cheaper every month",
+    "description": "Twelve washable bamboo-cotton rounds that remove makeup and cleanser with just water or your usual remover. One set replaces thousands of disposable pads.",
+    "how_to_use": "Use damp with cleanser or remover, then toss in the wash bag and machine wash.",
+    "unit_cost_usd": 7.62,
+    "retail_usd": 24.0,
+    "compare_at_usd": null,
+    "rating": 4.9,
+    "orders": 1000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005006966179896.html",
+    "supplier_notes": "Bling Butterfly Store . 80.05 SEK . 4.9* . 1,000+ sold",
+    "featured": false,
+    "sku_prefix": "RP",
+    "variants": [
+      {
+        "name": "Set of 12",
+        "stock": 60
+      }
+    ],
+    "why": "Sustainability angle + repeat visibility in daily routine."
+  },
+  {
+    "name": "Deep Clean Silicone Face Brush",
+    "category": "Face Tools",
+    "tagline": "A deeper cleanse than fingertips, gentler than bristles",
+    "description": "A double-sided silicone cleansing brush that lifts oil, sunscreen and makeup out of pores while giving your face a gentle massage. Hygienic, quick-drying, travel-proof.",
+    "how_to_use": "Lather cleanser, massage in circles for 60 seconds, rinse the brush and let it air-dry.",
+    "unit_cost_usd": 6.5,
+    "retail_usd": 19.0,
+    "compare_at_usd": 25.0,
+    "rating": 4.9,
+    "orders": 10000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005006861880172.html",
+    "supplier_notes": "SHJT Super Store . 68.23 SEK . 4.9* . 10,000+ sold",
+    "featured": false,
+    "sku_prefix": "FB",
+    "variants": [
+      {
+        "name": "Blush",
+        "stock": 70
+      }
+    ],
+    "why": "4.9* with 10k+ sold; visible clean-skin benefit."
+  },
+  {
+    "name": "Perfect Curl Lash Tool",
+    "category": "Makeup Tools",
+    "tagline": "Wide-awake eyes in one squeeze - lash-friendly silicone pads",
+    "description": "A precision eyelash curler with 15 replacement silicone pads, shaped to fit every eye without pinching. The fastest way to look awake - no mascara required.",
+    "how_to_use": "Position at the lash root, squeeze gently for 5 seconds, walk outward to the tips.",
+    "unit_cost_usd": 6.72,
+    "retail_usd": 22.0,
+    "compare_at_usd": null,
+    "rating": 4.9,
+    "orders": 10000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005008077444770.html",
+    "supplier_notes": "Irin Beauty Store . 70.60 SEK . 4.9* . 10,000+ sold . incl. 15 spare pads",
+    "featured": false,
+    "sku_prefix": "LC",
+    "variants": [
+      {
+        "name": "Rose Gold",
+        "stock": 70
+      }
+    ],
+    "why": "Classic makeup tool, 15 spare pads = perceived value."
+  },
+  {
+    "name": "Precision Brow Tweezers",
+    "category": "Makeup Tools",
+    "tagline": "Salon-sharp slant tip that grabs every hair, first try",
+    "description": "Stainless-steel slant tweezers with a hand-filed tip that grips even the finest hairs without slipping. Brows done properly, at home.",
+    "how_to_use": "Tweeze after a warm shower, pulling in the direction of growth.",
+    "unit_cost_usd": 6.18,
+    "retail_usd": 19.0,
+    "compare_at_usd": null,
+    "rating": 4.9,
+    "orders": 10000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005009960322387.html",
+    "supplier_notes": "OURINER High-Quality Store . 64.93 SEK . 4.9* . 10,000+ sold",
+    "featured": false,
+    "sku_prefix": "TW",
+    "variants": [
+      {
+        "name": "Steel",
+        "stock": 70
+      }
+    ],
+    "why": "Cheap to ship, 4.9*, evergreen tool."
+  },
+  {
+    "name": "Champagne Pro Brush Set (10 pieces)",
+    "category": "Makeup Tools",
+    "tagline": "Every brush you actually need, in champagne gold",
+    "description": "A complete 10-piece brush wardrobe - foundation, powder, blush, and full eye set - with dense synthetic bristles and weighted champagne-gold handles that feel far more expensive than they are.",
+    "how_to_use": "Use the large brushes for base and cheeks, the precision set for eyes. Wash monthly with gentle soap.",
+    "unit_cost_usd": 9.98,
+    "retail_usd": 32.0,
+    "compare_at_usd": 42.0,
+    "rating": 4.7,
+    "orders": 5000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005007533225240.html",
+    "supplier_notes": "Shop1104003330 Store . 104.83 SEK . 4.7* . 5,000+ sold",
+    "featured": true,
+    "sku_prefix": "BS",
+    "variants": [
+      {
+        "name": "Champagne Gold",
+        "stock": 50
+      }
+    ],
+    "why": "Real Techniques' bestselling category; strong giftable set."
+  },
+  {
+    "name": "Flawless Blend Sponge Set (12 pieces)",
+    "category": "Makeup Tools",
+    "tagline": "An airbrushed base, every single day",
+    "description": "Twelve soft-bounce makeup sponges that blend foundation and concealer into a streak-free, airbrushed finish. Enough to always have a clean one ready.",
+    "how_to_use": "Dampen, squeeze out excess water, and bounce - never drag - product into skin. Wash after use.",
+    "unit_cost_usd": 6.21,
+    "retail_usd": 19.0,
+    "compare_at_usd": null,
+    "rating": 4.9,
+    "orders": 50000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005007169890485.html",
+    "supplier_notes": "Shop Cherry Darling Store . 65.22 SEK . 4.9* . 50,000+ sold",
+    "featured": false,
+    "sku_prefix": "SP",
+    "variants": [
+      {
+        "name": "Set of 12",
+        "stock": 70
+      }
+    ],
+    "why": "Real Techniques' #1 product type; 50k+ supplier orders."
+  },
+  {
+    "name": "Jade Glow Facial Roller",
+    "category": "Face Tools",
+    "tagline": "The classic cooling massage for daily de-puffing",
+    "description": "A dual-ended natural jade roller - large stone for cheeks and jaw, small stone for under-eyes. Two cooling minutes a day to de-puff, ease tension, and help serums absorb.",
+    "how_to_use": "Roll outward from the centre of the face, morning or evening, over clean skin or serum. Keep in the fridge.",
+    "unit_cost_usd": 8.19,
+    "retail_usd": 26.0,
+    "compare_at_usd": 34.0,
+    "rating": 4.7,
+    "orders": 4000,
+    "ship_days_max": 14,
+    "supplier_url": "https://www.aliexpress.com/item/1005006281155054.html",
+    "supplier_notes": "86.04 SEK . 4.7* . 4,000+ sold . verify store name at order time",
+    "featured": false,
+    "sku_prefix": "JR",
+    "variants": [
+      {
+        "name": "Jade",
+        "stock": 60
+      }
+    ],
+    "why": "TSC built a brand on face rollers at $89; ours lands at EUR 23.95."
   }
 ]
