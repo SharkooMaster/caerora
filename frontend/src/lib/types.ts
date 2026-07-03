@@ -58,6 +58,8 @@ export interface ProductVariant {
   compare_at_price: string | null;
   stock: number;
   is_active: boolean;
+  /** Optional ProductImage id the gallery should jump to when selected. */
+  image: number | null;
 }
 
 export interface ReviewStats {

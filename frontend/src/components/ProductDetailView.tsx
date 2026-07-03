@@ -29,6 +29,19 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
       : [categoryImage(product.category?.slug)];
   const gallery: string[] = Array.from(new Set(chosen.filter((s): s is string => !!s)));
 
+  // Variant -> gallery index, so selecting a shade shows its photo.
+  const [jump, setJump] = useState<{ index: number } | null>(null);
+  function galleryIndexFor(v: ProductVariant): number {
+    if (!v.image) return -1;
+    const url = product.images.find((img) => img.id === v.image)?.image;
+    return url ? gallery.indexOf(url) : -1;
+  }
+  function selectVariant(v: ProductVariant) {
+    setVariant(v);
+    const i = galleryIndexFor(v);
+    if (i >= 0) setJump({ index: i });
+  }
+
   // view_item on mount + product_dwell on unmount (time-on-product).
   useEffect(() => {
     enteredAt.current = Date.now();
@@ -72,7 +85,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   return (
     <div className="grid gap-10 md:grid-cols-2">
       {/* Gallery: swipe, click to enlarge, zoom */}
-      <ProductGallery images={gallery} alt={product.name} />
+      <ProductGallery images={gallery} alt={product.name} jumpTo={jump} />
 
       {/* Info */}
       <div>
@@ -115,7 +128,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
                 <button
                   key={v.id}
                   disabled={out}
-                  onClick={() => setVariant(v)}
+                  onClick={() => selectVariant(v)}
                   className={`flex items-center gap-2 rounded-full border px-4 py-2 text-xs transition ${
                     selected ? "border-espresso bg-espresso text-ivory" : "border-taupe/30 text-espresso hover:border-espresso"
                   } ${out ? "cursor-not-allowed opacity-40" : ""}`}

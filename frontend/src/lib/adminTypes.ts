@@ -85,6 +85,8 @@ export interface AdminVariant {
   stock: number;
   position: number;
   is_active: boolean;
+  /** ProductImage id the PDP gallery jumps to when this variant is selected. */
+  image: number | null;
 }
 
 export interface AdminProductImage {

@@ -125,6 +125,10 @@ class ProductVariant(TimeStampedModel):
     sku = models.CharField(max_length=64, unique=True)
     # Optional swatch color for shades (hex).
     swatch_hex = models.CharField(max_length=7, blank=True)
+    # Optional gallery image for this variant: the PDP jumps to it on selection.
+    image = models.ForeignKey(
+        ProductImage, on_delete=models.SET_NULL, null=True, blank=True, related_name="variants",
+    )
     price = models.DecimalField(max_digits=10, decimal_places=2)
     compare_at_price = models.DecimalField(
         max_digits=10, decimal_places=2, null=True, blank=True,

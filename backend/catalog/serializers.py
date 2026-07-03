@@ -36,7 +36,7 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         model = ProductVariant
         fields = (
             "id", "name", "sku", "swatch_hex", "price", "compare_at_price",
-            "stock", "is_active",
+            "stock", "is_active", "image",
         )
 
 

@@ -120,9 +120,17 @@ class AdminVariantSerializer(serializers.ModelSerializer):
         model = ProductVariant
         fields = (
             "id", "product", "name", "sku", "swatch_hex", "price",
-            "compare_at_price", "stock", "position", "is_active",
+            "compare_at_price", "stock", "position", "is_active", "image",
         )
         extra_kwargs = {"product": {"required": False}}
+
+    def validate(self, attrs):
+        # A variant may only point at an image of its own product.
+        image = attrs.get("image")
+        product = attrs.get("product") or getattr(self.instance, "product", None)
+        if image and product and image.product_id != product.id:
+            raise serializers.ValidationError({"image": "Image belongs to a different product."})
+        return attrs
 
 
 class AdminProductImageSerializer(serializers.ModelSerializer):

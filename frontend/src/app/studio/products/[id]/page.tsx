@@ -135,7 +135,7 @@ export default function ProductEditorPage() {
             )}
           </Card>
 
-          <VariantsSection productId={id} variants={product.variants} onChange={refreshRelated} />
+          <VariantsSection productId={id} variants={product.variants} images={product.images} onChange={refreshRelated} />
 
           <Card>
             <h3 className="mb-4 font-serif text-lg">Images</h3>
@@ -171,7 +171,17 @@ export default function ProductEditorPage() {
   );
 }
 
-function VariantsSection({ productId, variants, onChange }: { productId: string; variants: AdminVariant[]; onChange: () => void }) {
+function VariantsSection({
+  productId,
+  variants,
+  images,
+  onChange,
+}: {
+  productId: string;
+  variants: AdminVariant[];
+  images: AdminProductImage[];
+  onChange: () => void;
+}) {
   const [rows, setRows] = useState<Partial<AdminVariant>[]>(variants);
   useEffect(() => setRows(variants), [variants]);
   const [busy, setBusy] = useState(false);
@@ -188,6 +198,7 @@ function VariantsSection({ productId, variants, onChange }: { productId: string;
         product: Number(productId), name: row.name, sku: row.sku, price: row.price,
         compare_at_price: row.compare_at_price || null, stock: row.stock ?? 0,
         swatch_hex: row.swatch_hex || "", is_active: row.is_active ?? true, position: row.position ?? 0,
+        image: row.image ?? null,
       };
       if (row.id) await adminApi.patch(`/variants/${row.id}/`, payload);
       else await adminApi.post("/variants/", payload);
@@ -211,18 +222,43 @@ function VariantsSection({ productId, variants, onChange }: { productId: string;
       </div>
       <div className="space-y-3">
         {rows.length === 0 && <p className="text-sm text-taupe">No variants yet. Add one so the product is purchasable.</p>}
-        {rows.map((v, i) => (
-          <div key={v.id ?? `new-${i}`} className="grid grid-cols-2 items-end gap-2 rounded-xl bg-cream/60 p-3 sm:grid-cols-6">
-            <div className="col-span-2"><label className="label">Name</label><input className="input" value={v.name || ""} onChange={(e) => update(i, "name", e.target.value)} /></div>
-            <div><label className="label">SKU</label><input className="input" value={v.sku || ""} onChange={(e) => update(i, "sku", e.target.value)} /></div>
-            <div><label className="label">Price</label><input className="input" value={v.price || ""} onChange={(e) => update(i, "price", e.target.value)} /></div>
-            <div><label className="label">Stock</label><input type="number" className="input" value={v.stock ?? 0} onChange={(e) => update(i, "stock", Number(e.target.value))} /></div>
-            <div className="flex items-center gap-2">
-              <button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => saveRow(i)}>Save</button>
-              <button className="text-xs text-terracotta" onClick={() => del(i)}>Del</button>
+        {rows.map((v, i) => {
+          const linked = images.find((img) => img.id === v.image);
+          return (
+            <div key={v.id ?? `new-${i}`} className="grid grid-cols-2 items-end gap-2 rounded-xl bg-cream/60 p-3 sm:grid-cols-6">
+              <div className="col-span-2"><label className="label">Name</label><input className="input" value={v.name || ""} onChange={(e) => update(i, "name", e.target.value)} /></div>
+              <div><label className="label">SKU</label><input className="input" value={v.sku || ""} onChange={(e) => update(i, "sku", e.target.value)} /></div>
+              <div><label className="label">Price</label><input className="input" value={v.price || ""} onChange={(e) => update(i, "price", e.target.value)} /></div>
+              <div><label className="label">Stock</label><input type="number" className="input" value={v.stock ?? 0} onChange={(e) => update(i, "stock", Number(e.target.value))} /></div>
+              <div className="flex items-center gap-2">
+                <button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => saveRow(i)}>Save</button>
+                <button className="text-xs text-terracotta" onClick={() => del(i)}>Del</button>
+              </div>
+              <div className="col-span-2 sm:col-span-6">
+                <label className="label">Gallery photo (shown when this variant is selected)</label>
+                <div className="flex items-center gap-2">
+                  {linked?.image_url && (
+                    <span className="relative h-9 w-8 shrink-0 overflow-hidden rounded border border-taupe/20 bg-white">
+                      <img src={linked.image_url} alt="" className="h-full w-full object-contain" />
+                    </span>
+                  )}
+                  <select
+                    className="input"
+                    value={v.image ?? ""}
+                    onChange={(e) => update(i, "image", e.target.value ? Number(e.target.value) : null)}
+                  >
+                    <option value="">No specific photo</option>
+                    {images.map((img, idx) => (
+                      <option key={img.id} value={img.id}>
+                        Photo {idx + 1}{img.alt_text ? ` — ${img.alt_text}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </Card>
   );

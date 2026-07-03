@@ -11,7 +11,17 @@ const SWIPE_THRESHOLD = 45;
  * image to open a full-screen lightbox with zoom (click/tap to magnify, move
  * to pan). No dependencies.
  */
-export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
+export function ProductGallery({
+  images,
+  alt,
+  jumpTo,
+}: {
+  images: string[];
+  alt: string;
+  /** When set (e.g. on variant selection), the gallery scrolls to this index.
+   * A fresh object identity re-triggers the jump even for the same index. */
+  jumpTo?: { index: number } | null;
+}) {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const [zoomed, setZoomed] = useState(false);
@@ -20,6 +30,13 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
 
   const count = images.length;
   const index = Math.min(active, Math.max(count - 1, 0));
+
+  useEffect(() => {
+    if (jumpTo && jumpTo.index >= 0 && jumpTo.index < count) {
+      setActive(jumpTo.index);
+      setZoomed(false);
+    }
+  }, [jumpTo, count]);
 
   const goTo = useCallback(
     (i: number) => {
