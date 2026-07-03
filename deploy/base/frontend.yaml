@@ -34,6 +34,12 @@ spec:
               value: "0.0.0.0"
             - name: PORT
               value: "3000"
+            - name: REVALIDATE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: caerora-secrets
+                  key: REVALIDATE_SECRET
+                  optional: true
           envFrom:
             - configMapRef:
                 name: caerora-config

@@ -22,6 +22,8 @@ from emails.tasks import (
 from orders.models import DiscountCode, Order
 from reviews.models import Review
 
+from core.revalidate import trigger_storefront_revalidate
+
 from .permissions import IsStaffUser
 from .pagination import StaffPagination
 from .serializers import (
@@ -145,7 +147,24 @@ class OrderViewSet(
 
 # ---------- Catalog ----------
 
-class ProductViewSet(StaffViewSet):
+class RevalidateMixin:
+    """Purge the storefront page cache after any write, so Studio edits
+    appear on the live site immediately instead of after the ISR window."""
+
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        trigger_storefront_revalidate()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        trigger_storefront_revalidate()
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        trigger_storefront_revalidate()
+
+
+class ProductViewSet(RevalidateMixin, StaffViewSet):
     search_fields = ("name", "tagline", "description")
     filterset_fields = {"category__slug": ["exact"], "is_active": ["exact"], "is_featured": ["exact"]}
     ordering_fields = ("position", "created_at", "name")
@@ -160,7 +179,7 @@ class ProductViewSet(StaffViewSet):
         return AdminProductSerializer
 
 
-class VariantViewSet(StaffViewSet):
+class VariantViewSet(RevalidateMixin, StaffViewSet):
     serializer_class = AdminVariantSerializer
 
     def get_queryset(self):
@@ -171,7 +190,7 @@ class VariantViewSet(StaffViewSet):
         return qs
 
 
-class ProductImageViewSet(StaffViewSet):
+class ProductImageViewSet(RevalidateMixin, StaffViewSet):
     serializer_class = AdminProductImageSerializer
 
     def get_queryset(self):
@@ -182,7 +201,7 @@ class ProductImageViewSet(StaffViewSet):
         return qs
 
 
-class CategoryViewSet(StaffViewSet):
+class CategoryViewSet(RevalidateMixin, StaffViewSet):
     serializer_class = AdminCategorySerializer
     queryset = Category.objects.all()
     ordering = ("position", "name")
@@ -211,6 +230,7 @@ class ReviewViewSet(
         review = self.get_object()
         review.status = new_status
         review.save(update_fields=["status", "updated_at"])
+        trigger_storefront_revalidate()
         return Response(AdminReviewSerializer(review).data)
 
     @action(detail=True, methods=["post"])
@@ -245,15 +265,16 @@ class SiteContentView(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        trigger_storefront_revalidate()
         return Response(serializer.data)
 
 
-class GalleryViewSet(StaffViewSet):
+class GalleryViewSet(RevalidateMixin, StaffViewSet):
     serializer_class = AdminGalleryImageSerializer
     queryset = GalleryImage.objects.all()
 
 
-class TestimonialViewSet(StaffViewSet):
+class TestimonialViewSet(RevalidateMixin, StaffViewSet):
     serializer_class = AdminTestimonialSerializer
     queryset = Testimonial.objects.all()
 
