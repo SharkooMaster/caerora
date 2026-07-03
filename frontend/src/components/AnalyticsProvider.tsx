@@ -6,11 +6,9 @@ import { readConsent } from "@/lib/consent";
 import { captureUtm, track } from "@/lib/tracker";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID;
-const ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 const TIKTOK_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID;
 
-let googleLoaded = false;
 let pixelLoaded = false;
 let tiktokLoaded = false;
 
@@ -36,27 +34,9 @@ function updateGoogleConsent() {
   });
 }
 
-function loadGoogle() {
-  // One gtag.js loads both GA4 and the Google Ads (AW-) tag.
-  const primary = GA_ID || ADS_ID;
-  if (googleLoaded || !primary) return;
-  googleLoaded = true;
-  ensureGtagStub();
-  window.gtag!("consent", "default", {
-    analytics_storage: "denied",
-    ad_storage: "denied",
-    ad_user_data: "denied",
-    ad_personalization: "denied",
-  });
-  updateGoogleConsent();
-  const s = document.createElement("script");
-  s.async = true;
-  s.src = `https://www.googletagmanager.com/gtag/js?id=${primary}`;
-  document.head.appendChild(s);
-  window.gtag!("js", new Date());
-  if (GA_ID) window.gtag!("config", GA_ID, { send_page_view: false });
-  if (ADS_ID) window.gtag!("config", ADS_ID);
-}
+// The Google tag itself (gtag.js + config with consent defaulted to denied)
+// is rendered in the <head> by the root layout, so scanners see it and
+// cookieless pings flow immediately. Here we only update consent signals.
 
 function loadPixel() {
   if (pixelLoaded || !PIXEL_ID) return;
@@ -129,8 +109,7 @@ function loadTikTok() {
 
 function applyConsent() {
   const c = readConsent();
-  if (c.analytics || c.marketing) loadGoogle();
-  if (googleLoaded) updateGoogleConsent();
+  updateGoogleConsent();
   if (c.marketing) {
     loadPixel();
     loadTikTok();

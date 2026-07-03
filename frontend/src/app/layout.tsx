@@ -27,6 +27,22 @@ const sans = Inter({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost";
 
+// Google tag (GA4 + Google Ads) rendered into the initial HTML so Google's
+// scanners detect it and consent-denied pings flow from the first paint
+// (advanced Consent Mode v2). Consent defaults to denied; CookieConsent +
+// AnalyticsProvider update it when the visitor chooses.
+const GA_ID = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID;
+const ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+const GTAG_PRIMARY = GA_ID || ADS_ID;
+const GTAG_INIT = `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('consent', 'default', {analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});
+gtag('js', new Date());
+${GA_ID ? `gtag('config', '${GA_ID}', {send_page_view: false});` : ""}
+${ADS_ID ? `gtag('config', '${ADS_ID}');` : ""}
+`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -69,6 +85,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
+      <head>
+        {GTAG_PRIMARY ? (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GTAG_PRIMARY}`} />
+            <script dangerouslySetInnerHTML={{ __html: GTAG_INIT }} />
+          </>
+        ) : null}
+      </head>
       <body className="font-sans">
         <AppShell
           analytics={<AnalyticsProvider />}
