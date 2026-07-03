@@ -33,7 +33,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost";
 // AnalyticsProvider update it when the visitor chooses.
 const GA_ID = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID;
 const ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
-const GTAG_PRIMARY = GA_ID || ADS_ID;
+// Load gtag.js via the AW- id: the GA4 stream is combined into the Google Ads
+// tag (one GT- container serving both destinations), and Google 404s the
+// standalone G- script URL for combined tags.
+const GTAG_PRIMARY = ADS_ID || GA_ID;
 const GTAG_INIT = `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
