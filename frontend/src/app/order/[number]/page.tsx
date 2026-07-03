@@ -47,7 +47,17 @@ export default function OrderConfirmationPage() {
         if (o.payment_status === "paid") {
           // Client-side conversion for the ad pixels; deduped against the
           // server-side event by transaction/event id (the order number).
-          trackPurchase(o.number, parseFloat(o.total), o.currency);
+          trackPurchase(
+            o.number,
+            parseFloat(o.total),
+            o.currency,
+            o.items.map((i) => ({
+              sku: i.sku,
+              name: i.product_name,
+              quantity: i.quantity,
+              price: parseFloat(i.unit_price),
+            })),
+          );
         }
         // Poll a few times while the Stripe webhook confirms payment.
         if (o.payment_status === "pending" && tries < 6) {

@@ -151,16 +151,32 @@ export function track(payload: TrackPayload) {
     });
   }
   if (consent.marketing && window.fbq && META_MAP[payload.event_type]) {
+    const fbContentId = payload.product_slug || (payload.variant_id ? String(payload.variant_id) : undefined);
     window.fbq("track", META_MAP[payload.event_type], {
       value: payload.value,
       currency: payload.currency?.toUpperCase(),
+      ...(fbContentId ? { content_ids: [fbContentId], content_type: "product" } : {}),
       ...(searchTerm ? { search_string: searchTerm } : {}),
     });
   }
   if (consent.marketing && window.ttq && TIKTOK_MAP[payload.event_type]) {
+    // content_id/content_type let TikTok attribute events to products, which
+    // raises the EMQ score and improves conversion optimization.
+    const contentId = payload.product_slug || (payload.variant_id ? String(payload.variant_id) : undefined);
     window.ttq.track(TIKTOK_MAP[payload.event_type], {
       value: payload.value,
       currency: payload.currency?.toUpperCase(),
+      ...(contentId
+        ? {
+            contents: [
+              {
+                content_id: contentId,
+                content_type: "product",
+                ...(payload.meta?.name ? { content_name: payload.meta.name as string } : {}),
+              },
+            ],
+          }
+        : {}),
       ...(searchTerm ? { query: searchTerm } : {}),
     });
   }
@@ -173,7 +189,19 @@ const PURCHASED_KEY = "caerora-purchased-orders";
  * Uses the order number as transaction/event id so platforms dedup this
  * against the server-side event (GA4 Measurement Protocol / Meta CAPI).
  */
-export function trackPurchase(orderNumber: string, value: number, currency: string) {
+export interface PurchaseItem {
+  sku: string;
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+export function trackPurchase(
+  orderNumber: string,
+  value: number,
+  currency: string,
+  items: PurchaseItem[] = [],
+) {
   if (typeof window === "undefined") return;
   let seen: string[] = [];
   try {
@@ -189,11 +217,26 @@ export function trackPurchase(orderNumber: string, value: number, currency: stri
 
   // First-party purchase events are recorded server-side by the Stripe
   // webhook, so here we only feed the ad pixels.
+  const gaItems = items.map((i) => ({
+    item_id: i.sku,
+    item_name: i.name,
+    quantity: i.quantity,
+    price: i.price,
+  }));
+  const contents = items.map((i) => ({
+    content_id: i.sku,
+    content_type: "product",
+    content_name: i.name,
+    quantity: i.quantity,
+    price: i.price,
+  }));
+
   if (consent.analytics && window.gtag) {
     window.gtag("event", "purchase", {
       transaction_id: orderNumber,
       value,
       currency: cur,
+      ...(gaItems.length ? { items: gaItems } : {}),
     });
     // Google Ads conversion (needs the AW- tag + a conversion label).
     if (GOOGLE_ADS_ID && GOOGLE_ADS_PURCHASE_LABEL) {
@@ -206,9 +249,24 @@ export function trackPurchase(orderNumber: string, value: number, currency: stri
     }
   }
   if (consent.marketing && window.fbq) {
-    window.fbq("track", "Purchase", { value, currency: cur }, { eventID: orderNumber });
+    window.fbq(
+      "track",
+      "Purchase",
+      {
+        value,
+        currency: cur,
+        ...(contents.length
+          ? { content_ids: contents.map((c) => c.content_id), content_type: "product" }
+          : {}),
+      },
+      { eventID: orderNumber },
+    );
   }
   if (consent.marketing && window.ttq) {
-    window.ttq.track("CompletePayment", { value, currency: cur }, { event_id: orderNumber });
+    window.ttq.track(
+      "CompletePayment",
+      { value, currency: cur, ...(contents.length ? { contents } : {}) },
+      { event_id: orderNumber },
+    );
   }
 }
