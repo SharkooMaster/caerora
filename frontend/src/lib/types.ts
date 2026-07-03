@@ -4,6 +4,7 @@ export interface Category {
   slug: string;
   description?: string;
   image?: string | null;
+  product_count?: number;
 }
 
 export interface SiteContentData {

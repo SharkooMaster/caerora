@@ -44,7 +44,7 @@ async function getSiteData(): Promise<{
   content: SiteContentData | null;
   testimonials: Testimonial[];
   gallery: GalleryImageT[];
-  categoryImages: Record<string, string>;
+  categories: Category[];
 }> {
   const [content, testimonials, gallery, categories] = await Promise.all([
     api.siteContent().catch(() => null),
@@ -52,11 +52,12 @@ async function getSiteData(): Promise<{
     api.gallery().catch(() => [] as GalleryImageT[]),
     api.categories().catch(() => [] as Category[]),
   ]);
-  const categoryImages: Record<string, string> = {};
-  for (const c of categories) {
-    if (c.image) categoryImages[c.slug] = c.image;
-  }
-  return { content, testimonials, gallery, categoryImages };
+  return {
+    content,
+    testimonials,
+    gallery,
+    categories: categories.filter((c) => (c.product_count ?? 1) > 0),
+  };
 }
 
 const TRUST = [
@@ -66,12 +67,9 @@ const TRUST = [
   { icon: LockIcon, title: "Secure checkout", body: "Encrypted & protected" },
 ];
 
-const CATEGORIES = [
-  { slug: "lips", name: "Lips", copy: "Lipsticks & oils", span: "md:col-span-2 md:row-span-2" },
-  { slug: "face", name: "Face", copy: "Base & cheeks", span: "md:col-span-2" },
-  { slug: "eyes", name: "Eyes", copy: "Mascara & shadow", span: "" },
-  { slug: "skin", name: "Skin", copy: "Prep & glow", span: "" },
-];
+// Bento spans for the category grid, applied by position.
+const CATEGORY_SPANS = ["md:col-span-2 md:row-span-2", "md:col-span-2", "", ""];
+const CATEGORY_FALLBACK_IMAGES = Object.values(CATEGORY_IMAGES);
 
 const STANDARD = [
   {
@@ -90,7 +88,15 @@ const STANDARD = [
 
 export default async function HomePage() {
   const { bestsellers, newIn, proof } = await getHomeProducts();
-  const { content, testimonials, gallery, categoryImages } = await getSiteData();
+  const { content, testimonials, gallery, categories } = await getSiteData();
+
+  const categoryTiles = categories.slice(0, 4).map((c, i) => ({
+    slug: c.slug,
+    name: c.name,
+    copy: c.description || "",
+    span: CATEGORY_SPANS[i] ?? "",
+    image: c.image || CATEGORY_IMAGES[c.slug] || CATEGORY_FALLBACK_IMAGES[i % CATEGORY_FALLBACK_IMAGES.length],
+  }));
 
   const heroEyebrow = content?.hero_eyebrow || "New season beauty";
   const heroTitle = content?.hero_title || "Beauty,";
@@ -227,6 +233,7 @@ export default async function HomePage() {
       )}
 
       {/* ── Shop by category (bento) ─────────────────────── */}
+      {categoryTiles.length > 0 && (
       <section className="container-page section">
         <Reveal className="mb-10 flex items-end justify-between">
           <div>
@@ -238,14 +245,14 @@ export default async function HomePage() {
           </Link>
         </Reveal>
         <Reveal className="grid grid-cols-2 gap-4 md:h-[560px] md:grid-cols-4 md:grid-rows-2">
-          {CATEGORIES.map((c) => (
+          {categoryTiles.map((c) => (
             <Link
               key={c.slug}
               href={`/shop?category=${c.slug}`}
               className={`group relative aspect-[4/5] overflow-hidden rounded-2xl bg-cream md:aspect-auto ${c.span}`}
             >
               <SmartImage
-                src={categoryImages[c.slug] || CATEGORY_IMAGES[c.slug]}
+                src={c.image}
                 alt={c.name}
                 fill
                 className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
@@ -265,6 +272,7 @@ export default async function HomePage() {
           ))}
         </Reveal>
       </section>
+      )}
 
       {/* ── New in ───────────────────────────────────────── */}
       {newIn.length > 0 && (

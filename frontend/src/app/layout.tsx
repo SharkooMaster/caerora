@@ -53,13 +53,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     .then((c) => c.promo_bar_text || undefined)
     .catch(() => undefined);
 
+  // Nav follows the live catalog: only categories that actually have products.
+  const nav = await api
+    .categories()
+    .then((cats) =>
+      cats
+        .filter((c) => (c.product_count ?? 1) > 0)
+        .slice(0, 5)
+        .map((c) => ({ href: `/shop?category=${c.slug}`, label: c.name })),
+    )
+    .catch(() => []);
+
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
       <body className="font-sans">
         <AppShell
           analytics={<AnalyticsProvider />}
-          header={<Header promoText={promoText} />}
-          footer={<Footer />}
+          header={<Header promoText={promoText} nav={nav} />}
+          footer={<Footer nav={nav} />}
           overlays={
             <>
               <CartDrawer />

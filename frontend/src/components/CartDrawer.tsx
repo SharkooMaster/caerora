@@ -80,10 +80,17 @@ export function CartDrawer() {
                   <Link
                     href={`/product/${l.productSlug}`}
                     onClick={close}
-                    className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-cream ring-1 ring-taupe/10"
+                    className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-white ring-1 ring-taupe/10"
                   >
                     {l.image && (
-                      <Image src={l.image} alt={l.productName} fill className="object-cover" sizes="80px" unoptimized={l.image.includes("unsplash")} />
+                      <Image
+                        src={l.image}
+                        alt={l.productName}
+                        fill
+                        className={l.image.includes("unsplash") ? "object-cover" : "object-contain p-1.5"}
+                        sizes="80px"
+                        unoptimized
+                      />
                     )}
                   </Link>
                   <div className="flex flex-1 flex-col py-0.5">

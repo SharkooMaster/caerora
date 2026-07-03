@@ -4,13 +4,10 @@ import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
 import { MenuIcon, CloseIcon, UserIcon } from "./icons";
 
-const NAV = [
-  { href: "/shop", label: "Shop" },
-  { href: "/shop?category=lips", label: "Lips" },
-  { href: "/shop?category=face", label: "Face" },
-  { href: "/shop?category=eyes", label: "Eyes" },
-  { href: "/shop?category=skin", label: "Skin" },
-];
+export interface NavItem {
+  href: string;
+  label: string;
+}
 
 const MENU_EXTRA = [
   { href: "/about", label: "Our story" },
@@ -18,8 +15,9 @@ const MENU_EXTRA = [
   { href: "/account", label: "Account" },
 ];
 
-export function Header({ promoText }: { promoText?: string }) {
+export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[] }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const NAV: NavItem[] = [{ href: "/shop", label: "Shop" }, ...(nav ?? [])];
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";

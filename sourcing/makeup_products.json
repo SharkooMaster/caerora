@@ -1,0 +1,198 @@
+[
+  {
+    "name": "NYX Professional Makeup Fat Oil Lip Drip",
+    "category": "Lips",
+    "tagline": "The viral non-sticky lip oil with a fat, cushiony gloss finish",
+    "description": "The TikTok-famous lip oil that delivers high shine without any stickiness. Enriched with cloudberry oil, raspberry oil and squalane to lock in moisture and strengthen the lip barrier while leaving lips looking irresistibly plump. Vegan formula.",
+    "how_to_use": "Swipe on bare lips with the oversized applicator, or layer over lipstick for extra shine. Build up as desired.",
+    "unit_cost_usd": 8.6,
+    "retail_usd": 14.0,
+    "compare_at_usd": 16.0,
+    "supplier_url": "https://www.kicks.se/nyx-professional-makeup-fat-oil-lip-drip-lipgloss-supermodel",
+    "supplier_notes": "Authentic, EU-notified. Buy: Apohem/Prisjakt from 76-104 SEK, KICKS member 108 SEK. RRP 149 SEK.",
+    "featured": true,
+    "sku_prefix": "LP",
+    "variants": [
+      { "name": "01 My Main", "stock": 40, "swatch_hex": "#c98a7d" },
+      { "name": "02 Missed Call", "stock": 40, "swatch_hex": "#d98a94" },
+      { "name": "03 Supermodel", "stock": 40, "swatch_hex": "#b96a6e" },
+      { "name": "04 That's Chic", "stock": 40, "swatch_hex": "#a34d52" }
+    ],
+    "images": ["images/makeup/nyx-fat-oil-lip-drip-0.jpg", "images/makeup/nyx-fat-oil-lip-drip-1.jpg"]
+  },
+  {
+    "name": "NYX Professional Makeup Butter Gloss",
+    "category": "Lips",
+    "tagline": "The cult-classic buttery-soft gloss that never feels sticky",
+    "description": "Soft as butter and silky smooth — the iconic gloss that melts onto lips with a sweet cookie scent. Wear it alone or over your favourite lipstick for creamy light-to-medium colour that never feels tacky. A global bestseller for over a decade.",
+    "how_to_use": "Apply to bare lips or layer over lip liner or lipstick. Reapply as needed throughout the day.",
+    "unit_cost_usd": 6.3,
+    "retail_usd": 10.0,
+    "compare_at_usd": 12.0,
+    "supplier_url": "https://www.apohem.se/smink/lappar/lappglans/nyx-professional-makeup-butter-lip-gloss-7-tiramisu-8-ml",
+    "supplier_notes": "Authentic, EU-notified. Buy: Apohem 74 SEK, Meds 70 SEK. RRP 109 SEK.",
+    "featured": false,
+    "sku_prefix": "LP",
+    "variants": [
+      { "name": "Tiramisu", "stock": 40, "swatch_hex": "#b97a68" },
+      { "name": "Madeleine", "stock": 40, "swatch_hex": "#c08a72" },
+      { "name": "Butterscotch", "stock": 40, "swatch_hex": "#c99a76" }
+    ],
+    "images": ["images/makeup/nyx-butter-gloss-0.jpg", "images/makeup/nyx-butter-gloss-1.jpg"]
+  },
+  {
+    "name": "e.l.f. Glow Reviver Lip Oil",
+    "category": "Lips",
+    "tagline": "Tinted lip oil that revives your natural lip colour with glassy shine",
+    "description": "Lip care meets makeup: a nourishing tinted lip oil that enhances your natural lip tone with a glass-like gloss. The ultra-soft XXL cushion applicator hugs lips for an even swipe of hydrating oils, with a fresh mint scent and zero stickiness.",
+    "how_to_use": "Wear alone for an everyday glow or as a topper over lipstick for dazzling shine.",
+    "unit_cost_usd": 10.7,
+    "retail_usd": 15.0,
+    "compare_at_usd": 17.0,
+    "supplier_url": "https://lyko.com/sv/elf/e.l.f-glow-reviver-lip-oil-jam-session-76ml",
+    "supplier_notes": "Authentic, EU-notified. Buy: Lyko 119 SEK; often cheaper direct at elfcosmetics.com SE.",
+    "featured": false,
+    "sku_prefix": "LP",
+    "variants": [
+      { "name": "Jam Session", "stock": 40, "swatch_hex": "#a34a5e" },
+      { "name": "Honey Talks", "stock": 40, "swatch_hex": "#c99a6a" },
+      { "name": "Coral Fixation", "stock": 40, "swatch_hex": "#d97a6a" }
+    ],
+    "images": ["images/makeup/elf-glow-reviver-lip-oil-0.jpg", "images/makeup/elf-glow-reviver-lip-oil-1.jpg"]
+  },
+  {
+    "name": "e.l.f. Halo Glow Liquid Filter",
+    "category": "Face",
+    "tagline": "The viral soft-focus filter in a bottle — glow like you're filtered IRL",
+    "description": "The internet's favourite makeup-skincare hybrid. This glow booster blurs and illuminates for a soft-focus 'social media filter' effect. Infused with squalane and hyaluronic acid, wear it alone, under or over foundation, or mixed in for a dewy lit-from-within finish.",
+    "how_to_use": "Apply a thin layer alone or under foundation. Mix a drop into foundation for an all-over glow, or tap onto high points as a highlighter.",
+    "unit_cost_usd": 16.4,
+    "retail_usd": 23.0,
+    "compare_at_usd": null,
+    "supplier_url": "https://lyko.com/sv/elf/e.l.f.-halo-glow-liquid-filter-4-medium",
+    "supplier_notes": "Authentic, EU-notified. Buy: Lyko/KICKS 199 SEK; ~185 SEK direct at elfcosmetics.com SE.",
+    "featured": true,
+    "sku_prefix": "FC",
+    "variants": [
+      { "name": "0 Fair", "stock": 30, "swatch_hex": "#f2d9c4" },
+      { "name": "2 Fair/Light", "stock": 30, "swatch_hex": "#ecc9ab" },
+      { "name": "4 Medium", "stock": 30, "swatch_hex": "#d9a97f" },
+      { "name": "7 Deep/Rich", "stock": 30, "swatch_hex": "#9a6a45" }
+    ],
+    "images": ["images/makeup/elf-halo-glow-liquid-filter-0.jpg", "images/makeup/elf-halo-glow-liquid-filter-1.jpg"]
+  },
+  {
+    "name": "e.l.f. Power Grip Primer",
+    "category": "Face",
+    "tagline": "The #1 selling primer that grips makeup all day",
+    "description": "A gel-based, hydrating face primer that literally grips your makeup while smoothing skin with a soft-focus effect. Infused with hyaluronic acid, it goes on clear and works on every skin type and tone. The best-selling primer in the US — for a reason.",
+    "how_to_use": "Pat evenly onto clean skin with fingertips before makeup. Wait 30 seconds to set, then apply foundation.",
+    "unit_cost_usd": 11.4,
+    "retail_usd": 18.0,
+    "compare_at_usd": null,
+    "supplier_url": "https://lyko.com/sv/elf/e.l.f.-power-grip-primer-24ml",
+    "supplier_notes": "Authentic, EU-notified. Buy: Lyko/KICKS 149 SEK; 127 SEK direct at elfcosmetics.com SE.",
+    "featured": true,
+    "sku_prefix": "FC",
+    "variants": [{ "name": "24 ml", "stock": 50 }],
+    "images": ["images/makeup/elf-power-grip-primer-0.jpg"]
+  },
+  {
+    "name": "e.l.f. Halo Glow Blush Beauty Wand",
+    "category": "Face",
+    "tagline": "Liquid blush wand with a cushion tip for an instant radiant flush",
+    "description": "A glowy liquid blush in an easy squeeze wand with cushion-tip applicator. The lightweight, buildable formula is infused with 2% squalane and melts into skin for instant luminosity and a healthy pop of colour on the cheeks.",
+    "how_to_use": "Gently squeeze and dot onto the apples of your cheeks with the cushion tip, then blend out with fingers or a blush brush.",
+    "unit_cost_usd": 10.5,
+    "retail_usd": 16.0,
+    "compare_at_usd": null,
+    "supplier_url": "https://lyko.com/sv/elf/e.l.f-halo-glow-blush-beauty-wand-pink-me-up-10ml",
+    "supplier_notes": "Authentic, EU-notified. Buy: Amazon.se 117 SEK, Cocopanda 119 SEK, Lyko/KICKS 129 SEK.",
+    "featured": false,
+    "sku_prefix": "FC",
+    "variants": [
+      { "name": "Pink-Me-Up", "stock": 35, "swatch_hex": "#e08a9b" },
+      { "name": "Rosé You Slay", "stock": 35, "swatch_hex": "#c96a76" },
+      { "name": "Berry Radiant", "stock": 35, "swatch_hex": "#a34a62" },
+      { "name": "Candlelit", "stock": 35, "swatch_hex": "#c98a6a" }
+    ],
+    "images": ["images/makeup/elf-halo-glow-blush-wand-0.jpg", "images/makeup/elf-halo-glow-blush-wand-1.jpg"]
+  },
+  {
+    "name": "Maybelline Instant Anti-Age Eraser Concealer",
+    "category": "Face",
+    "tagline": "The world-famous under-eye eraser with built-in micro applicator",
+    "description": "A super-concentrated concealer that erases dark circles and imperfections with medium-to-full coverage that never looks cakey. The patented micro-cushion applicator makes blending effortless — one of the best-selling concealers on the planet.",
+    "how_to_use": "Twist the collar to load the sponge, apply in a triangle under the eyes and blend with the cushion tip.",
+    "unit_cost_usd": 7.1,
+    "retail_usd": 13.0,
+    "compare_at_usd": 15.0,
+    "supplier_url": "https://www.prisjakt.nu/produkt.php?p=2067774",
+    "supplier_notes": "Authentic, EU-notified. Buy: from 59-97 SEK via Prisjakt (Cocopanda, Amazon.se, apotek). RRP 129-149 SEK.",
+    "featured": false,
+    "sku_prefix": "FC",
+    "variants": [
+      { "name": "Fair", "stock": 30, "swatch_hex": "#f2d9c0" },
+      { "name": "Light", "stock": 30, "swatch_hex": "#eccaa8" },
+      { "name": "Nude", "stock": 30, "swatch_hex": "#e0b98d" },
+      { "name": "Sand", "stock": 30, "swatch_hex": "#d4a97b" },
+      { "name": "Honey", "stock": 30, "swatch_hex": "#c1955f" },
+      { "name": "Caramel", "stock": 30, "swatch_hex": "#a87a4a" }
+    ],
+    "images": ["images/makeup/maybelline-eraser-concealer-0.jpg", "images/makeup/maybelline-eraser-concealer-1.jpg"]
+  },
+  {
+    "name": "essence Lash Princess False Lash Effect Mascara",
+    "category": "Eyes",
+    "tagline": "The internet's favourite mascara — false lash volume for less",
+    "description": "The most-loved mascara on the internet with hundreds of thousands of five-star reviews worldwide. The cone-shaped fibre brush lengthens and delivers dramatic volume for a false-lash effect — no falsies needed. Cruelty-free and ophthalmologist reviewed.",
+    "how_to_use": "Apply from root to tip in a zigzag motion. Build 2-3 coats for maximum drama before the formula sets.",
+    "unit_cost_usd": 3.6,
+    "retail_usd": 8.0,
+    "compare_at_usd": 10.0,
+    "supplier_url": "https://eleven.se/product/essence-lash-princess-false-lash-effect-mascara-100416",
+    "supplier_notes": "Authentic, EU-notified (cosnova Germany). Buy: Eleven 35 SEK, Apohem 49 SEK. Best margin in catalog.",
+    "featured": true,
+    "sku_prefix": "EY",
+    "variants": [
+      { "name": "Black", "stock": 80, "swatch_hex": "#111111" },
+      { "name": "Black Waterproof", "stock": 50, "swatch_hex": "#1a1a2e" }
+    ],
+    "images": ["images/makeup/essence-lash-princess-0.jpg", "images/makeup/essence-lash-princess-1.jpg"]
+  },
+  {
+    "name": "Maybelline Lash Sensational Sky High Mascara",
+    "category": "Eyes",
+    "tagline": "Limitless length and volume — the mascara that went viral for a reason",
+    "description": "Full volume and limitless length in one flexible brush. The bamboo-extract formula coats every lash from every angle for feather-light, sky-high lashes. Ophthalmologist tested and suitable for sensitive eyes and contact lens wearers.",
+    "how_to_use": "Apply from root to tip, let dry, and layer additional coats until you reach your desired effect.",
+    "unit_cost_usd": 8.1,
+    "retail_usd": 16.0,
+    "compare_at_usd": 18.0,
+    "supplier_url": "https://www.kicks.se/maybelline-lash-sensational-sky-high-mascara-black",
+    "supplier_notes": "Authentic, EU-notified. Buy: flaconi ~75 SEK, Deloox 94 SEK, KICKS 149 SEK. RRP 189 SEK.",
+    "featured": true,
+    "sku_prefix": "EY",
+    "variants": [
+      { "name": "Very Black", "stock": 60, "swatch_hex": "#111111" },
+      { "name": "Waterproof Black", "stock": 40, "swatch_hex": "#1a1a2e" }
+    ],
+    "images": ["images/makeup/maybelline-sky-high-0.jpg", "images/makeup/maybelline-sky-high-1.jpg"]
+  },
+  {
+    "name": "NYX Professional Makeup Epic Ink Liner",
+    "category": "Eyes",
+    "tagline": "Waterproof liquid liner with a flexible brush tip for the perfect wing",
+    "description": "Epic precision, epic wear. The slender, flexible brush tip glides on intensely pigmented, waterproof lines — from barely-there definition to a classic cat eye. Smudge-resistant, long-lasting and vegan.",
+    "how_to_use": "Trace along the upper lash line with the fine tip. Press slightly harder for a thicker line and flick upward at the outer corner for a wing.",
+    "unit_cost_usd": 10.7,
+    "retail_usd": 17.0,
+    "compare_at_usd": null,
+    "supplier_url": "https://www.apohem.se/smink/ogonmakeup/eyeliner-kajal/nyx-professional-makeup-epic-ink-liner-1-black-1-ml",
+    "supplier_notes": "Authentic, EU-notified. Buy: Apohem 119 SEK. RRP 159-169 SEK.",
+    "featured": false,
+    "sku_prefix": "EY",
+    "variants": [{ "name": "01 Black", "stock": 50, "swatch_hex": "#111111" }],
+    "images": ["images/makeup/nyx-epic-ink-liner-0.jpg", "images/makeup/nyx-epic-ink-liner-1.jpg"]
+  }
+]

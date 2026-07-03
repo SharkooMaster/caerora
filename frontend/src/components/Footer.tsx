@@ -9,7 +9,7 @@ const SOCIALS = [
   { href: "https://pinterest.com", label: "Pinterest", Icon: PinterestIcon },
 ];
 
-export function Footer() {
+export function Footer({ nav }: { nav?: { href: string; label: string }[] }) {
   return (
     <footer className="mt-24 border-t border-taupe/15 bg-cream">
       <div className="container-page grid gap-12 py-16 md:grid-cols-4">
@@ -37,10 +37,9 @@ export function Footer() {
           <h4 className="eyebrow mb-4">Shop</h4>
           <ul className="space-y-2 text-sm text-espresso/80">
             <li><Link href="/shop" className="hover:text-rose">All products</Link></li>
-            <li><Link href="/shop?category=lips" className="hover:text-rose">Lips</Link></li>
-            <li><Link href="/shop?category=face" className="hover:text-rose">Face</Link></li>
-            <li><Link href="/shop?category=eyes" className="hover:text-rose">Eyes</Link></li>
-            <li><Link href="/shop?category=skin" className="hover:text-rose">Skin</Link></li>
+            {(nav ?? []).map((item) => (
+              <li key={item.label}><Link href={item.href} className="hover:text-rose">{item.label}</Link></li>
+            ))}
           </ul>
         </div>
         <div>

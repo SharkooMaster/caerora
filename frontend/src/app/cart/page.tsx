@@ -22,8 +22,17 @@ export default function CartPage() {
             <ul className="divide-y divide-taupe/15">
               {lines.map((l) => (
                 <li key={l.variantId} className="flex gap-4 py-5">
-                  <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-md bg-cream">
-                    {l.image && <Image src={l.image} alt={l.productName} fill className="object-cover" sizes="80px" />}
+                  <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-md bg-white ring-1 ring-taupe/10">
+                    {l.image && (
+                      <Image
+                        src={l.image}
+                        alt={l.productName}
+                        fill
+                        className={l.image.includes("unsplash") ? "object-cover" : "object-contain p-1.5"}
+                        sizes="80px"
+                        unoptimized
+                      />
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col">
                     <Link href={`/product/${l.productSlug}`} className="font-serif text-lg text-espresso hover:text-rose">

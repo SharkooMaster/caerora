@@ -6,7 +6,7 @@ import { formatMoney } from "@/lib/format";
 import { RatingSummary } from "./Rating";
 import { track } from "@/lib/tracker";
 import { SmartImage } from "./SmartImage";
-import { demoProductImage, categoryImage } from "@/lib/images";
+import { demoProductImage, categoryImage, isUnsplash } from "@/lib/images";
 import { useCart } from "@/lib/cart";
 import { BagIcon } from "./icons";
 
@@ -60,14 +60,16 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
         track({ event_type: "select_item", product_slug: product.slug, meta: { position } })
       }
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-cream shadow-card ring-1 ring-taupe/10 transition-shadow duration-300 group-hover:shadow-soft">
+      <div className={`relative aspect-[4/5] w-full overflow-hidden rounded-2xl shadow-card ring-1 ring-taupe/10 transition-shadow duration-300 group-hover:shadow-soft ${isUnsplash(image) ? "bg-cream" : "bg-white"}`}>
         {image ? (
           <SmartImage
             src={image}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110"
+            className={`transition-transform duration-[900ms] ease-out group-hover:scale-105 ${
+              isUnsplash(image) ? "object-cover" : "object-contain p-4"
+            }`}
           />
         ) : (
           <div className="flex h-full items-center justify-center font-serif text-2xl text-rose">

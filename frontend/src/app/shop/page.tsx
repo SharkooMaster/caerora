@@ -18,7 +18,10 @@ async function getData(category?: string) {
     api.products(params).catch(() => ({ results: [] }) as any),
     api.categories().catch(() => []),
   ]);
-  return { products: products.results, categories };
+  return {
+    products: products.results,
+    categories: categories.filter((c) => (c.product_count ?? 1) > 0),
+  };
 }
 
 export default async function ShopPage({

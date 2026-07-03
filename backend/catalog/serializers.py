@@ -7,13 +7,17 @@ from .models import Category, Product, ProductImage, ProductVariant
 
 class CategorySerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+    product_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
-        fields = ("id", "name", "slug", "description", "position", "image")
+        fields = ("id", "name", "slug", "description", "position", "image", "product_count")
 
     def get_image(self, obj):
         return absolute_media_url(self.context.get("request"), obj.image)
+
+    def get_product_count(self, obj):
+        return obj.products.filter(is_active=True).count()
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

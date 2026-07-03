@@ -6,7 +6,7 @@ import { RatingSummary } from "./Rating";
 import { useCart } from "@/lib/cart";
 import { track } from "@/lib/tracker";
 import { SmartImage } from "./SmartImage";
-import { demoProductImage, categoryImage } from "@/lib/images";
+import { demoProductImage, categoryImage, isUnsplash } from "@/lib/images";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/config";
 import { TruckIcon, ReturnIcon, LockIcon } from "./icons";
 
@@ -74,14 +74,14 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
     <div className="grid gap-10 md:grid-cols-2">
       {/* Gallery */}
       <div>
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-cream shadow-card">
+        <div className={`relative aspect-[4/5] w-full overflow-hidden rounded-2xl shadow-card ${isUnsplash(gallery[active]) ? "bg-cream" : "bg-white"}`}>
           {gallery[active] ? (
             <SmartImage
               src={gallery[active]}
               alt={product.name}
               fill
               priority
-              className="object-cover"
+              className={isUnsplash(gallery[active]) ? "object-cover" : "object-contain p-6"}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           ) : (
@@ -97,11 +97,11 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
                 key={img}
                 onClick={() => setActiveImage(i)}
                 aria-label={`View image ${i + 1}`}
-                className={`relative h-20 w-16 overflow-hidden rounded-md border ${
-                  i === active ? "border-rose" : "border-transparent"
+                className={`relative h-20 w-16 overflow-hidden rounded-md border bg-white ${
+                  i === active ? "border-rose" : "border-taupe/20"
                 }`}
               >
-                <SmartImage src={img} alt="" fill className="object-cover" sizes="64px" />
+                <SmartImage src={img} alt="" fill className={isUnsplash(img) ? "object-cover" : "object-contain p-1"} sizes="64px" />
               </button>
             ))}
           </div>
