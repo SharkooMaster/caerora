@@ -6,6 +6,9 @@ import { Card, Empty, PageHeader, Spinner } from "@/components/studio/ui";
 
 export default function CategoriesPage() {
   const [items, setItems] = useState<AdminCategory[] | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [busy, setBusy] = useState(false);
 
   function load() {
     adminApi.get<Paginated<AdminCategory> | AdminCategory[]>("/categories/?page_size=100").then((d) =>
@@ -15,17 +18,50 @@ export default function CategoriesPage() {
   useEffect(load, []);
 
   async function addNew() {
-    const name = prompt("Category name");
+    const name = newName.trim();
     if (!name) return;
-    await adminApi.post("/categories/", { name });
-    load();
+    setBusy(true);
+    try {
+      await adminApi.post("/categories/", { name, is_active: true });
+      setNewName("");
+      setAdding(false);
+      load();
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (!items) return <Spinner />;
 
   return (
     <div className="max-w-3xl">
-      <PageHeader title="Categories" action={<button className="btn-primary" onClick={addNew}>New category</button>} />
+      <PageHeader
+        title="Categories"
+        subtitle="Categories with active products appear in the store navigation automatically."
+        action={<button className="btn-primary" onClick={() => setAdding(true)}>New category</button>}
+      />
+      {adding && (
+        <Card className="mb-4">
+          <form
+            onSubmit={(e) => { e.preventDefault(); addNew(); }}
+            className="flex items-center gap-2"
+          >
+            <input
+              className="input flex-1"
+              autoFocus
+              placeholder="Category name (e.g. Lips)"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+            />
+            <button className="btn-primary px-4 py-1.5 text-xs" disabled={busy || !newName.trim()}>
+              {busy ? "Creating..." : "Create"}
+            </button>
+            <button type="button" className="btn-outline px-4 py-1.5 text-xs" onClick={() => setAdding(false)}>
+              Cancel
+            </button>
+          </form>
+        </Card>
+      )}
       {items.length === 0 ? (
         <Empty>No categories.</Empty>
       ) : (

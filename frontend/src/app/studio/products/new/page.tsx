@@ -4,11 +4,13 @@ import { useState } from "react";
 import { adminApi } from "@/lib/adminApi";
 import type { AdminProduct } from "@/lib/adminTypes";
 import { Card, PageHeader } from "@/components/studio/ui";
+import { CategorySelect } from "@/components/studio/CategorySelect";
 
 export default function NewProductPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [tagline, setTagline] = useState("");
+  const [category, setCategory] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -17,7 +19,12 @@ export default function NewProductPage() {
     setBusy(true);
     setError("");
     try {
-      const p = await adminApi.post<AdminProduct>("/products/", { name, tagline, is_active: false });
+      const p = await adminApi.post<AdminProduct>("/products/", {
+        name,
+        tagline,
+        category,
+        is_active: false,
+      });
       router.replace(`/studio/products/${p.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed");
@@ -37,6 +44,10 @@ export default function NewProductPage() {
           <div>
             <label className="label">Tagline</label>
             <input className="input" value={tagline} onChange={(e) => setTagline(e.target.value)} />
+          </div>
+          <div>
+            <label className="label">Category</label>
+            <CategorySelect value={category} onChange={setCategory} />
           </div>
           {error && <p className="text-sm text-terracotta">{error}</p>}
           <button className="btn-primary" disabled={busy}>{busy ? "Creating..." : "Create draft"}</button>

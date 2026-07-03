@@ -3,8 +3,9 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { adminApi } from "@/lib/adminApi";
-import type { AdminCategory, AdminProduct, AdminProductImage, AdminVariant } from "@/lib/adminTypes";
+import type { AdminProduct, AdminProductImage, AdminVariant } from "@/lib/adminTypes";
 import { Card, PageHeader, Spinner } from "@/components/studio/ui";
+import { CategorySelect } from "@/components/studio/CategorySelect";
 
 const BLANK_VARIANT: Partial<AdminVariant> = {
   name: "", sku: "", price: "0.00", compare_at_price: null, stock: 0, swatch_hex: "", is_active: true,
@@ -15,7 +16,6 @@ export default function ProductEditorPage() {
   const id = params.id;
   const router = useRouter();
   const [product, setProduct] = useState<AdminProduct | null>(null);
-  const [categories, setCategories] = useState<AdminCategory[]>([]);
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -23,12 +23,7 @@ export default function ProductEditorPage() {
   function load() {
     adminApi.get<AdminProduct>(`/products/${id}/`).then(setProduct);
   }
-  useEffect(() => {
-    load();
-    adminApi.get<{ results: AdminCategory[] } | AdminCategory[]>("/categories/?page_size=100").then((d) =>
-      setCategories(Array.isArray(d) ? d : d.results),
-    );
-  }, [id]);
+  useEffect(load, [id]);
 
   function set<K extends keyof AdminProduct>(key: K, value: AdminProduct[K]) {
     setProduct((p) => (p ? { ...p, [key]: value } : p));
@@ -103,10 +98,7 @@ export default function ProductEditorPage() {
               <div className="sm:col-span-2"><label className="label">Tagline</label><input className="input" value={product.tagline} onChange={(e) => set("tagline", e.target.value)} /></div>
               <div>
                 <label className="label">Category</label>
-                <select className="input" value={product.category ?? ""} onChange={(e) => set("category", e.target.value ? Number(e.target.value) : null)}>
-                  <option value="">-</option>
-                  {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
+                <CategorySelect value={product.category} onChange={(id) => set("category", id)} />
               </div>
               <div><label className="label">Position</label><input type="number" className="input" value={product.position} onChange={(e) => set("position", Number(e.target.value))} /></div>
               <div className="sm:col-span-2"><label className="label">Description</label><textarea className="input min-h-[90px]" value={product.description} onChange={(e) => set("description", e.target.value)} /></div>
