@@ -98,7 +98,14 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           {product.category && <p className="eyebrow">{product.category.name}</p>}
         </div>
         <h1 className="heading-serif mt-2 text-4xl">{displayName(product.name, product.brand)}</h1>
-        <p className="mt-2 text-taupe">{product.tagline}</p>
+        <p className="mt-2 text-taupe">
+          {product.tagline}
+          {product.volume && (
+            <span className="ml-2 whitespace-nowrap rounded-full bg-cream px-2.5 py-0.5 text-xs text-taupe">
+              {product.volume}
+            </span>
+          )}
+        </p>
         <div className="mt-3">
           <RatingSummary average={product.review_stats.average} count={product.review_stats.count} />
         </div>

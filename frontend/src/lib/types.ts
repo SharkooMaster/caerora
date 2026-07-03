@@ -101,6 +101,8 @@ export interface ProductDetail {
   slug: string;
   brand?: string;
   tagline: string;
+  /** Optional net content, e.g. "30 ml". */
+  volume?: string;
   description: string;
   brand_copy: string;
   ingredients: string;

@@ -37,6 +37,8 @@ class Product(TimeStampedModel):
     brand = models.CharField(max_length=120, blank=True, db_index=True)
     # Short tagline shown on cards.
     tagline = models.CharField(max_length=200, blank=True)
+    # Optional net content, free text, e.g. "30 ml" or "4 g / 0.14 oz".
+    volume = models.CharField(max_length=60, blank=True)
     description = models.TextField(blank=True)
     # Brand story / "why trustworthy" copy block, supports basic HTML/markdown text.
     brand_copy = models.TextField(blank=True)

@@ -43,7 +43,8 @@ export default function ProductEditorPage() {
     try {
       const payload = {
         category: product.category,
-        name: product.name, brand: product.brand, tagline: product.tagline, description: product.description,
+        name: product.name, brand: product.brand, tagline: product.tagline,
+        volume: product.volume || "", description: product.description,
         brand_copy: product.brand_copy, ingredients: product.ingredients, how_to_use: product.how_to_use,
         is_active: product.is_active, is_featured: product.is_featured, position: product.position,
         supplier_url: product.supplier_url, supplier_notes: product.supplier_notes,
@@ -114,6 +115,7 @@ export default function ProductEditorPage() {
                 <CategorySelect value={product.category} onChange={(id) => set("category", id)} />
               </div>
               <div><label className="label">Position</label><input type="number" className="input" value={product.position} onChange={(e) => set("position", Number(e.target.value))} /></div>
+              <div><label className="label">Volume / net content (optional)</label><input className="input" placeholder="e.g. 30 ml" value={product.volume || ""} onChange={(e) => set("volume", e.target.value)} /></div>
               <div className="sm:col-span-2"><label className="label">Description</label><textarea className="input min-h-[90px]" value={product.description} onChange={(e) => set("description", e.target.value)} /></div>
               <div className="sm:col-span-2"><label className="label">Brand copy</label><textarea className="input min-h-[70px]" value={product.brand_copy} onChange={(e) => set("brand_copy", e.target.value)} /></div>
               <div><label className="label">Ingredients</label><textarea className="input min-h-[70px]" value={product.ingredients} onChange={(e) => set("ingredients", e.target.value)} /></div>
