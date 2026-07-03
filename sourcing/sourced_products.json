@@ -226,5 +226,63 @@
       "https://ae01.alicdn.com/kf/S18a602b9223540da83e8df13911c70175/Natural-Jade-Scraping-Board-Roller-Massager-Law-Tattoo-Eye-Beauty-Bar-Face-Jade.jpg",
       "https://ae01.alicdn.com/kf/Scd2f9d172e6442bd8324789836e758876/Natural-Jade-Scraping-Board-Roller-Massager-Law-Tattoo-Eye-Beauty-Bar-Face-Jade.jpg"
     ]
+  },
+  {
+    "name": "The Morning Ritual Set",
+    "category": "Ritual Sets",
+    "tagline": "Ice roller + gua sha: the 5-minute depuff-and-sculpt ritual",
+    "description": "Our two bestselling face tools in one ritual. Start with the Cryo Glow ice roller to de-puff and wake up your skin, then sculpt jawline and cheekbones with the jade gua sha stone. The complete morning transformation \u2014 and a better price than buying separately.",
+    "how_to_use": "Morning: roll the frozen ice roller over face and neck for 2 minutes. Evening (or after skincare): sweep the gua sha upward along jaw and cheekbones. Keep both in the fridge for maximum cooling.",
+    "unit_cost_usd": 13.15,
+    "retail_usd": 38.0,
+    "compare_at_usd": 46.0,
+    "rating": 4.8,
+    "orders": 4000,
+    "supplier_url": "https://www.aliexpress.com/item/1005010653334708.html",
+    "supplier_notes": "BUNDLE = 2 supplier orders: ice roller https://www.aliexpress.com/item/1005010653334708.html (~$6.30) + gua sha https://www.aliexpress.com/item/1005007170857376.html (~$6.85)",
+    "featured": true,
+    "sku_prefix": "BM",
+    "variants": [
+      {
+        "name": "Ritual Set",
+        "stock": 40
+      }
+    ],
+    "images": [
+      "https://ae01.alicdn.com/kf/S096cc2b8a8bb4069ac89cf06619038d6t/1pc-silicone-face-ice-cube-mold-for-Beauty-and-Skin-Care-silicon-face-ice-roller.jpg",
+      "https://ae01.alicdn.com/kf/S870f539562814317bc1bf5dbe06d13cay/1pc-silicone-face-ice-cube-mold-for-Beauty-and-Skin-Care-silicon-face-ice-roller.jpg",
+      "https://ae01.alicdn.com/kf/Se0b31d23399a474f99fae3afe73660bcj/Helu-Jade-Gua-Sha-Tool-Xiuyan-Jade-Heart-shape-Massager-Neck-Massage-Guasha-Beauty-Product-Skin.jpg",
+      "https://ae01.alicdn.com/kf/S676c0852b20c4d6ca454505f000e2354Q/Helu-Jade-Gua-Sha-Tool-Xiuyan-Jade-Heart-shape-Massager-Neck-Massage-Guasha-Beauty-Product-Skin.jpg"
+    ],
+    "why": "AOV booster: pairs the two hero face tools."
+  },
+  {
+    "name": "The Healthy Hair Ritual Set",
+    "category": "Ritual Sets",
+    "tagline": "Heatless curls by night, happy scalp by day",
+    "description": "The complete hair-health ritual: sleep your way to soft, bouncy curls with the satin heatless curling set, and give your scalp a spa-grade deep clean with the massage brush on wash days. Zero heat damage, visibly healthier hair.",
+    "how_to_use": "Wash day: massage shampoo in with the scalp brush for one minute. Before bed: wrap damp hair around the satin rod and sleep. Wake up, unwrap, shake out.",
+    "unit_cost_usd": 11.45,
+    "retail_usd": 33.0,
+    "compare_at_usd": 40.0,
+    "rating": 4.7,
+    "orders": 10000,
+    "supplier_url": "https://www.aliexpress.com/item/1005005097484581.html",
+    "supplier_notes": "BUNDLE = 2 supplier orders: heatless curler https://www.aliexpress.com/item/1005005097484581.html (~$6.25) + scalp brush https://www.aliexpress.com/item/1005006143468966.html (~$5.20)",
+    "featured": true,
+    "sku_prefix": "BH",
+    "variants": [
+      {
+        "name": "Ritual Set",
+        "stock": 40
+      }
+    ],
+    "images": [
+      "https://ae01.alicdn.com/kf/S6a17835607e044f8b1a7cc45ac82e5b9r/1-2Set-Woman-Heatless-Curling-Rod-Heatless-Hair-Curls-Headband-Make-Hair-Soft-Shiny-Hair-Curler.png",
+      "https://ae01.alicdn.com/kf/S3601d138bc24456b80c3c6ce05f4bc0aS/1-2Set-Woman-Heatless-Curling-Rod-Heatless-Hair-Curls-Headband-Make-Hair-Soft-Shiny-Hair-Curler.jpg",
+      "https://ae01.alicdn.com/kf/S4456da353ef54c13878c0a2258b97285u/Silicone-Shampoo-Brush-Head-Scalp-Massage-Comb-Clean-The-Scalp-Thoroughly-Body-Massage-Brush-Bath-Brush.jpg",
+      "https://ae01.alicdn.com/kf/S6d6716953ef947f19647ef4850b9f18fW/Silicone-Shampoo-Brush-Head-Scalp-Massage-Comb-Clean-The-Scalp-Thoroughly-Body-Massage-Brush-Bath-Brush.jpg"
+    ],
+    "why": "AOV booster around the hero heatless-curl product."
   }
 ]
