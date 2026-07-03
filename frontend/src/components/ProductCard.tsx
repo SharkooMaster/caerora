@@ -143,13 +143,15 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
 
       <div className="mt-3.5 space-y-1">
         {product.brand && (
-          <p className="text-[10px] font-medium uppercase tracking-widest text-plum">{product.brand}</p>
+          <p className="truncate text-[10px] font-medium uppercase tracking-widest text-plum">{product.brand}</p>
         )}
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-serif text-lg leading-tight text-espresso transition-colors group-hover:text-plum">
+        {/* Mobile: name and price stack so long names don't squeeze against the
+            price. Desktop keeps them side by side. */}
+        <div className="flex flex-col gap-0.5 md:flex-row md:items-start md:justify-between md:gap-2">
+          <h3 className="line-clamp-2 font-serif text-base leading-snug text-espresso transition-colors group-hover:text-plum md:text-lg md:leading-tight">
             {displayName(product.name, product.brand)}
           </h3>
-          <span className="flex items-baseline gap-1.5 whitespace-nowrap pt-0.5 text-sm">
+          <span className="flex items-baseline gap-1.5 whitespace-nowrap text-sm md:pt-0.5">
             {onSale && (
               <span className="text-xs text-taupe line-through">{formatMoney(compareAt!)}</span>
             )}
