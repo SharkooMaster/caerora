@@ -7,6 +7,8 @@ import { SearchTracker } from "@/components/SearchTracker";
 export const metadata: Metadata = {
   title: "Search",
   description: "Search the Caerora collection.",
+  // Internal search results are thin/duplicate content; keep them out of the index.
+  robots: { index: false, follow: true },
 };
 
 export default async function SearchPage({

@@ -10,8 +10,13 @@ import { Marquee } from "@/components/Marquee";
 import { IMAGES, CATEGORY_IMAGES, GALLERY } from "@/lib/images";
 import { TruckIcon, LeafIcon, ReturnIcon, LockIcon, SparkleIcon } from "@/components/icons";
 import { Stars } from "@/components/Rating";
+import type { Metadata } from "next";
 
 export const revalidate = 120;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 async function getHomeProducts(): Promise<{
   bestsellers: ProductListItem[];

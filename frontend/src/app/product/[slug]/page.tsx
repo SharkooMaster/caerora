@@ -27,6 +27,7 @@ export async function generateMetadata({
   return {
     title: product.meta_title || product.name,
     description: product.meta_description || product.tagline || product.description.slice(0, 160),
+    alternates: { canonical: `/product/${product.slug}` },
     openGraph: {
       title: product.name,
       description: product.tagline,
@@ -51,9 +52,10 @@ export default async function ProductPage({ params }: { params: { slug: string }
     name: product.name,
     description: product.tagline || product.description,
     image: product.images.map((i) => i.image).filter(Boolean),
-    brand: { "@type": "Brand", name: "Caerora" },
+    brand: { "@type": "Brand", name: product.brand || "Caerora" },
     offers: {
       "@type": "Offer",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://caerora.com"}/product/${product.slug}`,
       price: priceFrom.toFixed(2),
       priceCurrency: "EUR",
       availability: product.variants.some((v) => v.stock > 0)

@@ -9,6 +9,7 @@ export const revalidate = 120;
 export const metadata: Metadata = {
   title: "Shop all",
   description: "Shop the full Caerora collection of clean, cruelty-free makeup and skincare.",
+  alternates: { canonical: "/shop" },
 };
 
 async function getData(category?: string, brand?: string) {
