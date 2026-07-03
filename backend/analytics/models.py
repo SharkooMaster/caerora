@@ -16,6 +16,7 @@ class EventType(models.TextChoices):
     ADD_PAYMENT_INFO = "add_payment_info", "Add payment info"
     PURCHASE = "purchase", "Purchase"
     NEWSLETTER_SIGNUP = "newsletter_signup", "Newsletter signup"
+    SEARCH = "search", "Site search"
 
 
 class Event(TimeStampedModel):

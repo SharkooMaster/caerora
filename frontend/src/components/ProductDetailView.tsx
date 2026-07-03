@@ -5,15 +5,15 @@ import { formatMoney } from "@/lib/format";
 import { RatingSummary } from "./Rating";
 import { useCart } from "@/lib/cart";
 import { track } from "@/lib/tracker";
-import { SmartImage } from "./SmartImage";
-import { demoProductImage, categoryImage, isUnsplash } from "@/lib/images";
+import { demoProductImage, categoryImage } from "@/lib/images";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/config";
 import { TruckIcon, ReturnIcon, LockIcon } from "./icons";
+import { ProductGallery } from "./ProductGallery";
+import { displayName } from "./ProductCard";
 
 export function ProductDetailView({ product }: { product: ProductDetail }) {
   const firstAvailable = product.variants.find((v) => v.stock > 0) || product.variants[0];
   const [variant, setVariant] = useState<ProductVariant | undefined>(firstAvailable);
-  const [activeImage, setActiveImage] = useState(0);
   const [added, setAdded] = useState(false);
   const addItem = useCart((s) => s.addItem);
   const enteredAt = useRef<number>(Date.now());
@@ -68,50 +68,23 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
 
   const compareAt = variant?.compare_at_price ? parseFloat(variant.compare_at_price) : null;
   const price = variant ? parseFloat(variant.price) : 0;
-  const active = Math.min(activeImage, Math.max(gallery.length - 1, 0));
 
   return (
     <div className="grid gap-10 md:grid-cols-2">
-      {/* Gallery */}
-      <div>
-        <div className={`relative aspect-[4/5] w-full overflow-hidden rounded-2xl shadow-card ${isUnsplash(gallery[active]) ? "bg-cream" : "bg-white"}`}>
-          {gallery[active] ? (
-            <SmartImage
-              src={gallery[active]}
-              alt={product.name}
-              fill
-              priority
-              className={isUnsplash(gallery[active]) ? "object-cover" : "object-contain p-6"}
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center font-serif text-3xl text-rose">
-              Caerora
-            </div>
-          )}
-        </div>
-        {gallery.length > 1 && (
-          <div className="mt-3 flex gap-3">
-            {gallery.map((img, i) => (
-              <button
-                key={img}
-                onClick={() => setActiveImage(i)}
-                aria-label={`View image ${i + 1}`}
-                className={`relative h-20 w-16 overflow-hidden rounded-md border bg-white ${
-                  i === active ? "border-rose" : "border-taupe/20"
-                }`}
-              >
-                <SmartImage src={img} alt="" fill className={isUnsplash(img) ? "object-cover" : "object-contain p-1"} sizes="64px" />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Gallery: swipe, click to enlarge, zoom */}
+      <ProductGallery images={gallery} alt={product.name} />
 
       {/* Info */}
       <div>
-        {product.category && <p className="eyebrow">{product.category.name}</p>}
-        <h1 className="heading-serif mt-2 text-4xl">{product.name}</h1>
+        <div className="flex items-center gap-3">
+          {product.brand && (
+            <span className="text-xs font-medium uppercase tracking-widest text-plum">
+              {product.brand}
+            </span>
+          )}
+          {product.category && <p className="eyebrow">{product.category.name}</p>}
+        </div>
+        <h1 className="heading-serif mt-2 text-4xl">{displayName(product.name, product.brand)}</h1>
         <p className="mt-2 text-taupe">{product.tagline}</p>
         <div className="mt-3">
           <RatingSummary average={product.review_stats.average} count={product.review_stats.count} />

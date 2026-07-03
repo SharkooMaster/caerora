@@ -52,7 +52,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            "id", "name", "slug", "tagline", "category", "is_featured",
+            "id", "name", "slug", "brand", "tagline", "category", "is_featured",
             "primary_image", "price_from", "in_stock", "review_stats",
             "quick_variant", "variant_count",
         )
@@ -88,7 +88,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            "id", "name", "slug", "tagline", "description", "brand_copy",
+            "id", "name", "slug", "brand", "tagline", "description", "brand_copy",
             "ingredients", "how_to_use", "category", "is_featured",
             "meta_title", "meta_description", "images", "variants", "review_stats",
         )

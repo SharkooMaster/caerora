@@ -70,6 +70,7 @@ class Command(BaseCommand):
                 defaults={
                     "category": category,
                     "name": name,
+                    "brand": item.get("brand", ""),
                     "tagline": item.get("tagline", ""),
                     "description": item.get("description", ""),
                     "brand_copy": item.get(

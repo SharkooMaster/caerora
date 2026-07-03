@@ -116,6 +116,7 @@ export interface AdminProduct {
   category: number | null;
   name: string;
   slug: string;
+  brand?: string;
   tagline: string;
   description: string;
   brand_copy: string;

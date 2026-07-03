@@ -47,6 +47,31 @@ PAGES = {
         "https://lyko.com/sv/nyx-professional-makeup/nyx-epic-ink-lnrshade-01",
         "https://www.apohem.se/smink/ogonmakeup/eyeliner-kajal/nyx-professional-makeup-epic-ink-liner-1-black-1-ml",
     ],
+    # Batch 2 — verified in stock at Lyko (June 2026).
+    "nyx-setting-spray-matte": [
+        "https://lyko.com/sv/nyx-professional-makeup/nyx-make-up-settingspray-matte",
+        "https://lyko.com/en/nyx-professional-makeup/nyx-professional-makeup-matte-finish-makeup-setting-spray-01-matte-duo-2x60-ml",
+    ],
+    "nyx-brow-glue": [
+        "https://lyko.com/en/nyx-professional-makeup/nyx-prof.-make-up-brow-glue-stick--",
+        "https://lyko.com/sv/nyx-professional-makeup/nyx-the-brow-glue-instant-brow-styler-03-medium-brown",
+    ],
+    "nyx-ultimate-palette-warm": [
+        "https://lyko.com/en/nyx-professional-makeup/nyx-ultimate-shadow-palette-05w-warm-neutrals",
+    ],
+    "elf-brow-lift": [
+        "https://lyko.com/en/e.l.f/e.l.f-brow-lift-clear-88g",
+    ],
+    "essence-juicy-bomb": [
+        "https://lyko.com/en/essence/essence-juicy-bomb-shiny-lipgloss-101",
+    ],
+    "essence-crazy-volume-mascara": [
+        "https://lyko.com/en/essence/essence-i-love-extreme-crazy-volume-mascara",
+    ],
+    "maybelline-superstay-matte-ink": [
+        "https://cosmetis.com/se/maybelline-superstay-matte-ink-liquid-lipstick-20-pioneer",
+        "https://www.caretobeauty.com/se/en/maybelline-superstay-matte-ink-liquid-lipstick-20-pioneer-5ml/",
+    ],
 }
 
 OG_RE = re.compile(r'<meta[^>]+(?:property|name)="og:image"[^>]+content="([^"]+)"', re.I)

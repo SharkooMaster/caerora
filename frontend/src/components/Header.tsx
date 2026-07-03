@@ -1,12 +1,18 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { Logo } from "./Logo";
-import { MenuIcon, CloseIcon, UserIcon } from "./icons";
+import { MenuIcon, CloseIcon, UserIcon, SearchIcon, ChevronDownIcon } from "./icons";
 
 export interface NavItem {
   href: string;
   label: string;
+}
+
+export interface BrandItem {
+  name: string;
+  count: number;
 }
 
 const MENU_EXTRA = [
@@ -15,9 +21,22 @@ const MENU_EXTRA = [
   { href: "/account", label: "Account" },
 ];
 
-export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[] }) {
+export function Header({
+  promoText,
+  nav,
+  brands,
+}: {
+  promoText?: string;
+  nav?: NavItem[];
+  brands?: BrandItem[];
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
   const NAV: NavItem[] = [{ href: "/shop", label: "Shop" }, ...(nav ?? [])];
+  const BRANDS = brands ?? [];
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -25,6 +44,43 @@ export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[]
       document.body.style.overflow = "";
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (searchOpen) searchRef.current?.focus();
+  }, [searchOpen]);
+
+  function submitSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    setSearchOpen(false);
+    setMenuOpen(false);
+    setQuery("");
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  }
+
+  const searchForm = (
+    <form onSubmit={submitSearch} className="flex w-full items-center gap-3">
+      <span className="h-4 w-4 shrink-0 text-taupe">
+        <SearchIcon />
+      </span>
+      <input
+        ref={searchRef}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        type="search"
+        placeholder={"Search products, brands, shades\u2026"}
+        aria-label="Search"
+        className="w-full bg-transparent text-sm text-espresso placeholder:text-taupe/70 focus:outline-none"
+      />
+      <button
+        type="submit"
+        className="shrink-0 text-[11px] uppercase tracking-widest text-espresso transition hover:text-rose"
+      >
+        Search
+      </button>
+    </form>
+  );
 
   return (
     <>
@@ -49,6 +105,43 @@ export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[]
                   {item.label}
                 </Link>
               ))}
+              {BRANDS.length > 0 && (
+                <div className="group relative">
+                  <button
+                    className="flex items-center gap-1 uppercase tracking-wider transition hover:text-rose"
+                    aria-haspopup="true"
+                  >
+                    Brands
+                    <span className="h-3.5 w-3.5 transition-transform group-hover:rotate-180">
+                      <ChevronDownIcon />
+                    </span>
+                  </button>
+                  {/* Hover dropdown */}
+                  <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                    <div className="overflow-hidden rounded-xl border border-taupe/10 bg-ivory shadow-soft">
+                      <ul className="py-2">
+                        {BRANDS.map((b) => (
+                          <li key={b.name}>
+                            <Link
+                              href={`/shop?brand=${encodeURIComponent(b.name)}`}
+                              className="flex items-center justify-between px-5 py-2.5 text-xs normal-case tracking-normal text-espresso transition hover:bg-cream hover:text-plum"
+                            >
+                              <span>{b.name}</span>
+                              <span className="text-[10px] text-taupe">{b.count}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                      <Link
+                        href="/shop"
+                        className="block border-t border-taupe/10 px-5 py-3 text-[11px] uppercase tracking-widest text-plum transition hover:bg-cream"
+                      >
+                        {"Shop everything \u2192"}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
             </nav>
           </div>
 
@@ -57,8 +150,16 @@ export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[]
             <Logo />
           </div>
 
-          {/* Right: account */}
+          {/* Right: search + account */}
           <div className="flex items-center justify-end gap-4">
+            <button
+              onClick={() => setSearchOpen((v) => !v)}
+              aria-label="Search"
+              aria-expanded={searchOpen}
+              className="flex h-6 w-6 items-center justify-center text-espresso transition hover:text-rose"
+            >
+              {searchOpen ? <CloseIcon /> : <SearchIcon />}
+            </button>
             <Link
               href="/account"
               aria-label="Account"
@@ -70,6 +171,15 @@ export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[]
               <span className="hidden text-xs uppercase tracking-wider lg:inline">Account</span>
             </Link>
           </div>
+        </div>
+
+        {/* Expanding search row */}
+        <div
+          className={`overflow-hidden border-taupe/10 transition-all duration-300 ${
+            searchOpen ? "max-h-16 border-t" : "max-h-0"
+          }`}
+        >
+          <div className="container-page py-3.5">{searchForm}</div>
         </div>
       </header>
 
@@ -99,7 +209,8 @@ export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[]
               <CloseIcon />
             </button>
           </div>
-          <nav className="flex flex-col px-6 py-4">
+          <div className="border-b border-taupe/10 px-6 py-4">{searchForm}</div>
+          <nav className="flex flex-col overflow-y-auto px-6 py-4">
             {NAV.map((item) => (
               <Link
                 key={item.label}
@@ -110,6 +221,23 @@ export function Header({ promoText, nav }: { promoText?: string; nav?: NavItem[]
                 {item.label}
               </Link>
             ))}
+            {BRANDS.length > 0 && (
+              <div className="border-b border-taupe/10 py-4">
+                <p className="mb-2 text-[10px] uppercase tracking-widest text-taupe">Shop by brand</p>
+                <div className="flex flex-col gap-2.5">
+                  {BRANDS.map((b) => (
+                    <Link
+                      key={b.name}
+                      href={`/shop?brand=${encodeURIComponent(b.name)}`}
+                      onClick={() => setMenuOpen(false)}
+                      className="text-sm text-espresso transition hover:text-rose"
+                    >
+                      {b.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="mt-2 flex flex-col gap-3 pt-4 text-xs uppercase tracking-wider text-taupe">
               {MENU_EXTRA.map((item) => (
                 <Link

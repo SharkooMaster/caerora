@@ -33,6 +33,8 @@ class Product(TimeStampedModel):
     )
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
+    # Manufacturer brand (e.g. "NYX Professional Makeup"); powers shop-by-brand nav.
+    brand = models.CharField(max_length=120, blank=True, db_index=True)
     # Short tagline shown on cards.
     tagline = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)

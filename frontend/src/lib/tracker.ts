@@ -108,18 +108,21 @@ const GA_MAP: Record<string, string> = {
   begin_checkout: "begin_checkout",
   purchase: "purchase",
   view_item_list: "view_item_list",
+  search: "search",
 };
 const META_MAP: Record<string, string> = {
   view_item: "ViewContent",
   add_to_cart: "AddToCart",
   begin_checkout: "InitiateCheckout",
   purchase: "Purchase",
+  search: "Search",
 };
 const TIKTOK_MAP: Record<string, string> = {
   view_item: "ViewContent",
   add_to_cart: "AddToCart",
   begin_checkout: "InitiateCheckout",
   purchase: "CompletePayment",
+  search: "Search",
 };
 
 export function track(payload: TrackPayload) {
@@ -138,23 +141,27 @@ export function track(payload: TrackPayload) {
   api.trackEvents(body).catch(() => {});
 
   // Forward to ad platforms only with analytics/marketing consent.
+  const searchTerm = payload.meta?.search_term as string | undefined;
   if (consent.analytics && window.gtag && GA_MAP[payload.event_type]) {
     window.gtag("event", GA_MAP[payload.event_type], {
       value: payload.value,
       currency: payload.currency?.toUpperCase(),
       items: payload.meta?.items,
+      ...(searchTerm ? { search_term: searchTerm } : {}),
     });
   }
   if (consent.marketing && window.fbq && META_MAP[payload.event_type]) {
     window.fbq("track", META_MAP[payload.event_type], {
       value: payload.value,
       currency: payload.currency?.toUpperCase(),
+      ...(searchTerm ? { search_string: searchTerm } : {}),
     });
   }
   if (consent.marketing && window.ttq && TIKTOK_MAP[payload.event_type]) {
     window.ttq.track(TIKTOK_MAP[payload.event_type], {
       value: payload.value,
       currency: payload.currency?.toUpperCase(),
+      ...(searchTerm ? { query: searchTerm } : {}),
     });
   }
 }

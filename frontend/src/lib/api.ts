@@ -1,4 +1,5 @@
 import type {
+  Brand,
   Category,
   GalleryImageT,
   Order,
@@ -39,6 +40,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   categories: () => request<Category[]>("/categories/"),
+
+  brands: () => request<Brand[]>("/brands/"),
 
   products: (params: Record<string, string> = {}) => {
     const qs = new URLSearchParams(params).toString();

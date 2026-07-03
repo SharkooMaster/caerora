@@ -72,10 +72,16 @@ export interface QuickVariant {
   compare_at_price: string | null;
 }
 
+export interface Brand {
+  name: string;
+  count: number;
+}
+
 export interface ProductListItem {
   id: number;
   name: string;
   slug: string;
+  brand?: string;
   tagline: string;
   category: Category | null;
   is_featured: boolean;
@@ -91,6 +97,7 @@ export interface ProductDetail {
   id: number;
   name: string;
   slug: string;
+  brand?: string;
   tagline: string;
   description: string;
   brand_copy: string;

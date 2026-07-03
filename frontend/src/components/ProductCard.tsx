@@ -10,6 +10,25 @@ import { demoProductImage, categoryImage, isUnsplash } from "@/lib/images";
 import { useCart } from "@/lib/cart";
 import { BagIcon } from "./icons";
 
+/**
+ * Strip the brand from the start of a product name so cards can show
+ * "NYX PROFESSIONAL MAKEUP / Butter Gloss" instead of repeating the brand.
+ * Matches as many leading words of the brand as the name shares.
+ */
+export function displayName(name: string, brand?: string): string {
+  if (!brand) return name;
+  const nameLower = name.toLowerCase();
+  const words = brand.split(/\s+/);
+  for (let n = words.length; n > 0; n--) {
+    const prefix = words.slice(0, n).join(" ").toLowerCase();
+    if (nameLower.startsWith(prefix + " ")) {
+      const stripped = name.slice(prefix.length).trim();
+      if (stripped) return stripped;
+    }
+  }
+  return name;
+}
+
 export function ProductCard({ product, position }: { product: ProductListItem; position?: number }) {
   const addItem = useCart((s) => s.addItem);
   const [added, setAdded] = useState(false);
@@ -123,9 +142,12 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
       </div>
 
       <div className="mt-3.5 space-y-1">
+        {product.brand && (
+          <p className="text-[10px] font-medium uppercase tracking-widest text-plum">{product.brand}</p>
+        )}
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-serif text-lg leading-tight text-espresso transition-colors group-hover:text-plum">
-            {product.name}
+            {displayName(product.name, product.brand)}
           </h3>
           <span className="flex items-baseline gap-1.5 whitespace-nowrap pt-0.5 text-sm">
             {onSale && (

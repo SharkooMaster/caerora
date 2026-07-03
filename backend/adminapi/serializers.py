@@ -190,7 +190,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            "id", "category", "name", "slug", "tagline", "description",
+            "id", "category", "name", "slug", "brand", "tagline", "description",
             "brand_copy", "ingredients", "how_to_use",
             "is_active", "is_featured", "position",
             "supplier_url", "supplier_notes", "supplier_cost",

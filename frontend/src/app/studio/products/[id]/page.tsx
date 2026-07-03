@@ -36,7 +36,7 @@ export default function ProductEditorPage() {
     try {
       const payload = {
         category: product.category,
-        name: product.name, tagline: product.tagline, description: product.description,
+        name: product.name, brand: product.brand, tagline: product.tagline, description: product.description,
         brand_copy: product.brand_copy, ingredients: product.ingredients, how_to_use: product.how_to_use,
         is_active: product.is_active, is_featured: product.is_featured, position: product.position,
         supplier_url: product.supplier_url, supplier_notes: product.supplier_notes,
@@ -95,6 +95,7 @@ export default function ProductEditorPage() {
             <h3 className="mb-4 font-serif text-lg">Details</h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2"><label className="label">Name</label><input className="input" value={product.name} onChange={(e) => set("name", e.target.value)} /></div>
+              <div className="sm:col-span-2"><label className="label">Brand</label><input className="input" value={product.brand || ""} onChange={(e) => set("brand", e.target.value)} placeholder="e.g. NYX Professional Makeup" /></div>
               <div className="sm:col-span-2"><label className="label">Tagline</label><input className="input" value={product.tagline} onChange={(e) => set("tagline", e.target.value)} /></div>
               <div>
                 <label className="label">Category</label>
