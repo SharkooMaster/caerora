@@ -40,6 +40,10 @@ data:
   # ---- Stripe (non-secret) ----
   STRIPE_DEFAULT_CURRENCY: "eur"
 
+  # ---- Analytics (non-secret; the API secret lives in the Secret) ----
+  # Backend reads the same var name the frontend build uses.
+  NEXT_PUBLIC_GA4_MEASUREMENT_ID: "G-VFEVSLHKG0"
+
   # ---- Superuser (password lives in the Secret) ----
   DJANGO_SUPERUSER_USERNAME: "admin"
   DJANGO_SUPERUSER_EMAIL: "admin@caerora.com"

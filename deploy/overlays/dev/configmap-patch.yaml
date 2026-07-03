@@ -9,3 +9,5 @@ data:
   BACKEND_ORIGIN: "https://dev.caerora.com"
   MEDIA_PUBLIC_BASE_URL: "https://dev.caerora.com"
   SECURE_HSTS_SECONDS: "0"
+  # Keep dev out of the production GA4 property.
+  NEXT_PUBLIC_GA4_MEASUREMENT_ID: ""
