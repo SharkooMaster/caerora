@@ -230,6 +230,34 @@ function VariantsSection({
               <div><label className="label">SKU</label><input className="input" value={v.sku || ""} onChange={(e) => update(i, "sku", e.target.value)} /></div>
               <div><label className="label">Price</label><input className="input" value={v.price || ""} onChange={(e) => update(i, "price", e.target.value)} /></div>
               <div><label className="label">Stock</label><input type="number" className="input" value={v.stock ?? 0} onChange={(e) => update(i, "stock", Number(e.target.value))} /></div>
+              <div className="col-span-2 sm:col-span-3">
+                <label className="label">Swatch color (optional, shown as a dot on the shade button)</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={/^#[0-9a-fA-F]{6}$/.test(v.swatch_hex || "") ? (v.swatch_hex as string) : "#ffffff"}
+                    onChange={(e) => update(i, "swatch_hex", e.target.value)}
+                    className="h-9 w-10 cursor-pointer rounded border border-taupe/20 bg-white p-0.5"
+                    aria-label="Pick swatch color"
+                  />
+                  <input
+                    className="input"
+                    placeholder="#c77467"
+                    maxLength={7}
+                    value={v.swatch_hex || ""}
+                    onChange={(e) => update(i, "swatch_hex", e.target.value)}
+                  />
+                  {v.swatch_hex && (
+                    <button
+                      type="button"
+                      className="text-xs text-taupe hover:text-espresso"
+                      onClick={() => update(i, "swatch_hex", "")}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
               <div className="flex items-center gap-2">
                 <button className="btn-primary px-3 py-1.5 text-xs" disabled={busy} onClick={() => saveRow(i)}>Save</button>
                 <button className="text-xs text-terracotta" onClick={() => del(i)}>Del</button>
