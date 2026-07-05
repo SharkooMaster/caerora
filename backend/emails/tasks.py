@@ -41,6 +41,31 @@ def send_order_shipped_email(order_id):
 
 
 @shared_task
+def send_welcome_discount_email(subscriber_id):
+    """Deliver the promised 10%-off code right after a newsletter signup."""
+    from accounts.models import NewsletterSubscriber
+    from orders.models import DiscountCode
+
+    sub = NewsletterSubscriber.objects.filter(id=subscriber_id, is_active=True).first()
+    if not sub:
+        return
+    code = (
+        DiscountCode.objects.filter(code=settings.WELCOME_DISCOUNT_CODE, is_active=True).first()
+        if settings.WELCOME_DISCOUNT_CODE
+        else None
+    )
+    if not code:
+        return
+    site_url = getattr(settings, "SITE_URL", "").rstrip("/")
+    unsubscribe_url = f"{site_url}/api/newsletter/unsubscribe/{sub.unsubscribe_token}/"
+    send_email(
+        to=sub.email,
+        subject=f"Your {code.percent_off}% off is here",
+        html=templates.welcome_discount_html(code.code, code.percent_off, unsubscribe_url),
+    )
+
+
+@shared_task
 def send_newsletter_campaign(campaign_id):
     """Send a newsletter broadcast to all active subscribers via Resend.
 

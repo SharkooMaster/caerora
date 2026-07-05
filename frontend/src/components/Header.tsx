@@ -85,7 +85,7 @@ export function Header({
   return (
     <>
       <div className="bg-espresso py-2 text-center text-[10px] uppercase tracking-widest text-ivory/90 sm:text-[11px]">
-        {promoText || "Free shipping over \u20ac45 \u00b7 New season beauty in now \u00b7 30-day easy returns"}
+        {promoText || "10% off your first order with code WELCOME10 \u00b7 Free shipping over \u20ac45 \u00b7 30-day easy returns"}
       </div>
 
       <header className="sticky top-0 z-40 border-b border-taupe/10 bg-ivory/85 backdrop-blur">

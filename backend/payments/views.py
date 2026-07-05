@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from analytics.tracking import record_purchase
+from core.tasks import push_new_order
 from emails.tasks import send_order_confirmation_email
 from orders.models import Order
 from orders.services import mark_order_paid
@@ -47,6 +48,7 @@ def _handle_payment_succeeded(intent):
     mark_order_paid(order, payment_intent_id=intent.get("id", ""))
     if not already_paid:
         send_order_confirmation_email.delay(order.id)
+        push_new_order.delay(order.id)
         # Server-side conversion event for GA4 + Meta CAPI (more reliable than client).
         record_purchase(order)
 

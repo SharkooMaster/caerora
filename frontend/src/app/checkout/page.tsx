@@ -312,12 +312,12 @@ export default function CheckoutPage() {
               </div>
             )}
             <div className="flex justify-between"><span className="text-taupe">Shipping</span><span>{shippingCost === 0 ? "Free" : formatMoney(shippingCost, currency)}</span></div>
-            {taxEstimate > 0 && (
-              <div className="flex justify-between"><span className="text-taupe">Tax</span><span>{formatMoney(taxEstimate, currency)}</span></div>
-            )}
             <div className="flex justify-between border-t border-taupe/15 pt-2 text-base font-medium text-espresso">
               <span>Total</span><span>{formatMoney(total, currency)}</span>
             </div>
+            {taxEstimate > 0 && (
+              <p className="text-right text-xs text-taupe">Includes {formatMoney(taxEstimate, currency)} VAT</p>
+            )}
           </div>
         </aside>
       </div>

@@ -75,8 +75,8 @@ def order_confirmation_html(order) -> str:
         <tr><td style="padding-top:14px;border-top:1px solid #eee;">Subtotal</td><td style="padding-top:14px;border-top:1px solid #eee;text-align:right;">{order.currency.upper()} {order.subtotal:.2f}</td></tr>
         {discount_row}
         <tr><td>Shipping ({order.shipping_method})</td><td style="text-align:right;">{order.currency.upper()} {order.shipping_total:.2f}</td></tr>
-        <tr><td>Tax</td><td style="text-align:right;">{order.currency.upper()} {order.tax_total:.2f}</td></tr>
         <tr><td style="font-weight:bold;padding-top:8px;">Total</td><td style="font-weight:bold;text-align:right;padding-top:8px;">{order.currency.upper()} {order.total:.2f}</td></tr>
+        <tr><td colspan="2" style="text-align:right;color:#888;font-size:12px;">Includes {order.currency.upper()} {order.tax_total:.2f} VAT</td></tr>
       </table>
       <p style="margin-top:24px;">Shipping to:<br>
         {order.full_name}<br>
@@ -136,6 +136,25 @@ def newsletter_html(body_html: str, unsubscribe_url: str = "") -> str:
       </div>
     </div>
     """
+
+
+def welcome_discount_html(code: str, percent: int, unsubscribe_url: str = "") -> str:
+    """First-order discount email sent right after a newsletter signup."""
+    site = getattr(settings, "SITE_URL", "").rstrip("/")
+    button = _button(f"{site}/shop", "Shop the collection") if site else ""
+    body = f"""
+      <p>Welcome to Caerora.</p>
+      <p>Here is your <strong>{percent}% off</strong> your first order, as promised. Use this code at checkout:</p>
+      <p style="text-align:center;margin:26px 0;">
+        <span style="display:inline-block;background:{BRAND['ivory']};border:1px dashed {BRAND['rose']};
+          border-radius:10px;padding:14px 30px;font-size:22px;letter-spacing:4px;color:{BRAND['plum']};font-weight:600;">{code}</span>
+      </p>
+      {button}
+      <p style="text-align:center;font-size:12px;color:{BRAND['taupe']};">
+        Free shipping on orders over &euro;45 &middot; 30-day easy returns
+      </p>
+    """
+    return newsletter_html(body, unsubscribe_url)
 
 
 def admin_new_order_html(order) -> str:

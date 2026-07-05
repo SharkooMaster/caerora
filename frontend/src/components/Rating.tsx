@@ -20,7 +20,8 @@ export function Stars({ value, size = 14 }: { value: number; size?: number }) {
 }
 
 export function RatingSummary({ average, count }: { average: number; count: number }) {
-  if (!count) return <span className="text-xs text-taupe">No reviews yet</span>;
+  // No rating chip at all beats a wall of "No reviews yet" on a young catalog.
+  if (!count) return null;
   return (
     <span className="inline-flex items-center gap-2 text-xs text-taupe">
       <Stars value={average} />

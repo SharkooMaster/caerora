@@ -107,7 +107,7 @@ export default function OrderDetailPage() {
                 />
               )}
               <Row label={`Shipping (${order.shipping_method})`} value={formatMoney(order.shipping_total, order.currency)} />
-              <Row label="Tax" value={formatMoney(order.tax_total, order.currency)} />
+              <Row label="VAT (included)" value={formatMoney(order.tax_total, order.currency)} />
               <Row label="Total" value={formatMoney(order.total, order.currency)} bold />
             </div>
           </Card>

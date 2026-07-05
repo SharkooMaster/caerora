@@ -76,11 +76,17 @@ def create_order_from_payload(data: dict) -> Order:
             raise CheckoutError(reason)
         discount_total = _money(subtotal * discount.percent_off / Decimal("100"))
 
-    # Tax (per-zone VAT on the discounted subtotal)
+    # EU consumer pricing: catalog prices are VAT-inclusive. tax_total records
+    # the VAT portion already contained in the discounted subtotal (for the
+    # receipt) and is NOT added on top of the total.
     taxable = max(Decimal("0"), subtotal - discount_total)
-    tax_total = _money(taxable * (zone.tax_rate / Decimal("100")))
+    tax_total = (
+        _money(taxable * zone.tax_rate / (Decimal("100") + zone.tax_rate))
+        if zone.tax_rate
+        else Decimal("0.00")
+    )
 
-    total = _money(subtotal - discount_total + shipping_total + tax_total)
+    total = _money(subtotal - discount_total + shipping_total)
 
     order = Order.objects.create(
         user=data.get("user"),

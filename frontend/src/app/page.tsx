@@ -134,22 +134,20 @@ export default async function HomePage() {
           <div className="absolute -right-16 top-8 h-72 w-72 rounded-full bg-rose/20 blur-3xl animate-float" />
           <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-champagne/25 blur-3xl" />
         </div>
-        <div className="container-page relative grid grid-cols-1 items-center gap-10 py-12 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-20 lg:py-24">
+        <div className="container-page relative grid grid-cols-1 items-center gap-10 py-8 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-20 lg:py-24">
           <div className="animate-fadeUp">
             <p className="eyebrow-rose">{heroEyebrow}</p>
-            <h1 className="display mt-5 text-[3.4rem] sm:text-6xl md:text-7xl lg:text-[5.5rem]">
-              {heroTitle}
-              <br />
-              <span className="display-accent text-plum">{heroAccent}</span>
+            <h1 className="display mt-3 text-4xl sm:text-6xl md:mt-5 md:text-7xl lg:text-[5.5rem]">
+              {heroTitle} <span className="display-accent text-plum">{heroAccent}</span>
             </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-taupe">
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-taupe md:mt-6 md:text-base">
               {heroSubtitle}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-5 flex flex-wrap gap-3 md:mt-8">
               <Link href={heroCtaHref} className="btn-primary btn-lg">{heroCtaLabel}</Link>
-              <Link href="/about" className="btn-outline btn-lg">Our story</Link>
+              <Link href="/about" className="btn-outline btn-lg hidden sm:inline-flex">Our story</Link>
             </div>
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-taupe">
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-taupe md:mt-8">
               {proof ? (
                 <span className="flex items-center gap-2">
                   <Stars value={proof.average} />
@@ -169,7 +167,9 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="relative animate-fadeUp-slow">
+          {/* On mobile the hero image pushed products two screens down; show it
+              from md up only so shoppers land straight on the product grid. */}
+          <div className="relative hidden animate-fadeUp-slow md:block">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-soft ring-1 ring-taupe/10">
               <SmartImage
                 src={heroImage}
@@ -194,12 +194,36 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── Best sellers (first content so mobile visitors see products
+             without scrolling past editorial sections) ─────── */}
+      {bestsellers.length > 0 && (
+        <section className="container-page pb-10 pt-8 md:pb-14 md:pt-16">
+          <ProductListTracker list="bestsellers" />
+          <Reveal className="mb-6 flex items-end justify-between md:mb-10">
+            <div>
+              <p className="eyebrow-rose">Loved by many</p>
+              <h2 className="display mt-2 text-3xl md:text-5xl">Best sellers</h2>
+            </div>
+            <Link href="/shop" className="text-xs uppercase tracking-widest text-espresso underline-offset-4 hover:text-rose hover:underline">
+              Shop all
+            </Link>
+          </Reveal>
+          <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
+            {bestsellers.map((p, i) => (
+              <Reveal key={p.id} delay={i * 90}>
+                <ProductCard product={p} position={i} />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* ── Marquee ribbon ───────────────────────────────── */}
       <Marquee />
 
       {/* ── Trust bar ────────────────────────────────────── */}
       <section className="border-b border-taupe/10 bg-cream">
-        <div className="container-page grid grid-cols-1 gap-6 py-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="container-page grid grid-cols-2 gap-6 py-8 lg:grid-cols-4">
           {TRUST.map(({ icon: Icon, title, body }) => (
             <div key={title} className="flex items-center gap-3">
               <span className="icon-chip">
@@ -213,29 +237,6 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
-
-      {/* ── Best sellers ─────────────────────────────────── */}
-      {bestsellers.length > 0 && (
-        <section className="container-page section pb-10 md:pb-14">
-          <ProductListTracker list="bestsellers" />
-          <Reveal className="mb-10 flex items-end justify-between">
-            <div>
-              <p className="eyebrow-rose">Loved by many</p>
-              <h2 className="display mt-2 text-4xl md:text-5xl">Best sellers</h2>
-            </div>
-            <Link href="/shop" className="hidden text-xs uppercase tracking-widest text-espresso underline-offset-4 hover:text-rose hover:underline sm:block">
-              Shop all
-            </Link>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-            {bestsellers.map((p, i) => (
-              <Reveal key={p.id} delay={i * 90}>
-                <ProductCard product={p} position={i} />
-              </Reveal>
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* ── Shop by category (bento) ─────────────────────── */}
       {categoryTiles.length > 0 && (

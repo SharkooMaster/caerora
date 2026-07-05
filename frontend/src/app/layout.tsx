@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { CartFab } from "@/components/CartFab";
 import { CookieConsent } from "@/components/CookieConsent";
+import { WelcomePopup } from "@/components/WelcomePopup";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { AppShell } from "@/components/AppShell";
 import { api } from "@/lib/api";
@@ -106,6 +107,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <CartDrawer />
               <CartFab />
               <CookieConsent />
+              <WelcomePopup />
             </>
           }
         >

@@ -177,12 +177,12 @@ export default function OrderConfirmationPage() {
             </div>
           )}
           <div className="flex justify-between"><span className="text-taupe">Shipping ({order.shipping_method})</span><span>{formatMoney(order.shipping_total, order.currency)}</span></div>
-          {parseFloat(order.tax_total) > 0 && (
-            <div className="flex justify-between"><span className="text-taupe">Tax</span><span>{formatMoney(order.tax_total, order.currency)}</span></div>
-          )}
           <div className="flex justify-between border-t border-taupe/15 pt-2 text-base font-medium text-espresso">
             <span>Total</span><span>{formatMoney(order.total, order.currency)}</span>
           </div>
+          {parseFloat(order.tax_total) > 0 && (
+            <p className="text-right text-xs text-taupe">Includes {formatMoney(order.tax_total, order.currency)} VAT</p>
+          )}
         </div>
       </div>
 

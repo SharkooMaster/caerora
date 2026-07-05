@@ -4,6 +4,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from core.tasks import push_new_account
+from emails.tasks import send_welcome_discount_email
 from orders.models import Order
 from orders.serializers import OrderSerializer
 
@@ -31,6 +33,7 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        push_new_account.delay(user.id)
         refresh = RefreshToken.for_user(user)
         return Response(
             {
@@ -61,10 +64,12 @@ def newsletter_signup(request):
     serializer = NewsletterSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     email = serializer.validated_data["email"]
-    NewsletterSubscriber.objects.update_or_create(
+    subscriber, created = NewsletterSubscriber.objects.update_or_create(
         email=email,
         defaults={"is_active": True, "source": serializer.validated_data.get("source", "")},
     )
+    if created:
+        send_welcome_discount_email.delay(subscriber.id)
     # Record marketing consent for GDPR audit trail.
     ConsentRecord.objects.create(
         kind=ConsentRecord.Kind.MARKETING,

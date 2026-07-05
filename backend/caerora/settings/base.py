@@ -188,6 +188,14 @@ RESEND_API_KEY = env("RESEND_API_KEY", "")
 EMAIL_FROM = env("EMAIL_FROM", "Caerora <hello@caerora.com>")
 ADMIN_NOTIFICATION_EMAIL = env("ADMIN_NOTIFICATION_EMAIL", "orders@caerora.com")
 
+# ---- Pushover (owner push notifications for orders / signups) ----
+PUSHOVER_APP_TOKEN = env("PUSHOVER_APP_TOKEN", "")
+PUSHOVER_USER_KEY = env("PUSHOVER_USER_KEY", "")
+
+# Discount code emailed to new newsletter subscribers ("10% off your first
+# order"). Must exist as an active DiscountCode row.
+WELCOME_DISCOUNT_CODE = env("WELCOME_DISCOUNT_CODE", "WELCOME10")
+
 # ---- Marketing / analytics (server-side) ----
 META_CAPI_ACCESS_TOKEN = env("META_CAPI_ACCESS_TOKEN", "")
 META_CAPI_PIXEL_ID = env("META_CAPI_PIXEL_ID", "")
