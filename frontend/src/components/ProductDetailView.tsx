@@ -236,8 +236,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
       </div>
 
       {/* Mobile: price + CTA were below the gallery fold, so keep them pinned.
-          Spacer stops the fixed bar from covering the footer. */}
-      <div className="h-16 md:hidden" aria-hidden />
+          (The PDP page adds bottom padding so this bar never covers content.) */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-taupe/15 bg-ivory/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-soft backdrop-blur md:hidden">
         <div className="flex items-center gap-3">
           <div className="min-w-0">

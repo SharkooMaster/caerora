@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { api } from "@/lib/api";
-import type { ProductDetail, Review } from "@/lib/types";
+import type { ProductDetail, ProductListItem, Review } from "@/lib/types";
 import { ProductDetailView } from "@/components/ProductDetailView";
 import { ProductReviews } from "@/components/ProductReviews";
+import { ProductCard } from "@/components/ProductCard";
+import { ProductListTracker } from "@/components/ProductListTracker";
 import { demoProductImage } from "@/lib/images";
 
 export const revalidate = 120;
@@ -13,6 +16,29 @@ async function getProduct(slug: string): Promise<ProductDetail | null> {
     return await api.product(slug);
   } catch {
     return null;
+  }
+}
+
+/** Same category first, then same brand, then anything else — up to 4 cards. */
+async function getRelated(product: ProductDetail): Promise<ProductListItem[]> {
+  try {
+    const all = (await api.products()).results.filter((p) => p.slug !== product.slug);
+    const catSlug = product.category?.slug;
+    const sameCategory = catSlug ? all.filter((p) => p.category?.slug === catSlug) : [];
+    const sameBrand = product.brand ? all.filter((p) => p.brand === product.brand) : [];
+    const picks: ProductListItem[] = [];
+    const seen = new Set<string>();
+    for (const list of [sameCategory, sameBrand, all]) {
+      for (const p of list) {
+        if (seen.has(p.slug)) continue;
+        seen.add(p.slug);
+        picks.push(p);
+        if (picks.length >= 4) return picks;
+      }
+    }
+    return picks;
+  } catch {
+    return [];
   }
 }
 
@@ -41,7 +67,10 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const product = await getProduct(params.slug);
   if (!product) notFound();
 
-  const reviews: Review[] = await api.reviews(params.slug).catch(() => []);
+  const [reviews, related] = await Promise.all([
+    api.reviews(params.slug).catch(() => [] as Review[]),
+    getRelated(product),
+  ]);
   const priceFrom = product.variants.length
     ? Math.min(...product.variants.map((v) => parseFloat(v.price)))
     : 0;
@@ -72,12 +101,36 @@ export default async function ProductPage({ params }: { params: { slug: string }
   };
 
   return (
-    <div className="container-page py-10">
+    <div className="container-page pb-28 pt-10 md:pb-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <ProductDetailView product={product} />
+
+      {related.length > 0 && (
+        <section className="mt-14 border-t border-taupe/15 pt-10 md:mt-20">
+          <ProductListTracker list="related" />
+          <div className="mb-6 flex items-end justify-between md:mb-8">
+            <div>
+              <p className="eyebrow-rose">Complete the look</p>
+              <h2 className="display mt-2 text-3xl md:text-4xl">People also shop</h2>
+            </div>
+            <Link
+              href="/shop"
+              className="text-xs uppercase tracking-widest text-espresso underline-offset-4 hover:text-rose hover:underline"
+            >
+              Shop all
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
+            {related.map((p, i) => (
+              <ProductCard key={p.id} product={p} position={i} />
+            ))}
+          </div>
+        </section>
+      )}
+
       <ProductReviews slug={product.slug} initialReviews={reviews} stats={product.review_stats} />
     </div>
   );
