@@ -132,7 +132,8 @@ function Inner() {
     // Fire first-party + GA/Meta/TikTok page_view on every route change.
     track({ event_type: "page_view", path: pathname || "/" });
     const c = readConsent();
-    if (c.analytics && window.gtag && GA_ID) {
+    // Always ping Google (Consent Mode makes it cookieless until accepted).
+    if (window.gtag && GA_ID) {
       window.gtag("event", "page_view", { page_path: pathname });
     }
     if (c.marketing && window.fbq) {

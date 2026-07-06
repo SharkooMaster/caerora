@@ -140,9 +140,11 @@ export function track(payload: TrackPayload) {
   };
   api.trackEvents(body).catch(() => {});
 
-  // Forward to ad platforms only with analytics/marketing consent.
+  // Google tags always fire: Consent Mode v2 governs them (denied consent =>
+  // anonymized cookieless pings used for conversion modeling). Meta/TikTok
+  // have no such mode, so they stay gated behind marketing consent.
   const searchTerm = payload.meta?.search_term as string | undefined;
-  if (consent.analytics && window.gtag && GA_MAP[payload.event_type]) {
+  if (window.gtag && GA_MAP[payload.event_type]) {
     window.gtag("event", GA_MAP[payload.event_type], {
       value: payload.value,
       currency: payload.currency?.toUpperCase(),
@@ -231,7 +233,7 @@ export function trackPurchase(
     price: i.price,
   }));
 
-  if (consent.analytics && window.gtag) {
+  if (window.gtag) {
     window.gtag("event", "purchase", {
       transaction_id: orderNumber,
       value,
