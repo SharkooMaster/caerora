@@ -4,9 +4,9 @@ import { NewsletterForm } from "./NewsletterForm";
 import { InstagramIcon, TikTokIcon, PinterestIcon } from "./icons";
 
 const SOCIALS = [
-  { href: "https://instagram.com", label: "Instagram", Icon: InstagramIcon },
-  { href: "https://tiktok.com", label: "TikTok", Icon: TikTokIcon },
-  { href: "https://pinterest.com", label: "Pinterest", Icon: PinterestIcon },
+  { href: "https://www.instagram.com/caeroraofficial/", label: "Instagram", Icon: InstagramIcon },
+  { href: "https://www.tiktok.com/@caerora.ltd", label: "TikTok", Icon: TikTokIcon },
+  { href: "https://se.pinterest.com/caeroraofficial/", label: "Pinterest", Icon: PinterestIcon },
 ];
 
 export function Footer({ nav }: { nav?: { href: string; label: string }[] }) {
