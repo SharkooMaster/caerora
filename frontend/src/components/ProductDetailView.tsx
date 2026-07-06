@@ -234,6 +234,27 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           )}
         </div>
       </div>
+
+      {/* Mobile: price + CTA were below the gallery fold, so keep them pinned.
+          Spacer stops the fixed bar from covering the footer. */}
+      <div className="h-16 md:hidden" aria-hidden />
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-taupe/15 bg-ivory/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-soft backdrop-blur md:hidden">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0">
+            {product.variants.length > 1 && (
+              <p className="truncate text-[10px] uppercase tracking-wider text-taupe">{variant?.name}</p>
+            )}
+            <p className="font-serif text-xl leading-tight text-espresso">{formatMoney(price)}</p>
+          </div>
+          <button
+            onClick={handleAdd}
+            disabled={!variant || variant.stock <= 0}
+            className="btn-primary flex-1"
+          >
+            {variant && variant.stock > 0 ? (added ? "Added to bag \u2713" : "Add to bag") : "Sold out"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
