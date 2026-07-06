@@ -34,12 +34,15 @@ export function ProductGallery({
   media,
   alt,
   jumpTo,
+  overlay,
 }: {
   media: GalleryMedia[];
   alt: string;
   /** When set (e.g. on variant selection), the gallery scrolls to this index.
    * A fresh object identity re-triggers the jump even for the same index. */
   jumpTo?: { index: number } | null;
+  /** Rendered inside the main slide, e.g. a promo/payment badge. */
+  overlay?: React.ReactNode;
 }) {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
@@ -181,9 +184,11 @@ export function ProductGallery({
           </div>
         )}
 
-        {/* Zoom hint */}
+        {overlay}
+
+        {/* Zoom hint (bottom-right so badges own the top corner) */}
         {current && !isVideo && (
-          <span className="pointer-events-none absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-ivory/90 p-2 text-espresso shadow-card backdrop-blur transition-opacity md:opacity-0 md:group-hover:opacity-100">
+          <span className="pointer-events-none absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-ivory/90 p-2 text-espresso shadow-card backdrop-blur transition-opacity md:opacity-0 md:group-hover:opacity-100">
             <ZoomInIcon />
           </span>
         )}

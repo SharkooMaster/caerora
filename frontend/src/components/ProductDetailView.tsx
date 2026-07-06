@@ -97,7 +97,16 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   return (
     <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
       {/* Gallery: swipe, click to enlarge, zoom */}
-      <ProductGallery media={gallery} alt={product.name} jumpTo={jump} />
+      <ProductGallery
+        media={gallery}
+        alt={product.name}
+        jumpTo={jump}
+        overlay={
+          <span className="pointer-events-none absolute right-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-[#FFB3C7] px-3.5 py-1.5 text-[11px] font-semibold tracking-wide text-black shadow-card">
+            <span className="font-extrabold">Klarna.</span> Pay later available
+          </span>
+        }
+      />
 
       {/* Info */}
       <div>
@@ -189,6 +198,11 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
               : "Sold out"}
           </button>
         </div>
+
+        <p className="mt-3 flex items-center gap-2 text-xs text-taupe">
+          <span className="rounded bg-[#FFB3C7] px-1.5 py-0.5 text-[10px] font-extrabold text-black">Klarna.</span>
+          Buy now, pay after delivery — or split into instalments.
+        </p>
 
         {/* Trust signals at the point of decision */}
         <div className="mt-5 grid grid-cols-3 gap-2 rounded-xl bg-cream/70 p-3 text-center">
