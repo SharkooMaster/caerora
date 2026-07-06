@@ -10,6 +10,32 @@ import { FREE_SHIPPING_THRESHOLD } from "@/lib/config";
 import { TruckIcon, ReturnIcon, LockIcon } from "./icons";
 import { ProductGallery, type GalleryMedia } from "./ProductGallery";
 import { displayName } from "./ProductCard";
+import { Markdown } from "./Markdown";
+
+function InfoSection({
+  title,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <details open={defaultOpen} className="group border-b border-taupe/15">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
+        <span className="text-xs font-medium uppercase tracking-[0.18em] text-espresso">{title}</span>
+        <span
+          aria-hidden
+          className="text-xl font-light leading-none text-taupe transition-transform duration-200 group-open:rotate-45"
+        >
+          +
+        </span>
+      </summary>
+      <div className="pb-6 text-sm text-taupe">{children}</div>
+    </details>
+  );
+}
 
 export function ProductDetailView({ product }: { product: ProductDetail }) {
   const firstAvailable = product.variants.find((v) => v.stock > 0) || product.variants[0];
@@ -95,6 +121,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   const price = variant ? parseFloat(variant.price) : 0;
 
   return (
+    <>
     <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
       {/* Gallery: swipe, click to enlarge, zoom */}
       <ProductGallery
@@ -226,27 +253,6 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           </div>
         </div>
 
-        <div className="mt-8 space-y-5 border-t border-taupe/15 pt-6 text-sm leading-relaxed text-espresso/90">
-          {product.description && <p>{product.description}</p>}
-          {product.brand_copy && (
-            <div>
-              <h3 className="eyebrow mb-1">Why you'll trust it</h3>
-              <p className="text-taupe">{product.brand_copy}</p>
-            </div>
-          )}
-          {product.how_to_use && (
-            <div>
-              <h3 className="eyebrow mb-1">How to use</h3>
-              <p className="text-taupe">{product.how_to_use}</p>
-            </div>
-          )}
-          {product.ingredients && (
-            <div>
-              <h3 className="eyebrow mb-1">Ingredients</h3>
-              <p className="text-taupe">{product.ingredients}</p>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Mobile: price + CTA were below the gallery fold, so keep them pinned.
@@ -269,5 +275,34 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
         </div>
       </div>
     </div>
+
+    {/* Full-width collapsible details under gallery + buy box. Description is
+        open by default; the rest stays folded so the page ends near the CTA. */}
+    {(product.description || product.brand_copy || product.how_to_use || product.ingredients) && (
+      <div className="mt-10 border-t border-taupe/15 md:mt-14">
+        {product.description && (
+          <InfoSection title="Description" defaultOpen>
+            <Markdown>{product.description}</Markdown>
+            {product.brand_copy && (
+              <div className="mt-4 rounded-xl bg-cream/70 p-4">
+                <h4 className="eyebrow mb-1.5">Why you'll trust it</h4>
+                <Markdown>{product.brand_copy}</Markdown>
+              </div>
+            )}
+          </InfoSection>
+        )}
+        {product.how_to_use && (
+          <InfoSection title="How to use">
+            <Markdown>{product.how_to_use}</Markdown>
+          </InfoSection>
+        )}
+        {product.ingredients && (
+          <InfoSection title="Ingredients">
+            <Markdown>{product.ingredients}</Markdown>
+          </InfoSection>
+        )}
+      </div>
+    )}
+    </>
   );
 }
