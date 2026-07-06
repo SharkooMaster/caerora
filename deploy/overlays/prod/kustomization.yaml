@@ -14,7 +14,7 @@ patches:
 images:
 - name: caerora-backend
   newName: ghcr.io/sharkoomaster/caerora-backend
-  newTag: prod-feea52a42895
+  newTag: prod-cc4f175876e1
 - name: caerora-frontend
   newName: ghcr.io/sharkoomaster/caerora-frontend
-  newTag: prod-feea52a42895
+  newTag: prod-cc4f175876e1
