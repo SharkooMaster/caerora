@@ -4,7 +4,7 @@ from django.db.models import Avg, Count, Sum
 from django.db.models.functions import TruncDay, TruncHour
 from django.utils import timezone
 
-from .models import Event, EventType
+from .models import Event, EventType, InternalDevice
 
 
 def _safe_rate(numerator, denominator):
@@ -13,10 +13,17 @@ def _safe_rate(numerator, denominator):
     return round(100.0 * numerator / denominator, 2)
 
 
+def _events(days: int):
+    """Base queryset for analytics: rolling window, minus internal/team devices."""
+    since = timezone.now() - timedelta(days=days)
+    return Event.objects.filter(created_at__gte=since).exclude(
+        anonymous_id__in=InternalDevice.objects.values("anonymous_id")
+    )
+
+
 def funnel_summary(days: int = 30):
     """Compute the core marketing funnel + KPIs over a rolling window."""
-    since = timezone.now() - timedelta(days=days)
-    qs = Event.objects.filter(created_at__gte=since)
+    qs = _events(days)
 
     counts = {row["event_type"]: row["n"] for row in qs.values("event_type").annotate(n=Count("id"))}
 
@@ -68,8 +75,7 @@ def funnel_summary(days: int = 30):
 
 def attribution_breakdown(days: int = 30, limit: int = 12):
     """Per-campaign performance: sessions, purchases, revenue, conversion."""
-    since = timezone.now() - timedelta(days=days)
-    qs = Event.objects.filter(created_at__gte=since)
+    qs = _events(days)
 
     rows = []
     sources = (
@@ -94,8 +100,7 @@ def attribution_breakdown(days: int = 30, limit: int = 12):
 
 
 def top_products(days: int = 30, limit: int = 8):
-    since = timezone.now() - timedelta(days=days)
-    qs = Event.objects.filter(created_at__gte=since, event_type=EventType.VIEW_ITEM, product__isnull=False)
+    qs = _events(days).filter(event_type=EventType.VIEW_ITEM, product__isnull=False)
     rows = (
         qs.values("product__name", "product__slug")
         .annotate(views=Count("id"))
@@ -107,8 +112,8 @@ def top_products(days: int = 30, limit: int = 8):
 def session_funnel(days: int = 30):
     """Funnel counted in unique *sessions*, so each step answers "how many
     visitors got this far" instead of raw event volume."""
-    since = timezone.now() - timedelta(days=days)
-    qs = Event.objects.filter(created_at__gte=since).exclude(session_id="")
+    base = _events(days)
+    qs = base.exclude(session_id="")
 
     def sessions_with(event_type):
         return qs.filter(event_type=event_type).values("session_id").distinct().count()
@@ -118,7 +123,7 @@ def session_funnel(days: int = 30):
     # Purchases are often recorded server-side (webhook) without a session id,
     # so count session-less purchase events by distinct order too.
     sessionless_purchases = (
-        Event.objects.filter(created_at__gte=since, event_type=EventType.PURCHASE, session_id="")
+        base.filter(event_type=EventType.PURCHASE, session_id="")
         .values("order_number")
         .distinct()
         .count()
@@ -139,9 +144,8 @@ def session_funnel(days: int = 30):
 def timeseries(days: int = 30):
     """Sessions / product views / checkouts / purchases per bucket. Hourly for
     short windows so today's ad traffic is visible, daily otherwise."""
-    since = timezone.now() - timedelta(days=days)
     trunc = TruncHour if days <= 2 else TruncDay
-    qs = Event.objects.filter(created_at__gte=since)
+    qs = _events(days)
 
     rows = (
         qs.annotate(bucket=trunc("created_at"))
@@ -186,8 +190,7 @@ def timeseries(days: int = 30):
 
 def top_pages(days: int = 30, limit: int = 10):
     """Most viewed paths plus how many arrived there first (entry pages)."""
-    since = timezone.now() - timedelta(days=days)
-    views = Event.objects.filter(created_at__gte=since, event_type=EventType.PAGE_VIEW)
+    views = _events(days).filter(event_type=EventType.PAGE_VIEW)
 
     by_path = (
         views.exclude(path="")
@@ -223,8 +226,7 @@ def top_pages(days: int = 30, limit: int = 10):
 
 def browse_depth(days: int = 30):
     """How many distinct products each session viewed — did they keep browsing?"""
-    since = timezone.now() - timedelta(days=days)
-    qs = Event.objects.filter(created_at__gte=since).exclude(session_id="")
+    qs = _events(days).exclude(session_id="")
 
     total = qs.values("session_id").distinct().count()
     per_session = (
@@ -247,6 +249,7 @@ def recent_activity(limit: int = 60):
     events = (
         Event.objects.select_related("product")
         .exclude(event_type=EventType.PRODUCT_DWELL)
+        .exclude(anonymous_id__in=InternalDevice.objects.values("anonymous_id"))
         .order_by("-created_at")[:limit]
     )
     return [

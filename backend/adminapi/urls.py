@@ -18,6 +18,7 @@ from .views import (
     SubscriberViewSet,
     TestimonialViewSet,
     VariantViewSet,
+    mark_internal_device,
     staff_me,
 )
 
@@ -40,6 +41,7 @@ urlpatterns = [
     path("me/", staff_me, name="admin-me"),
     path("stats/", StatsView.as_view(), name="admin-stats"),
     path("analytics/", AnalyticsView.as_view(), name="admin-analytics"),
+    path("analytics/mark-internal/", mark_internal_device, name="admin-mark-internal"),
     path("site-content/", SiteContentView.as_view(), name="admin-site-content"),
     path("", include(router.urls)),
 ]

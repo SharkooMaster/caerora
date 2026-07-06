@@ -371,12 +371,34 @@ class StatsView(APIView):
         })
 
 
+@api_view(["POST"])
+@permission_classes([IsStaffUser])
+def mark_internal_device(request):
+    """Register the caller's tracker device id as internal (team) traffic.
+
+    The Studio calls this on load, so anyone who uses the admin panel stops
+    polluting the shopper analytics from that device onward (historic events
+    from the device are excluded too, since filtering happens at query time).
+    """
+    from analytics.models import InternalDevice
+
+    anon = str(request.data.get("anonymous_id") or "").strip()[:64]
+    if not anon:
+        return Response({"detail": "anonymous_id required"}, status=status.HTTP_400_BAD_REQUEST)
+    _, created = InternalDevice.objects.get_or_create(
+        anonymous_id=anon, defaults={"note": f"studio: {request.user.get_username()}"}
+    )
+    return Response({"ok": True, "created": created})
+
+
 class AnalyticsView(APIView):
     """First-party behaviour analytics for the Studio dashboard."""
 
     permission_classes = [IsStaffUser]
 
     def get(self, request):
+        from analytics.models import InternalDevice
+
         try:
             days = max(1, min(int(request.query_params.get("days", 7)), 90))
         except (TypeError, ValueError):
@@ -384,6 +406,7 @@ class AnalyticsView(APIView):
         summary = funnels.funnel_summary(days)
         return Response({
             "days": days,
+            "internal_devices": InternalDevice.objects.count(),
             "kpis": summary["kpis"],
             "session_funnel": funnels.session_funnel(days),
             "timeseries": funnels.timeseries(days),

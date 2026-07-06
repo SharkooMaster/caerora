@@ -66,6 +66,7 @@ interface ActivityRow {
 }
 interface AnalyticsData {
   days: number;
+  internal_devices: number;
   kpis: Kpis;
   session_funnel: FunnelStep[];
   timeseries: TimePoint[];
@@ -263,7 +264,11 @@ export default function StudioAnalytics() {
     <div>
       <PageHeader
         title="Analytics"
-        subtitle="Who lands where, who keeps browsing, and who buys."
+        subtitle={`Who lands where, who keeps browsing, and who buys.${
+          data && data.internal_devices
+            ? ` Excluding ${data.internal_devices} internal team device${data.internal_devices === 1 ? "" : "s"}.`
+            : ""
+        }`}
         action={
           <div className="flex rounded-lg bg-ivory p-1 ring-1 ring-taupe/15">
             {RANGES.map((r) => (

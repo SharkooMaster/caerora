@@ -61,3 +61,14 @@ class Event(TimeStampedModel):
 
     def __str__(self):
         return f"{self.event_type} @ {self.created_at:%Y-%m-%d %H:%M}"
+
+
+class InternalDevice(TimeStampedModel):
+    """Devices belonging to the team (or automated tests). Their events are
+    excluded from all Studio analytics so numbers reflect real shoppers."""
+
+    anonymous_id = models.CharField(max_length=64, unique=True)
+    note = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return f"internal {self.anonymous_id[:8]} ({self.note})"

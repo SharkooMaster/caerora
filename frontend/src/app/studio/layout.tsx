@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getStaffToken, clearStaffTokens } from "@/lib/adminApi";
+import { adminApi, getStaffToken, clearStaffTokens } from "@/lib/adminApi";
 
 const NAV = [
   { href: "/studio", label: "Dashboard", exact: true },
@@ -39,6 +39,16 @@ export default function StudioLayout({ children }: { children: React.ReactNode }
       return;
     }
     setReady(true);
+
+    // Flag this device as internal so team browsing never pollutes the
+    // shopper analytics. Once per tab is plenty.
+    const anon = localStorage.getItem("caerora-anon-id");
+    if (anon && !sessionStorage.getItem("caerora-internal-marked")) {
+      adminApi
+        .post("/analytics/mark-internal/", { anonymous_id: anon })
+        .then(() => sessionStorage.setItem("caerora-internal-marked", "1"))
+        .catch(() => {});
+    }
   }, [isLogin, pathname, router]);
 
   if (isLogin) return <div className="min-h-screen bg-cream">{children}</div>;

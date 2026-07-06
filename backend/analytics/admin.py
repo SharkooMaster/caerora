@@ -3,7 +3,13 @@ from django.template.response import TemplateResponse
 from django.urls import path
 
 from .funnels import attribution_breakdown, funnel_summary, top_products
-from .models import Event
+from .models import Event, InternalDevice
+
+
+@admin.register(InternalDevice)
+class InternalDeviceAdmin(admin.ModelAdmin):
+    list_display = ("anonymous_id", "note", "created_at")
+    search_fields = ("anonymous_id", "note")
 
 
 @admin.register(Event)
