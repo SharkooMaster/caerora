@@ -114,12 +114,21 @@ def session_funnel(days: int = 30):
         return qs.filter(event_type=event_type).values("session_id").distinct().count()
 
     total = qs.values("session_id").distinct().count()
+
+    # Purchases are often recorded server-side (webhook) without a session id,
+    # so count session-less purchase events by distinct order too.
+    sessionless_purchases = (
+        Event.objects.filter(created_at__gte=since, event_type=EventType.PURCHASE, session_id="")
+        .values("order_number")
+        .distinct()
+        .count()
+    )
     steps = [
         {"step": "Visited the site", "sessions": total},
         {"step": "Viewed a product", "sessions": sessions_with(EventType.VIEW_ITEM)},
         {"step": "Added to cart", "sessions": sessions_with(EventType.ADD_TO_CART)},
         {"step": "Went to checkout", "sessions": sessions_with(EventType.BEGIN_CHECKOUT)},
-        {"step": "Purchased", "sessions": sessions_with(EventType.PURCHASE)},
+        {"step": "Purchased", "sessions": sessions_with(EventType.PURCHASE) + sessionless_purchases},
     ]
     for i, s in enumerate(steps):
         s["rate_of_visits"] = _safe_rate(s["sessions"], total)
