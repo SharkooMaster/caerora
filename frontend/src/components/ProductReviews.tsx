@@ -59,8 +59,17 @@ export function ProductReviews({
                 <span className="label">Your rating</span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((n) => (
-                    <button key={n} type="button" onClick={() => setRating(n)} aria-label={`${n} stars`}>
-                      <Stars value={n <= rating ? 5 : 0} size={22} />
+                    <button key={n} type="button" onClick={() => setRating(n)} aria-label={`${n} star${n > 1 ? "s" : ""}`}>
+                      <svg
+                        width={26}
+                        height={26}
+                        viewBox="0 0 24 24"
+                        fill={n <= rating ? "#B88F93" : "none"}
+                        stroke="#B88F93"
+                        strokeWidth="1.5"
+                      >
+                        <path d="M12 2l2.9 6.3 6.9.7-5.1 4.7 1.4 6.8L12 17.8 5.9 21.2l1.4-6.8L2.2 9.7l6.9-.7z" />
+                      </svg>
                     </button>
                   ))}
                 </div>
