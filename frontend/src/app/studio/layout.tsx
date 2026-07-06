@@ -6,6 +6,7 @@ import { getStaffToken, clearStaffTokens } from "@/lib/adminApi";
 
 const NAV = [
   { href: "/studio", label: "Dashboard", exact: true },
+  { href: "/studio/analytics", label: "Analytics" },
   { href: "/studio/orders", label: "Orders" },
   { href: "/studio/products", label: "Products" },
   { href: "/studio/categories", label: "Categories" },

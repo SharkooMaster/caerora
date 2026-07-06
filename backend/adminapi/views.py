@@ -12,6 +12,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from accounts.models import NewsletterCampaign, NewsletterSubscriber
+from analytics import funnels
 from catalog.models import Category, Product, ProductImage, ProductVariant
 from content.models import GalleryImage, SiteContent, Testimonial
 from emails.tasks import (
@@ -367,4 +368,28 @@ class StatsView(APIView):
             "products": Product.objects.count(),
             "low_stock": ProductVariant.objects.filter(is_active=True, stock__lte=5).count(),
             "recent_orders": AdminOrderListSerializer(recent, many=True, context={"request": request}).data,
+        })
+
+
+class AnalyticsView(APIView):
+    """First-party behaviour analytics for the Studio dashboard."""
+
+    permission_classes = [IsStaffUser]
+
+    def get(self, request):
+        try:
+            days = max(1, min(int(request.query_params.get("days", 7)), 90))
+        except (TypeError, ValueError):
+            days = 7
+        summary = funnels.funnel_summary(days)
+        return Response({
+            "days": days,
+            "kpis": summary["kpis"],
+            "session_funnel": funnels.session_funnel(days),
+            "timeseries": funnels.timeseries(days),
+            "top_pages": funnels.top_pages(days),
+            "browse_depth": funnels.browse_depth(days),
+            "top_products": funnels.top_products(days),
+            "sources": funnels.attribution_breakdown(days),
+            "recent_activity": funnels.recent_activity(),
         })

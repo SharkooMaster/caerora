@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
+    AnalyticsView,
     CampaignViewSet,
     CategoryViewSet,
     DiscountViewSet,
@@ -38,6 +39,7 @@ urlpatterns = [
     path("auth/refresh/", TokenRefreshView.as_view(), name="admin-refresh"),
     path("me/", staff_me, name="admin-me"),
     path("stats/", StatsView.as_view(), name="admin-stats"),
+    path("analytics/", AnalyticsView.as_view(), name="admin-analytics"),
     path("site-content/", SiteContentView.as_view(), name="admin-site-content"),
     path("", include(router.urls)),
 ]

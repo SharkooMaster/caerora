@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.db.models import Avg, Count, Sum
+from django.db.models.functions import TruncDay, TruncHour
 from django.utils import timezone
 
 from .models import Event, EventType
@@ -101,3 +102,153 @@ def top_products(days: int = 30, limit: int = 8):
         .order_by("-views")[:limit]
     )
     return [{"name": r["product__name"], "slug": r["product__slug"], "views": r["views"]} for r in rows]
+
+
+def session_funnel(days: int = 30):
+    """Funnel counted in unique *sessions*, so each step answers "how many
+    visitors got this far" instead of raw event volume."""
+    since = timezone.now() - timedelta(days=days)
+    qs = Event.objects.filter(created_at__gte=since).exclude(session_id="")
+
+    def sessions_with(event_type):
+        return qs.filter(event_type=event_type).values("session_id").distinct().count()
+
+    total = qs.values("session_id").distinct().count()
+    steps = [
+        {"step": "Visited the site", "sessions": total},
+        {"step": "Viewed a product", "sessions": sessions_with(EventType.VIEW_ITEM)},
+        {"step": "Added to cart", "sessions": sessions_with(EventType.ADD_TO_CART)},
+        {"step": "Went to checkout", "sessions": sessions_with(EventType.BEGIN_CHECKOUT)},
+        {"step": "Purchased", "sessions": sessions_with(EventType.PURCHASE)},
+    ]
+    for i, s in enumerate(steps):
+        s["rate_of_visits"] = _safe_rate(s["sessions"], total)
+        s["rate_of_previous"] = _safe_rate(s["sessions"], steps[i - 1]["sessions"]) if i else 100.0
+    return steps
+
+
+def timeseries(days: int = 30):
+    """Sessions / product views / checkouts / purchases per bucket. Hourly for
+    short windows so today's ad traffic is visible, daily otherwise."""
+    since = timezone.now() - timedelta(days=days)
+    trunc = TruncHour if days <= 2 else TruncDay
+    qs = Event.objects.filter(created_at__gte=since)
+
+    rows = (
+        qs.annotate(bucket=trunc("created_at"))
+        .values("bucket", "event_type")
+        .annotate(n=Count("id"), s=Count("session_id", distinct=True))
+        .order_by("bucket")
+    )
+    buckets = {}
+    for r in rows:
+        b = buckets.setdefault(
+            r["bucket"],
+            {"page_views": 0, "sessions": 0, "product_views": 0, "add_to_cart": 0, "begin_checkout": 0, "purchases": 0},
+        )
+        et, n = r["event_type"], r["n"]
+        if et == EventType.PAGE_VIEW:
+            b["page_views"] += n
+        elif et == EventType.VIEW_ITEM:
+            b["product_views"] += n
+        elif et == EventType.ADD_TO_CART:
+            b["add_to_cart"] += n
+        elif et == EventType.BEGIN_CHECKOUT:
+            b["begin_checkout"] += n
+        elif et == EventType.PURCHASE:
+            b["purchases"] += n
+
+    # Unique sessions per bucket (any event type).
+    session_rows = (
+        qs.exclude(session_id="")
+        .annotate(bucket=trunc("created_at"))
+        .values("bucket")
+        .annotate(s=Count("session_id", distinct=True))
+    )
+    for r in session_rows:
+        if r["bucket"] in buckets:
+            buckets[r["bucket"]]["sessions"] = r["s"]
+
+    return [
+        {"t": b.isoformat(), **vals}
+        for b, vals in sorted(buckets.items())
+    ]
+
+
+def top_pages(days: int = 30, limit: int = 10):
+    """Most viewed paths plus how many arrived there first (entry pages)."""
+    since = timezone.now() - timedelta(days=days)
+    views = Event.objects.filter(created_at__gte=since, event_type=EventType.PAGE_VIEW)
+
+    by_path = (
+        views.exclude(path="")
+        .values("path")
+        .annotate(views=Count("id"), sessions=Count("session_id", distinct=True))
+        .order_by("-views")[:limit]
+    )
+
+    # Entry page = the earliest page_view of each session.
+    entries = {}
+    first_views = (
+        views.exclude(session_id="").exclude(path="")
+        .order_by("session_id", "created_at")
+        .values_list("session_id", "path")
+    )
+    seen = set()
+    for sid, path in first_views:
+        if sid in seen:
+            continue
+        seen.add(sid)
+        entries[path] = entries.get(path, 0) + 1
+
+    return [
+        {
+            "path": r["path"],
+            "views": r["views"],
+            "sessions": r["sessions"],
+            "entries": entries.get(r["path"], 0),
+        }
+        for r in by_path
+    ]
+
+
+def browse_depth(days: int = 30):
+    """How many distinct products each session viewed — did they keep browsing?"""
+    since = timezone.now() - timedelta(days=days)
+    qs = Event.objects.filter(created_at__gte=since).exclude(session_id="")
+
+    total = qs.values("session_id").distinct().count()
+    per_session = (
+        qs.filter(event_type=EventType.VIEW_ITEM, product__isnull=False)
+        .values("session_id")
+        .annotate(n=Count("product", distinct=True))
+    )
+    dist = {"0": total, "1": 0, "2": 0, "3": 0, "4+": 0}
+    for row in per_session:
+        dist["0"] -= 1
+        n = row["n"]
+        key = "4+" if n >= 4 else str(min(n, 3))
+        dist[key] += 1
+    dist["0"] = max(dist["0"], 0)
+    return [{"products_viewed": k, "sessions": v, "share": _safe_rate(v, total)} for k, v in dist.items()]
+
+
+def recent_activity(limit: int = 60):
+    """Latest events with timestamps for a live activity feed."""
+    events = (
+        Event.objects.select_related("product")
+        .exclude(event_type=EventType.PRODUCT_DWELL)
+        .order_by("-created_at")[:limit]
+    )
+    return [
+        {
+            "at": e.created_at.isoformat(),
+            "type": e.event_type,
+            "path": e.path,
+            "product": e.product.name if e.product else None,
+            "value": float(e.value) if e.value is not None else None,
+            "source": e.utm_source,
+            "session": (e.session_id or e.anonymous_id or "")[:8],
+        }
+        for e in events
+    ]
