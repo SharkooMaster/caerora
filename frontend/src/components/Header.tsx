@@ -84,8 +84,12 @@ export function Header({
 
   return (
     <>
-      <div className="bg-espresso py-2 text-center text-[10px] uppercase tracking-widest text-ivory/90 sm:text-[11px]">
-        {promoText || "10% off your first order with code WELCOME10 \u00b7 Free shipping over \u20ac45 \u00b7 30-day easy returns"}
+      {/* Shrine-style announcement bar: one bold offer with an icon, readable
+          size, high-contrast background. */}
+      <div className="flex items-center justify-center gap-2 bg-plum px-3 py-2.5 text-center text-xs font-medium tracking-wide text-ivory sm:text-sm">
+        <span aria-hidden className="text-champagne">&#10022;</span>
+        <span>{promoText || "10% OFF your first order with code WELCOME10 \u2014 Free shipping over \u20ac45"}</span>
+        <span aria-hidden className="text-champagne">&#10022;</span>
       </div>
 
       <header className="sticky top-0 z-40 border-b border-taupe/10 bg-ivory/85 backdrop-blur">

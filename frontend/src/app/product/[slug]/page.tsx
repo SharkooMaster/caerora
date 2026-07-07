@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { api } from "@/lib/api";
-import type { ProductDetail, ProductListItem, Review } from "@/lib/types";
+import type { ProductDetail, ProductListItem, Review, Testimonial } from "@/lib/types";
 import { ProductDetailView } from "@/components/ProductDetailView";
 import { ProductReviews } from "@/components/ProductReviews";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductListTracker } from "@/components/ProductListTracker";
+import { TestimonialCards } from "@/components/Testimonials";
+import { ComparisonTable } from "@/components/ComparisonTable";
+import { Faq } from "@/components/Faq";
 import { demoProductImage } from "@/lib/images";
 
 export const revalidate = 120;
@@ -67,9 +70,10 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const product = await getProduct(params.slug);
   if (!product) notFound();
 
-  const [reviews, related] = await Promise.all([
+  const [reviews, related, testimonials] = await Promise.all([
     api.reviews(params.slug).catch(() => [] as Review[]),
     getRelated(product),
+    api.testimonials().catch(() => [] as Testimonial[]),
   ]);
   const priceFrom = product.variants.length
     ? Math.min(...product.variants.map((v) => parseFloat(v.price)))
@@ -130,6 +134,21 @@ export default async function ProductPage({ params }: { params: { slug: string }
           </div>
         </section>
       )}
+
+      {/* Shrine PDP order: related → testimonials → comparison table → FAQ → reviews */}
+      {testimonials.length > 0 && (
+        <section className="mt-14 md:mt-20">
+          <div className="mb-8 text-center">
+            <p className="eyebrow-rose">Loved &amp; trusted</p>
+            <h2 className="display mt-2 text-3xl md:text-4xl">What people are saying</h2>
+          </div>
+          <TestimonialCards testimonials={testimonials.slice(0, 3)} />
+        </section>
+      )}
+
+      <ComparisonTable />
+
+      <Faq />
 
       <ProductReviews slug={product.slug} initialReviews={reviews} stats={product.review_stats} />
     </div>

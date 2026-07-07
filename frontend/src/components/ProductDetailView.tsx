@@ -132,6 +132,20 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
   const activeTier = QTY_TIERS.find((t) => t.qty === qty) || QTY_TIERS[0];
   const bundleTotal = price * qty * (1 - activeTier.percentOff / 100);
 
+  // Desktop sticky ATC (Shrine's sticky_atc block): appears once the in-page
+  // buy button scrolls out of view. Mobile keeps the always-on bar.
+  const buyBtnRef = useRef<HTMLButtonElement>(null);
+  const [buyBoxVisible, setBuyBoxVisible] = useState(true);
+  useEffect(() => {
+    const el = buyBtnRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => setBuyBoxVisible(entry.isIntersecting), {
+      rootMargin: "-80px 0px 0px 0px",
+    });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <>
     <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
@@ -296,6 +310,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
 
         <div className="mt-5 flex gap-3">
           <button
+            ref={buyBtnRef}
             onClick={handleAdd}
             disabled={!variant || variant.stock <= 0}
             className="btn-primary btn-lg flex-1"
@@ -335,6 +350,40 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           </div>
         </div>
 
+      </div>
+
+      {/* Desktop sticky ATC: slides in when the buy button leaves the viewport. */}
+      <div
+        className={`fixed inset-x-0 bottom-0 z-40 hidden border-t border-taupe/15 bg-ivory/95 shadow-soft backdrop-blur transition-transform duration-300 md:block ${
+          buyBoxVisible ? "translate-y-full" : "translate-y-0"
+        }`}
+      >
+        <div className="container-page flex items-center justify-between gap-6 py-3">
+          <div className="flex min-w-0 items-center gap-4">
+            {gallery[0] && (
+              <span
+                className="h-12 w-10 shrink-0 rounded-lg bg-white bg-contain bg-center bg-no-repeat ring-1 ring-taupe/10"
+                style={{ backgroundImage: `url(${gallery.find((m) => m.type === "image")?.src || gallery[0].poster || ""})` }}
+              />
+            )}
+            <div className="min-w-0">
+              <p className="truncate font-serif text-base text-espresso">{displayName(product.name, product.brand)}</p>
+              <p className="text-sm text-taupe">
+                {formatMoney(bundleTotal)}
+                {activeTier.percentOff > 0 && (
+                  <span className="ml-2 text-xs text-plum">Multi-buy {activeTier.percentOff}% off</span>
+                )}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleAdd}
+            disabled={!variant || variant.stock <= 0}
+            className="btn-primary shrink-0 px-10"
+          >
+            {variant && variant.stock > 0 ? (added ? "Added \u2713" : "Add to bag") : "Sold out"}
+          </button>
+        </div>
       </div>
 
       {/* Mobile: price + CTA were below the gallery fold, so keep them pinned.

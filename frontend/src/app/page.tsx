@@ -10,6 +10,7 @@ import { Marquee } from "@/components/Marquee";
 import { IMAGES, CATEGORY_IMAGES, GALLERY } from "@/lib/images";
 import { TruckIcon, LeafIcon, ReturnIcon, LockIcon, SparkleIcon } from "@/components/icons";
 import { Stars } from "@/components/Rating";
+import { Faq } from "@/components/Faq";
 import type { Metadata } from "next";
 
 export const revalidate = 120;
@@ -67,9 +68,9 @@ async function getSiteData(): Promise<{
 
 const TRUST = [
   { icon: TruckIcon, title: "Free shipping", body: "On orders over \u20ac45" },
-  { icon: LeafIcon, title: "Clean formulas", body: "Cruelty-free & vegan" },
+  { icon: LockIcon, title: "Pay after delivery", body: "With Klarna \u2014 zero risk" },
   { icon: ReturnIcon, title: "30-day returns", body: "Not in love? Send it back" },
-  { icon: LockIcon, title: "Secure checkout", body: "Encrypted & protected" },
+  { icon: LeafIcon, title: "100% authentic", body: "Verified brand products" },
 ];
 
 // Bento spans for the category grid, applied by position.
@@ -417,6 +418,31 @@ export default async function HomePage() {
             ))}
           </Reveal>
         </div>
+      </section>
+
+      {/* ── Guarantee band (Shrine's risk-reversal rich text) ── */}
+      <section className="container-page section">
+        <Reveal className="mx-auto max-w-2xl rounded-2xl bg-plum/5 px-6 py-12 text-center md:py-14">
+          <h2 className="font-serif text-3xl text-espresso md:text-4xl">Love it — or your money back</h2>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-taupe">
+            We&apos;re confident you&apos;ll love your order. If you&apos;re not 100% happy, you have 30
+            days to return it — no questions asked. And with Klarna you don&apos;t pay until your delivery
+            has arrived, so there&apos;s nothing to risk.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] uppercase tracking-widest text-taupe">
+            <span>✔ 30-day returns</span>
+            <span>✔ Pay after delivery with Klarna</span>
+            <span>✔ Tracked shipping</span>
+          </div>
+          <Link href="/shop" className="btn-primary btn-lg mt-8 inline-flex">
+            Shop risk-free
+          </Link>
+        </Reveal>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────── */}
+      <section className="container-page pb-16">
+        <Faq />
       </section>
 
       {/* ── Newsletter band ──────────────────────────────── */}

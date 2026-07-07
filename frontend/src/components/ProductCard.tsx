@@ -130,13 +130,13 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
           </span>
         )}
         {product.in_stock && onSale && (
-          <span className="absolute left-3 top-3 rounded-full bg-terracotta px-3 py-1 text-[10px] uppercase tracking-widest text-white shadow-card">
-            Save {formatMoney(compareAt! - price!)}
+          <span className="absolute left-3 top-3 rounded-full bg-terracotta px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white shadow-card">
+            Save {Math.round(((compareAt! - price!) / compareAt!) * 100)}%
           </span>
         )}
         {product.is_featured && product.in_stock && !onSale && (
-          <span className="absolute left-3 top-3 rounded-full bg-rose/95 px-3 py-1 text-[10px] uppercase tracking-widest text-white shadow-card">
-            Bestseller
+          <span className="absolute left-3 top-3 rounded-full bg-rose/95 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white shadow-card">
+            Best seller
           </span>
         )}
       </div>
