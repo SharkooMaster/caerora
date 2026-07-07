@@ -40,6 +40,9 @@ class Product(TimeStampedModel):
     # Optional net content, free text, e.g. "30 ml" or "4 g / 0.14 oz".
     volume = models.CharField(max_length=60, blank=True)
     description = models.TextField(blank=True)
+    # Short ✔-style selling points shown under the price on the PDP, one per
+    # line (Shrine-style benefits checklist).
+    benefits = models.TextField(blank=True)
     # Brand story / "why trustworthy" copy block, supports basic HTML/markdown text.
     brand_copy = models.TextField(blank=True)
     ingredients = models.TextField(blank=True)

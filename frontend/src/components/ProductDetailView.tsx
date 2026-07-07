@@ -6,7 +6,7 @@ import { RatingSummary } from "./Rating";
 import { useCart } from "@/lib/cart";
 import { track } from "@/lib/tracker";
 import { demoProductImage, categoryImage } from "@/lib/images";
-import { FREE_SHIPPING_THRESHOLD } from "@/lib/config";
+import { FREE_SHIPPING_THRESHOLD, QTY_TIERS } from "@/lib/config";
 import { TruckIcon, ReturnIcon, LockIcon } from "./icons";
 import { ProductGallery, type GalleryMedia } from "./ProductGallery";
 import { displayName } from "./ProductCard";
@@ -40,6 +40,7 @@ function InfoSection({
 export function ProductDetailView({ product }: { product: ProductDetail }) {
   const firstAvailable = product.variants.find((v) => v.stock > 0) || product.variants[0];
   const [variant, setVariant] = useState<ProductVariant | undefined>(firstAvailable);
+  const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const addItem = useCart((s) => s.addItem);
   const enteredAt = useRef<number>(Date.now());
@@ -98,19 +99,22 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
 
   function handleAdd() {
     if (!variant) return;
-    addItem({
-      variantId: variant.id,
-      productSlug: product.slug,
-      productName: product.name,
-      variantName: variant.name,
-      price: parseFloat(variant.price),
-      image: gallery.find((m) => m.type === "image")?.src || gallery[0]?.poster || null,
-    });
+    addItem(
+      {
+        variantId: variant.id,
+        productSlug: product.slug,
+        productName: product.name,
+        variantName: variant.name,
+        price: parseFloat(variant.price),
+        image: gallery.find((m) => m.type === "image")?.src || gallery[0]?.poster || null,
+      },
+      qty,
+    );
     track({
       event_type: "add_to_cart",
       product_slug: product.slug,
       variant_id: variant.id,
-      value: parseFloat(variant.price),
+      value: parseFloat(variant.price) * qty,
       currency: "eur",
     });
     setAdded(true);
@@ -119,6 +123,14 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
 
   const compareAt = variant?.compare_at_price ? parseFloat(variant.compare_at_price) : null;
   const price = variant ? parseFloat(variant.price) : 0;
+
+  const benefits = (product.benefits || "")
+    .split("\n")
+    .map((b) => b.replace(/^[✔✓•\-\s]+/, "").trim())
+    .filter(Boolean);
+
+  const activeTier = QTY_TIERS.find((t) => t.qty === qty) || QTY_TIERS[0];
+  const bundleTotal = price * qty * (1 - activeTier.percentOff / 100);
 
   return (
     <>
@@ -170,6 +182,17 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           )}
         </div>
 
+        {benefits.length > 0 && (
+          <ul className="mt-4 space-y-1.5">
+            {benefits.map((b) => (
+              <li key={b} className="flex items-start gap-2 text-sm text-espresso/90">
+                <span className="mt-0.5 text-sage">✔</span>
+                {b}
+              </li>
+            ))}
+          </ul>
+        )}
+
         {/* Variant selector */}
         <div className="mt-6">
           <p className="label">
@@ -212,7 +235,66 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           </p>
         )}
 
-        <div className="mt-6 flex gap-3">
+        {/* Bundle & Save quantity tiers */}
+        <div className="mt-6">
+          <p className="mb-2 text-center text-[11px] font-medium uppercase tracking-[0.2em] text-plum">
+            Bundle &amp; Save
+          </p>
+          <div className="space-y-2">
+            {QTY_TIERS.map((t) => {
+              const selected = qty === t.qty;
+              const tierTotal = price * t.qty * (1 - t.percentOff / 100);
+              const fullTotal = price * t.qty;
+              const freeShip = tierTotal >= FREE_SHIPPING_THRESHOLD;
+              return (
+                <button
+                  key={t.qty}
+                  type="button"
+                  onClick={() => setQty(t.qty)}
+                  className={`relative flex w-full items-center justify-between gap-3 rounded-xl border-2 px-4 py-3 text-left transition ${
+                    selected ? "border-plum bg-plum/5" : "border-taupe/20 hover:border-taupe/40"
+                  }`}
+                >
+                  {t.badge && (
+                    <span className="absolute -top-2.5 right-3 rounded-full bg-plum px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-ivory">
+                      {t.badge}
+                    </span>
+                  )}
+                  <span className="flex items-center gap-3">
+                    <span
+                      className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 ${
+                        selected ? "border-plum" : "border-taupe/40"
+                      }`}
+                    >
+                      {selected && <span className="h-2 w-2 rounded-full bg-plum" />}
+                    </span>
+                    <span>
+                      <span className="block text-sm font-medium text-espresso">
+                        Buy {t.qty === 1 ? "1" : `${t.qty}`}
+                        {t.percentOff > 0 && ` — save ${t.percentOff}%`}
+                      </span>
+                      {(t.percentOff > 0 || freeShip) && (
+                        <span className="block text-xs text-taupe">
+                          {[t.percentOff > 0 ? `${formatMoney(fullTotal - tierTotal)} off` : null, freeShip ? "Free shipping" : null]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </span>
+                      )}
+                    </span>
+                  </span>
+                  <span className="text-right">
+                    <span className="block font-serif text-lg text-espresso">{formatMoney(tierTotal)}</span>
+                    {t.percentOff > 0 && (
+                      <span className="block text-xs text-taupe line-through">{formatMoney(fullTotal)}</span>
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-5 flex gap-3">
           <button
             onClick={handleAdd}
             disabled={!variant || variant.stock <= 0}
@@ -221,7 +303,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
             {variant && variant.stock > 0
               ? added
                 ? "Added to bag \u2713"
-                : `Add to bag \u00b7 ${formatMoney(price)}`
+                : `Add to bag \u00b7 ${formatMoney(bundleTotal)}`
               : "Sold out"}
           </button>
         </div>
@@ -301,8 +383,38 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
             <Markdown>{product.ingredients}</Markdown>
           </InfoSection>
         )}
+        <InfoSection title="Shipping & returns">
+          <p className="mb-2">
+            Orders are processed within 1–2 business days. Delivery takes 5–10 business days within the
+            EU, and shipping is free on orders over {formatMoney(FREE_SHIPPING_THRESHOLD)}. You get a
+            tracking number as soon as your order ships.
+          </p>
+          <p>Changed your mind? You have 30 days to return your order — easy and hassle-free.</p>
+        </InfoSection>
+        <InfoSection title="Payment & Klarna">
+          <p>
+            Pay securely by card, or choose <strong className="text-espresso">Klarna</strong> at checkout to
+            buy now and pay after your delivery arrives — or split the amount into instalments. You never
+            pay before you know your order is on its way.
+          </p>
+        </InfoSection>
       </div>
     )}
+
+    {/* Guarantee block: answers "is this safe to buy?" right before reviews. */}
+    <div className="mt-12 rounded-2xl bg-plum/5 px-6 py-10 text-center md:py-12">
+      <h2 className="font-serif text-2xl text-espresso md:text-3xl">Love it — or your money back</h2>
+      <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-taupe">
+        We're confident you'll love your order. If you're not 100% happy, you have 30 days to return it —
+        no questions asked. And with Klarna you don't pay until your delivery has arrived, so there's
+        nothing to risk.
+      </p>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] uppercase tracking-widest text-taupe">
+        <span>✔ 30-day returns</span>
+        <span>✔ Pay after delivery with Klarna</span>
+        <span>✔ Tracked shipping</span>
+      </div>
+    </div>
     </>
   );
 }

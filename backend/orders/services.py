@@ -12,6 +12,18 @@ class CheckoutError(Exception):
     pass
 
 
+# Automatic multi-buy ("Bundle & Save") tiers: buying N+ units of the same
+# variant discounts that line. Keep in sync with QTY_TIERS in frontend config.
+QTY_DISCOUNT_TIERS = ((3, Decimal("15")), (2, Decimal("10")))
+
+
+def quantity_discount_percent(qty: int) -> Decimal:
+    for min_qty, pct in QTY_DISCOUNT_TIERS:
+        if qty >= min_qty:
+            return pct
+    return Decimal("0")
+
+
 def _money(value) -> Decimal:
     return Decimal(value).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
@@ -64,8 +76,16 @@ def create_order_from_payload(data: dict) -> Order:
 
     shipping_total = _money(shipping_rate.effective_price(subtotal))
 
+    # Automatic multi-buy discount per line (Bundle & Save).
+    qty_discount = Decimal("0")
+    for variant, qty in resolved:
+        pct = quantity_discount_percent(qty)
+        if pct:
+            qty_discount += variant.price * qty * pct / Decimal("100")
+    qty_discount = _money(qty_discount)
+
     # Discount code (percentage off the merchandise subtotal)
-    discount_total = Decimal("0")
+    code_discount = Decimal("0")
     code_str = (data.get("discount_code") or "").strip().upper()
     if code_str:
         discount = DiscountCode.objects.filter(code=code_str).first()
@@ -74,7 +94,11 @@ def create_order_from_payload(data: dict) -> Order:
         ok, reason = discount.check_usable(subtotal)
         if not ok:
             raise CheckoutError(reason)
-        discount_total = _money(subtotal * discount.percent_off / Decimal("100"))
+        code_discount = _money(subtotal * discount.percent_off / Decimal("100"))
+
+    # Not stackable: the customer gets whichever discount is larger.
+    discount_total = max(qty_discount, code_discount)
+    code_applied = code_discount >= qty_discount and code_discount > 0
 
     # EU consumer pricing: catalog prices are VAT-inclusive. tax_total records
     # the VAT portion already contained in the discounted subtotal (for the
@@ -105,7 +129,7 @@ def create_order_from_payload(data: dict) -> Order:
         shipping_total=shipping_total,
         tax_total=tax_total,
         discount_total=discount_total,
-        discount_code=code_str if discount_total > 0 else "",
+        discount_code=code_str if code_applied else "",
         total=total,
         shipping_method=shipping_rate.name,
         marketing_opt_in=bool(data.get("marketing_opt_in")),

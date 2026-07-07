@@ -9,6 +9,7 @@ import { COUNTRIES } from "@/lib/countries";
 import type { ShippingRate } from "@/lib/types";
 import { CheckoutPayment } from "@/components/CheckoutPayment";
 import { getAnonId, getStoredUtm, track } from "@/lib/tracker";
+import { qtyDiscountPercent } from "@/lib/config";
 
 interface Form {
   email: string;
@@ -157,7 +158,13 @@ export default function CheckoutPage() {
   }
 
   const taxEstimate = orderTotals?.tax ?? 0;
-  const discountAmount = orderTotals?.discount ?? promo?.amount ?? 0;
+  // Automatic multi-buy discount, mirroring the server (not stackable with a
+  // promo code — the larger of the two wins; the server is the source of truth).
+  const qtyDiscount = lines.reduce(
+    (s, l) => s + l.price * l.quantity * (qtyDiscountPercent(l.quantity) / 100),
+    0,
+  );
+  const discountAmount = orderTotals?.discount ?? Math.max(promo?.amount ?? 0, qtyDiscount);
   const total = orderTotals?.total ?? subtotal - discountAmount + shippingCost;
 
   return (
@@ -307,7 +314,10 @@ export default function CheckoutPage() {
             <div className="flex justify-between"><span className="text-taupe">Subtotal</span><span>{formatMoney(subtotal, currency)}</span></div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-rose">
-                <span>Discount{promo ? ` (${promo.code})` : ""}</span>
+                <span>
+                  Discount
+                  {promo && (promo.amount >= qtyDiscount) ? ` (${promo.code})` : qtyDiscount > 0 ? " (multi-buy)" : ""}
+                </span>
                 <span>-{formatMoney(discountAmount, currency)}</span>
               </div>
             )}

@@ -124,6 +124,7 @@ export interface AdminProduct {
   /** Optional net content, e.g. "30 ml". */
   volume?: string;
   description: string;
+  benefits: string;
   brand_copy: string;
   ingredients: string;
   how_to_use: string;
