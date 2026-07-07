@@ -66,9 +66,12 @@ function CartUpsell() {
   }, []);
 
   const inCart = new Set(lines.map((l) => l.productSlug));
-  const pick =
-    candidates.find((p) => p.is_featured && !inCart.has(p.slug)) ||
-    candidates.find((p) => !inCart.has(p.slug));
+  // Impulse-add range only: an expensive upsell next to a €15 cart kills
+  // trust. Prefer featured products, cheapest first.
+  const affordable = candidates
+    .filter((p) => !inCart.has(p.slug) && parseFloat(p.quick_variant!.price) <= 30)
+    .sort((a, b) => parseFloat(a.quick_variant!.price) - parseFloat(b.quick_variant!.price));
+  const pick = affordable.find((p) => p.is_featured) || affordable[0];
   if (!pick || !pick.quick_variant) return null;
 
   const image = demoProductImage(pick.slug) || pick.primary_image || categoryImage(pick.category?.slug);
