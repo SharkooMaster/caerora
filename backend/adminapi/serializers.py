@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from accounts.models import NewsletterCampaign, NewsletterSubscriber
-from catalog.models import Category, Product, ProductImage, ProductVariant
+from catalog.models import Category, Product, ProductImage, ProductVariant, Season
 from content.models import GalleryImage, SiteContent, Testimonial
 from core.utils import absolute_media_url
 from orders.models import DiscountCode, Order, OrderItem
@@ -158,6 +158,30 @@ class AdminProductImageSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class AdminSeasonSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+    numeral = serializers.CharField(read_only=True)
+    product_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Season
+        fields = (
+            "id", "number", "numeral", "name", "slug", "subtitle", "act",
+            "description", "scripture_ref", "scripture_text",
+            "image", "image_url", "is_active", "product_count",
+        )
+        extra_kwargs = {
+            "slug": {"required": False},
+            "image": {"write_only": True, "required": False},
+        }
+
+    def get_image_url(self, obj):
+        return absolute_media_url(self.context.get("request"), obj.image)
+
+    def get_product_count(self, obj):
+        return obj.products.count()
+
+
 class AdminCategorySerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
     product_count = serializers.SerializerMethodField()
@@ -182,6 +206,7 @@ class AdminCategorySerializer(serializers.ModelSerializer):
 
 class AdminProductListSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source="category.name", default="", read_only=True)
+    season_name = serializers.CharField(source="season.name", default="", read_only=True)
     primary_image = serializers.SerializerMethodField()
     price_from = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     in_stock = serializers.BooleanField(read_only=True)
@@ -191,6 +216,7 @@ class AdminProductListSerializer(serializers.ModelSerializer):
         model = Product
         fields = (
             "id", "name", "slug", "tagline", "category", "category_name",
+            "season", "season_name",
             "is_active", "is_featured", "position", "primary_image",
             "price_from", "in_stock", "variant_count",
         )
@@ -211,7 +237,7 @@ class AdminProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            "id", "category", "name", "slug", "brand", "tagline", "volume", "description",
+            "id", "category", "season", "name", "slug", "brand", "tagline", "volume", "description",
             "benefits", "brand_copy", "ingredients", "how_to_use",
             "is_active", "is_featured", "position",
             "supplier_url", "supplier_notes", "supplier_cost",
@@ -256,7 +282,8 @@ class AdminSiteContentSerializer(serializers.ModelSerializer):
             "promo_bar_text",
             "hero_eyebrow", "hero_title", "hero_title_accent", "hero_subtitle",
             "hero_cta_label", "hero_cta_href", "hero_image", "hero_image_url",
-            "brand_band_title", "brand_band_body", "brand_band_image", "brand_band_image_url",
+            "story_eyebrow", "story_title", "story_body",
+            "brand_band_eyebrow", "brand_band_title", "brand_band_body", "brand_band_image", "brand_band_image_url",
             "newsletter_title", "newsletter_body",
             "og_image", "og_image_url",
         )

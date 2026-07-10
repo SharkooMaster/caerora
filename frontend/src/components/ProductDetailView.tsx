@@ -164,11 +164,15 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
       {/* Info */}
       <div>
         <div className="flex items-center gap-3">
-          {product.brand && (
-            <span className="text-xs font-medium uppercase tracking-widest text-plum">
+          {product.season ? (
+            <span className="text-xs font-medium uppercase tracking-widest text-gold">
+              {product.season.numeral}. {product.season.name}
+            </span>
+          ) : product.brand ? (
+            <span className="text-xs font-medium uppercase tracking-widest text-navy">
               {product.brand}
             </span>
-          )}
+          ) : null}
           {product.category && <p className="eyebrow">{product.category.name}</p>}
         </div>
         <h1 className="heading-serif mt-2 text-3xl md:text-4xl">{displayName(product.name, product.brand)}</h1>
@@ -210,7 +214,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
         {/* Variant selector */}
         <div className="mt-6">
           <p className="label">
-            {product.variants.length > 1 ? "Shade / size" : "Option"}: <span className="text-espresso">{variant?.name}</span>
+            {product.variants.length > 1 ? "Size" : "Option"}: <span className="text-espresso">{variant?.name}</span>
           </p>
           <div className="flex flex-wrap gap-2">
             {product.variants.map((v) => {
@@ -245,7 +249,7 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-terracotta opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-terracotta" />
             </span>
-            Only {variant.stock} left in this shade
+            Only {variant.stock} left in this size
           </p>
         )}
 
@@ -423,12 +427,12 @@ export function ProductDetailView({ product }: { product: ProductDetail }) {
           </InfoSection>
         )}
         {product.how_to_use && (
-          <InfoSection title="How to use">
+          <InfoSection title="Fit & sizing">
             <Markdown>{product.how_to_use}</Markdown>
           </InfoSection>
         )}
         {product.ingredients && (
-          <InfoSection title="Ingredients">
+          <InfoSection title="Fabric & care">
             <Markdown>{product.ingredients}</Markdown>
           </InfoSection>
         )}

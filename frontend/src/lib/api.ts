@@ -7,6 +7,7 @@ import type {
   ProductDetail,
   ProductListItem,
   Review,
+  Season,
   ShippingOptions,
   SiteContentData,
   Testimonial,
@@ -40,6 +41,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   categories: () => request<Category[]>("/categories/"),
+
+  seasons: () => request<Season[]>("/seasons/"),
+
+  season: (slug: string) => request<Season>(`/seasons/${slug}/`),
 
   brands: () => request<Brand[]>("/brands/"),
 

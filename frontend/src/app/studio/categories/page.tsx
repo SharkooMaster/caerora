@@ -49,7 +49,7 @@ export default function CategoriesPage() {
             <input
               className="input flex-1"
               autoFocus
-              placeholder="Category name (e.g. Lips)"
+              placeholder="Category name (e.g. Hoodies)"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
             />

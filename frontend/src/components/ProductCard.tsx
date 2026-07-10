@@ -117,7 +117,7 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
               </button>
             ) : (
               <span className="block rounded-full bg-ivory/95 py-2.5 text-center text-[11px] font-medium uppercase tracking-widest text-espresso shadow-card backdrop-blur">
-                {(product.variant_count ?? 0) > 1 ? "Choose shade" : "Shop now"}
+                {(product.variant_count ?? 0) > 1 ? "Choose size" : "Shop now"}
               </span>
             )}
           </div>
@@ -142,9 +142,13 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
       </div>
 
       <div className="mt-3.5 space-y-1">
-        {product.brand && (
-          <p className="truncate text-[10px] font-medium uppercase tracking-widest text-plum">{product.brand}</p>
-        )}
+        {product.season ? (
+          <p className="truncate text-[10px] font-medium uppercase tracking-widest text-gold">
+            {product.season.numeral}. {product.season.name}
+          </p>
+        ) : product.brand ? (
+          <p className="truncate text-[10px] font-medium uppercase tracking-widest text-navy">{product.brand}</p>
+        ) : null}
         {/* Mobile: name and price stack so long names don't squeeze against the
             price. Desktop keeps them side by side. */}
         <div className="flex flex-col gap-0.5 md:flex-row md:items-start md:justify-between md:gap-2">
@@ -165,7 +169,7 @@ export function ProductCard({ product, position }: { product: ProductListItem; p
           <RatingSummary average={product.review_stats.average} count={product.review_stats.count} />
           {(product.variant_count ?? 0) > 1 && (
             <span className="text-[10px] uppercase tracking-wider text-taupe">
-              {product.variant_count} shades
+              {product.variant_count} sizes
             </span>
           )}
         </div>

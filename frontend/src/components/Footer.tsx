@@ -14,9 +14,10 @@ export function Footer({ nav }: { nav?: { href: string; label: string }[] }) {
     <footer className="mt-24 border-t border-taupe/15 bg-cream">
       <div className="container-page grid grid-cols-1 gap-12 py-16 md:grid-cols-4">
         <div className="md:col-span-1">
-          <Logo />
+          <Logo withTagline />
           <p className="mt-4 text-xs leading-relaxed text-taupe">
-            Clean, high-performance makeup and skincare, made for every day.
+            Christian clothing telling the complete story of the Gospel — thirteen collections,
+            one narrative. From the first light to the eternal day.
           </p>
           <div className="mt-5 flex gap-3">
             {SOCIALS.map(({ href, label, Icon }) => (
@@ -54,14 +55,14 @@ export function Footer({ nav }: { nav?: { href: string; label: string }[] }) {
         <div>
           <h4 className="eyebrow mb-4">Join the list</h4>
           <p className="mb-4 text-sm text-taupe">
-            Early access to new arrivals, beauty tips and 10% off your first order.
+            Early access to new seasons, behind-the-design stories and 10% off your first order.
           </p>
           <NewsletterForm source="footer" />
         </div>
       </div>
       <div className="border-t border-taupe/15">
         <div className="container-page flex flex-col items-center justify-between gap-3 py-6 text-[11px] uppercase tracking-wider text-taupe sm:flex-row">
-          <span>&copy; {new Date().getFullYear()} Caerora &middot; All rights reserved</span>
+          <span>&copy; {new Date().getFullYear()} Caerora &middot; Life in the Spirit &middot; Romans 8:11</span>
           <span className="flex items-center gap-3 tracking-normal">
             <span className="rounded border border-taupe/25 px-2 py-1 text-[10px]">VISA</span>
             <span className="rounded border border-taupe/25 px-2 py-1 text-[10px]">Mastercard</span>

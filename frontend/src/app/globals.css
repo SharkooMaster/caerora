@@ -12,20 +12,20 @@ html {
 }
 
 body {
-  background-color: #faf7f4;
-  color: #2b2424;
+  background-color: #f6f3ec;
+  color: #0b1326;
   -webkit-font-smoothing: antialiased;
 }
 
 /* Brand-toned text selection */
 ::selection {
-  background: rgba(91, 59, 74, 0.9);
-  color: #faf7f4;
+  background: rgba(22, 38, 74, 0.92);
+  color: #f6f3ec;
 }
 
 /* Visible, on-brand keyboard focus without disturbing mouse users */
 :focus-visible {
-  outline: 2px solid rgba(91, 59, 74, 0.55);
+  outline: 2px solid rgba(165, 129, 62, 0.65);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -39,13 +39,16 @@ body {
     @apply inline-flex items-center justify-center rounded-full px-7 py-3 text-xs font-medium uppercase tracking-widest transition-all duration-300 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
   }
   .btn-primary {
-    @apply btn bg-espresso text-ivory shadow-[0_10px_28px_-14px_rgba(43,36,36,0.6)] hover:bg-plum hover:shadow-glow;
+    @apply btn bg-midnight text-parchment shadow-[0_10px_28px_-14px_rgba(11,19,38,0.6)] hover:bg-navy hover:shadow-glow;
   }
   .btn-outline {
-    @apply btn border border-espresso/30 text-espresso hover:border-espresso hover:bg-espresso hover:text-ivory;
+    @apply btn border border-midnight/30 text-midnight hover:border-midnight hover:bg-midnight hover:text-parchment;
   }
   .btn-rose {
-    @apply btn bg-rose text-white hover:bg-plum;
+    @apply btn bg-gold text-white hover:bg-navy;
+  }
+  .btn-gold {
+    @apply btn bg-goldlight text-midnight hover:bg-parchment;
   }
   .btn-lg {
     @apply px-9 py-3.5 text-[13px];

@@ -16,7 +16,8 @@ class SiteContentSerializer(serializers.ModelSerializer):
             "promo_bar_text",
             "hero_eyebrow", "hero_title", "hero_title_accent", "hero_subtitle",
             "hero_cta_label", "hero_cta_href", "hero_image",
-            "brand_band_title", "brand_band_body", "brand_band_image",
+            "story_eyebrow", "story_title", "story_body",
+            "brand_band_eyebrow", "brand_band_title", "brand_band_body", "brand_band_image",
             "newsletter_title", "newsletter_body",
             "og_image",
         )

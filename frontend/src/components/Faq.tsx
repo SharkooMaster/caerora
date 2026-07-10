@@ -7,16 +7,20 @@ const FAQS = [
     a: "Orders are processed within 1–2 business days and delivered within 5–10 business days across the EU. You receive a tracking link by email the moment your order ships.",
   },
   {
-    q: "Are your products authentic?",
-    a: "Yes — every product we sell is a 100% authentic brand product, sourced from verified distributors. No dupes, no imitations.",
+    q: "What are the garments made of?",
+    a: "Heavyweight combed cotton with embroidered artwork and woven neck labels — built to hold their shape and color wash after wash. Each product page lists the exact fabric and care instructions.",
+  },
+  {
+    q: "What are the thirteen seasons?",
+    a: "Caerora tells the complete story of the Gospel in thirteen collections — from The Dawn (the birth of Christ) to The New Creation. Each season has its own palette, scripture and designs. Explore them all from the Seasons menu.",
+  },
+  {
+    q: "How does sizing run?",
+    a: "Our fits are true to size with a relaxed, contemporary cut. Every product page includes a size guide — and if it's not right, you have 30 days to exchange or return it free of hassle.",
   },
   {
     q: "Can I pay after I receive my order?",
     a: "Yes. Choose Klarna at checkout to pay after your delivery arrives, or split the amount into instalments. You never pay before you know your order is on the way.",
-  },
-  {
-    q: "What if it doesn't work for me?",
-    a: "You have 30 days to return your order — no questions asked. Contact us and we'll sort out the return and your refund quickly.",
   },
   {
     q: "Is shipping really free?",

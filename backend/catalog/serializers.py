@@ -2,7 +2,34 @@ from rest_framework import serializers
 
 from core.utils import absolute_media_url
 
-from .models import Category, Product, ProductImage, ProductVariant
+from .models import Category, Product, ProductImage, ProductVariant, Season
+
+
+class SeasonSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    numeral = serializers.CharField(read_only=True)
+    product_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Season
+        fields = (
+            "id", "number", "numeral", "name", "slug", "subtitle", "act",
+            "description", "scripture_ref", "scripture_text", "image", "product_count",
+        )
+
+    def get_image(self, obj):
+        return absolute_media_url(self.context.get("request"), obj.image)
+
+    def get_product_count(self, obj):
+        return obj.products.filter(is_active=True).count()
+
+
+class SeasonLiteSerializer(serializers.ModelSerializer):
+    numeral = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Season
+        fields = ("id", "number", "numeral", "name", "slug", "subtitle")
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -50,13 +77,14 @@ class ProductListSerializer(serializers.ModelSerializer):
     in_stock = serializers.BooleanField(read_only=True)
     review_stats = serializers.DictField(read_only=True)
     category = CategorySerializer(read_only=True)
+    season = SeasonLiteSerializer(read_only=True)
     quick_variant = serializers.SerializerMethodField()
     variant_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = (
-            "id", "name", "slug", "brand", "tagline", "category", "is_featured",
+            "id", "name", "slug", "brand", "tagline", "category", "season", "is_featured",
             "primary_image", "price_from", "in_stock", "review_stats",
             "quick_variant", "variant_count",
         )
@@ -87,13 +115,14 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     variants = serializers.SerializerMethodField()
     category = CategorySerializer(read_only=True)
+    season = SeasonLiteSerializer(read_only=True)
     review_stats = serializers.DictField(read_only=True)
 
     class Meta:
         model = Product
         fields = (
             "id", "name", "slug", "brand", "tagline", "volume", "description", "benefits",
-            "brand_copy", "ingredients", "how_to_use", "category", "is_featured",
+            "brand_copy", "ingredients", "how_to_use", "category", "season", "is_featured",
             "meta_title", "meta_description", "images", "variants", "review_stats",
         )
 

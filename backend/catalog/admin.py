@@ -1,7 +1,16 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Category, Product, ProductImage, ProductVariant
+from .models import Category, Product, ProductImage, ProductVariant, Season
+
+
+@admin.register(Season)
+class SeasonAdmin(admin.ModelAdmin):
+    list_display = ("number", "name", "subtitle", "act", "is_active")
+    list_editable = ("is_active",)
+    prepopulated_fields = {"slug": ("name",)}
+    search_fields = ("name", "subtitle", "act")
+    ordering = ("number",)
 
 
 @admin.register(Category)

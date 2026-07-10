@@ -8,12 +8,13 @@ function isLocalhostMedia(src: string): boolean {
   return src.startsWith("http://localhost") || src.startsWith("http://127.0.0.1");
 }
 
-// Thin wrapper over next/image that serves remote CDN photography (Unsplash)
-// unoptimized, so the browser loads it directly from the fast CDN rather than
-// proxying through our self-hosted optimizer. Local/backend media keeps the
+// Thin wrapper over next/image that serves remote CDN photography and our
+// pre-compressed static brand art unoptimized, so they bypass the self-hosted
+// optimizer (which needs sharp in standalone mode). Backend media keeps the
 // default optimized path.
 export function SmartImage(props: ImageProps) {
   const src = typeof props.src === "string" ? props.src : "";
-  const unoptimized = props.unoptimized ?? (isUnsplash(src) || isLocalhostMedia(src));
+  const isStaticAsset = src.startsWith("/");
+  const unoptimized = props.unoptimized ?? (isUnsplash(src) || isLocalhostMedia(src) || isStaticAsset);
   return <Image {...props} unoptimized={unoptimized} />;
 }

@@ -2,11 +2,11 @@
 from django.conf import settings
 
 BRAND = {
-    "ivory": "#FAF7F4",
-    "espresso": "#2B2424",
-    "rose": "#B88F93",
-    "taupe": "#8D7470",
-    "plum": "#5B3B4A",
+    "ivory": "#F6F3EC",
+    "espresso": "#0B1326",
+    "rose": "#A5813E",
+    "taupe": "#716D62",
+    "plum": "#16264A",
 }
 
 
@@ -31,7 +31,7 @@ def _wrapper(inner: str) -> str:
       <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #efe7e2;">
         <div style="padding:28px 36px;text-align:center;border-bottom:1px solid #f1e9e4;">
           <div style="font-size:26px;letter-spacing:6px;color:{BRAND['plum']};font-weight:600;">CAERORA</div>
-          <div style="font-size:10px;letter-spacing:3px;color:{BRAND['taupe']};margin-top:6px;">BEAUTY. ELEVATED.</div>
+          <div style="font-size:10px;letter-spacing:3px;color:{BRAND['taupe']};margin-top:6px;">LIFE IN THE SPIRIT</div>
         </div>
         <div style="padding:32px 36px;font-size:15px;line-height:1.7;">
           {inner}
@@ -106,7 +106,7 @@ def order_shipped_html(order) -> str:
       <p>Great news - your Caerora order <strong>{order.number}</strong> is on its way.</p>
       {tracking}
       {button}
-      <p>We hope you love it. Beauty, elevated.</p>
+      <p>We hope you love it. From the first light to the eternal day.</p>
     """
     return _wrapper(inner)
 
@@ -125,7 +125,7 @@ def newsletter_html(body_html: str, unsubscribe_url: str = "") -> str:
       <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #efe7e2;">
         <div style="padding:28px 36px;text-align:center;border-bottom:1px solid #f1e9e4;">
           <div style="font-size:26px;letter-spacing:6px;color:{BRAND['plum']};font-weight:600;">CAERORA</div>
-          <div style="font-size:10px;letter-spacing:3px;color:{BRAND['taupe']};margin-top:6px;">BEAUTY. ELEVATED.</div>
+          <div style="font-size:10px;letter-spacing:3px;color:{BRAND['taupe']};margin-top:6px;">LIFE IN THE SPIRIT</div>
         </div>
         <div style="padding:32px 36px;font-size:15px;line-height:1.7;">
           {body_html}

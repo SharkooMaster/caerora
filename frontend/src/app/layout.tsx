@@ -50,21 +50,21 @@ ${ADS_ID ? `gtag('config', '${ADS_ID}');` : ""}
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Caerora | Beauty. Elevated.",
+    default: "Caerora | Life in the Spirit",
     template: "%s | Caerora",
   },
   description:
-    "Caerora is clean, high-performance makeup and skincare, designed to feel like you. Shop lips, face, eyes and skin \u2014 with free shipping and easy 30-day returns.",
-  keywords: ["Caerora", "makeup", "clean beauty", "cosmetics", "skincare", "lipstick", "foundation"],
+    "Caerora is a Christian clothing brand telling the complete story of the Gospel in thirteen collections \u2014 heavyweight tees and hoodies with embroidered detail and scripture you can wear. Free shipping over \u20ac45 and easy 30-day returns.",
+  keywords: ["Caerora", "Christian clothing", "faith apparel", "Christian streetwear", "scripture clothing", "hoodies", "t-shirts"],
   openGraph: {
-    title: "Caerora | Beauty. Elevated.",
-    description: "Clean, high-performance makeup and skincare, designed to feel like you.",
+    title: "Caerora | Life in the Spirit",
+    description: "Thirteen collections, one narrative \u2014 Christian clothing crafted to be kept, from the first light to the eternal day.",
     url: siteUrl,
     siteName: "Caerora",
     images: [{ url: IMAGES.og, width: 1200, height: 630 }],
     type: "website",
   },
-  twitter: { card: "summary_large_image", title: "Caerora | Beauty. Elevated." },
+  twitter: { card: "summary_large_image", title: "Caerora | Life in the Spirit" },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -73,18 +73,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     .then((c) => c.promo_bar_text || undefined)
     .catch(() => undefined);
 
-  // Nav follows the live catalog: only categories that actually have products.
-  const [nav, brands] = await Promise.all([
+  // Nav follows the live catalog: only categories that actually have products,
+  // plus the thirteen seasons for the "Seasons" dropdown.
+  const [nav, seasons] = await Promise.all([
     api
       .categories()
       .then((cats) =>
         cats
           .filter((c) => (c.product_count ?? 1) > 0)
-          .slice(0, 5)
+          .slice(0, 4)
           .map((c) => ({ href: `/shop?category=${c.slug}`, label: c.name })),
       )
       .catch(() => []),
-    api.brands().catch(() => []),
+    api
+      .seasons()
+      .then((all) =>
+        all.map((s) => ({ name: s.name, numeral: s.numeral, slug: s.slug, subtitle: s.subtitle })),
+      )
+      .catch(() => []),
   ]);
 
   return (
@@ -100,7 +106,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="font-sans">
         <AppShell
           analytics={<AnalyticsProvider />}
-          header={<Header promoText={promoText} nav={nav} brands={brands} />}
+          header={<Header promoText={promoText} nav={nav} seasons={seasons} />}
           footer={<Footer nav={nav} />}
           overlays={
             <>

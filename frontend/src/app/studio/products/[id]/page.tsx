@@ -6,6 +6,7 @@ import { adminApi } from "@/lib/adminApi";
 import type { AdminProduct, AdminProductImage, AdminVariant } from "@/lib/adminTypes";
 import { Card, PageHeader, Spinner } from "@/components/studio/ui";
 import { CategorySelect } from "@/components/studio/CategorySelect";
+import { SeasonSelect } from "@/components/studio/SeasonSelect";
 
 const BLANK_VARIANT: Partial<AdminVariant> = {
   name: "", sku: "", price: "0.00", compare_at_price: null, stock: 0, swatch_hex: "", is_active: true,
@@ -44,6 +45,7 @@ export default function ProductEditorPage() {
     try {
       const payload = {
         category: product.category,
+        season: product.season,
         name: product.name, brand: product.brand, tagline: product.tagline,
         volume: product.volume || "", description: product.description,
         benefits: product.benefits || "",
@@ -111,19 +113,23 @@ export default function ProductEditorPage() {
             <h3 className="mb-4 font-serif text-lg">Details</h3>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2"><label className="label">Name</label><input className="input" value={product.name} onChange={(e) => set("name", e.target.value)} /></div>
-              <div className="sm:col-span-2"><label className="label">Brand</label><input className="input" value={product.brand || ""} onChange={(e) => set("brand", e.target.value)} placeholder="e.g. NYX Professional Makeup" /></div>
+              <div className="sm:col-span-2"><label className="label">Brand</label><input className="input" value={product.brand || ""} onChange={(e) => set("brand", e.target.value)} placeholder="e.g. Caerora" /></div>
               <div className="sm:col-span-2"><label className="label">Tagline</label><input className="input" value={product.tagline} onChange={(e) => set("tagline", e.target.value)} /></div>
               <div>
                 <label className="label">Category</label>
                 <CategorySelect value={product.category} onChange={(id) => set("category", id)} />
               </div>
+              <div>
+                <label className="label">Season (collection)</label>
+                <SeasonSelect value={product.season} onChange={(id) => set("season", id)} />
+              </div>
               <div><label className="label">Position</label><input type="number" className="input" value={product.position} onChange={(e) => set("position", Number(e.target.value))} /></div>
-              <div><label className="label">Volume / net content (optional)</label><input className="input" placeholder="e.g. 30 ml" value={product.volume || ""} onChange={(e) => set("volume", e.target.value)} /></div>
+              <div><label className="label">Volume / net content (optional)</label><input className="input" placeholder="e.g. 240 GSM" value={product.volume || ""} onChange={(e) => set("volume", e.target.value)} /></div>
               <div className="sm:col-span-2"><label className="label">Description</label><textarea className="input min-h-[90px]" value={product.description} onChange={(e) => set("description", e.target.value)} /></div>
               <div className="sm:col-span-2"><label className="label">Benefits (one per line, shown as ✔ list under the price)</label><textarea className="input min-h-[70px]" value={product.benefits || ""} onChange={(e) => set("benefits", e.target.value)} /></div>
               <div className="sm:col-span-2"><label className="label">Brand copy</label><textarea className="input min-h-[70px]" value={product.brand_copy} onChange={(e) => set("brand_copy", e.target.value)} /></div>
-              <div><label className="label">Ingredients</label><textarea className="input min-h-[70px]" value={product.ingredients} onChange={(e) => set("ingredients", e.target.value)} /></div>
-              <div><label className="label">How to use</label><textarea className="input min-h-[70px]" value={product.how_to_use} onChange={(e) => set("how_to_use", e.target.value)} /></div>
+              <div><label className="label">Fabric &amp; care</label><textarea className="input min-h-[70px]" value={product.ingredients} onChange={(e) => set("ingredients", e.target.value)} /></div>
+              <div><label className="label">Fit &amp; sizing</label><textarea className="input min-h-[70px]" value={product.how_to_use} onChange={(e) => set("how_to_use", e.target.value)} /></div>
             </div>
           </Card>
 
@@ -253,7 +259,7 @@ function VariantsSection({
               <div><label className="label">Price</label><input className="input" value={v.price || ""} onChange={(e) => update(i, "price", e.target.value)} /></div>
               <div><label className="label">Stock</label><input type="number" className="input" value={v.stock ?? 0} onChange={(e) => update(i, "stock", Number(e.target.value))} /></div>
               <div className="col-span-2 sm:col-span-3">
-                <label className="label">Swatch color (optional, shown as a dot on the shade button)</label>
+                <label className="label">Swatch color (optional, shown as a dot on the size/color button)</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"

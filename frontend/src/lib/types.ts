@@ -7,6 +7,21 @@ export interface Category {
   product_count?: number;
 }
 
+export interface Season {
+  id: number;
+  number: number;
+  numeral: string;
+  name: string;
+  slug: string;
+  subtitle: string;
+  act?: string;
+  description?: string;
+  scripture_ref?: string;
+  scripture_text?: string;
+  image?: string | null;
+  product_count?: number;
+}
+
 export interface SiteContentData {
   promo_bar_text: string;
   hero_eyebrow: string;
@@ -16,6 +31,10 @@ export interface SiteContentData {
   hero_cta_label: string;
   hero_cta_href: string;
   hero_image: string | null;
+  story_eyebrow: string;
+  story_title: string;
+  story_body: string;
+  brand_band_eyebrow: string;
   brand_band_title: string;
   brand_band_body: string;
   brand_band_image: string | null;
@@ -88,6 +107,7 @@ export interface ProductListItem {
   brand?: string;
   tagline: string;
   category: Category | null;
+  season?: Pick<Season, "id" | "number" | "numeral" | "name" | "slug" | "subtitle"> | null;
   is_featured: boolean;
   primary_image: string | null;
   price_from: string | null;
@@ -112,6 +132,7 @@ export interface ProductDetail {
   ingredients: string;
   how_to_use: string;
   category: Category | null;
+  season?: Pick<Season, "id" | "number" | "numeral" | "name" | "slug" | "subtitle"> | null;
   is_featured: boolean;
   meta_title: string;
   meta_description: string;

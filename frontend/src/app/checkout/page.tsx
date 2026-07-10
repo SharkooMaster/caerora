@@ -190,7 +190,7 @@ export default function CheckoutPage() {
                     checked={form.marketing_opt_in}
                     onChange={(e) => update("marketing_opt_in", e.target.checked)}
                   />
-                  Email me beauty edits and offers (you can unsubscribe anytime).
+                  Email me new season drops and offers (you can unsubscribe anytime).
                 </label>
               </section>
 

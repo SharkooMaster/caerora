@@ -13,7 +13,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from accounts.models import NewsletterCampaign, NewsletterSubscriber
 from analytics import funnels
-from catalog.models import Category, Product, ProductImage, ProductVariant
+from catalog.models import Category, Product, ProductImage, ProductVariant, Season
 from content.models import GalleryImage, SiteContent, Testimonial
 from emails.tasks import (
     send_newsletter_campaign,
@@ -39,6 +39,7 @@ from .serializers import (
     AdminProductListSerializer,
     AdminProductSerializer,
     AdminReviewSerializer,
+    AdminSeasonSerializer,
     AdminSiteContentSerializer,
     AdminSubscriberSerializer,
     AdminTestimonialSerializer,
@@ -206,6 +207,12 @@ class CategoryViewSet(RevalidateMixin, StaffViewSet):
     serializer_class = AdminCategorySerializer
     queryset = Category.objects.all()
     ordering = ("position", "name")
+
+
+class SeasonViewSet(RevalidateMixin, StaffViewSet):
+    serializer_class = AdminSeasonSerializer
+    queryset = Season.objects.all()
+    ordering = ("number",)
 
 
 # ---------- Reviews ----------

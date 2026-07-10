@@ -117,6 +117,7 @@ export interface AdminProductListItem {
 export interface AdminProduct {
   id: number;
   category: number | null;
+  season: number | null;
   name: string;
   slug: string;
   brand?: string;
@@ -139,6 +140,22 @@ export interface AdminProduct {
   variants: AdminVariant[];
   images: AdminProductImage[];
   primary_image: string | null;
+}
+
+export interface AdminSeason {
+  id: number;
+  number: number;
+  numeral: string;
+  name: string;
+  slug: string;
+  subtitle: string;
+  act: string;
+  description: string;
+  scripture_ref: string;
+  scripture_text: string;
+  image_url: string | null;
+  is_active: boolean;
+  product_count: number;
 }
 
 export interface AdminCategory {
@@ -177,6 +194,10 @@ export interface AdminSiteContent {
   hero_cta_label: string;
   hero_cta_href: string;
   hero_image_url: string | null;
+  story_eyebrow: string;
+  story_title: string;
+  story_body: string;
+  brand_band_eyebrow: string;
   brand_band_title: string;
   brand_band_body: string;
   brand_band_image_url: string | null;

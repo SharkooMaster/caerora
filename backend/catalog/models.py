@@ -4,6 +4,58 @@ from django.utils.text import slugify
 from core.models import TimeStampedModel
 
 
+ROMAN_NUMERALS = [
+    "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
+    "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
+]
+
+
+def roman(n: int) -> str:
+    if 1 <= n <= len(ROMAN_NUMERALS):
+        return ROMAN_NUMERALS[n - 1]
+    return str(n)
+
+
+class Season(TimeStampedModel):
+    """A Caerora collection ("season") in the brand narrative.
+
+    Thirteen collections, one narrative — from The Dawn to The New Creation.
+    Names, order and imagery are fully editable in the Studio.
+    """
+
+    number = models.PositiveIntegerField(
+        unique=True, help_text="Position in the story (1-13). Shown as a roman numeral."
+    )
+    name = models.CharField(max_length=120, unique=True)
+    slug = models.SlugField(max_length=140, unique=True, blank=True)
+    # e.g. "The Birth", "The Temptation" — the story beat this season covers.
+    subtitle = models.CharField(max_length=120, blank=True)
+    # e.g. "Act I — The Coming".
+    act = models.CharField(max_length=120, blank=True)
+    description = models.TextField(blank=True)
+    # e.g. "Luke 2:11" + the verse itself.
+    scripture_ref = models.CharField(max_length=80, blank=True)
+    scripture_text = models.TextField(blank=True)
+    # Optional editorial image for tiles / season headers.
+    image = models.ImageField(upload_to="seasons/", blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ("number",)
+
+    def __str__(self):
+        return f"{roman(self.number)}. {self.name}"
+
+    @property
+    def numeral(self) -> str:
+        return roman(self.number)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
 class Category(TimeStampedModel):
     name = models.CharField(max_length=120, unique=True)
     slug = models.SlugField(max_length=140, unique=True, blank=True)
@@ -30,6 +82,9 @@ class Category(TimeStampedModel):
 class Product(TimeStampedModel):
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, blank=True, related_name="products"
+    )
+    season = models.ForeignKey(
+        Season, on_delete=models.SET_NULL, null=True, blank=True, related_name="products"
     )
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True, blank=True)

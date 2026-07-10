@@ -12,6 +12,7 @@ from .views import (
     ProductImageViewSet,
     ProductViewSet,
     ReviewViewSet,
+    SeasonViewSet,
     SiteContentView,
     StaffLoginView,
     StatsView,
@@ -28,6 +29,7 @@ router.register("products", ProductViewSet, basename="admin-products")
 router.register("variants", VariantViewSet, basename="admin-variants")
 router.register("product-images", ProductImageViewSet, basename="admin-product-images")
 router.register("categories", CategoryViewSet, basename="admin-categories")
+router.register("seasons", SeasonViewSet, basename="admin-seasons")
 router.register("reviews", ReviewViewSet, basename="admin-reviews")
 router.register("gallery", GalleryViewSet, basename="admin-gallery")
 router.register("testimonials", TestimonialViewSet, basename="admin-testimonials")

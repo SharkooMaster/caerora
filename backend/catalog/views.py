@@ -4,11 +4,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from .models import Category, Product
+from .models import Category, Product, Season
 from .serializers import (
     CategorySerializer,
     ProductDetailSerializer,
     ProductListSerializer,
+    SeasonSerializer,
 )
 
 
@@ -20,17 +21,30 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
+class SeasonViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Season.objects.filter(is_active=True)
+    serializer_class = SeasonSerializer
+    permission_classes = [AllowAny]
+    lookup_field = "slug"
+    pagination_class = None
+
+
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [AllowAny]
     lookup_field = "slug"
-    filterset_fields = {"category__slug": ["exact"], "is_featured": ["exact"], "brand": ["exact"]}
+    filterset_fields = {
+        "category__slug": ["exact"],
+        "season__slug": ["exact"],
+        "is_featured": ["exact"],
+        "brand": ["exact"],
+    }
     search_fields = ("name", "brand", "tagline", "description")
     ordering_fields = ("created_at", "position", "name")
 
     def get_queryset(self):
         return (
             Product.objects.filter(is_active=True)
-            .select_related("category")
+            .select_related("category", "season")
             .prefetch_related("images", "variants", "reviews")
         )
 

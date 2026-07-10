@@ -23,7 +23,13 @@ class SiteContent(TimeStampedModel):
     hero_cta_href = models.CharField(max_length=200, blank=True)
     hero_image = models.ImageField(upload_to="site/", blank=True, null=True)
 
+    # "The Complete Story" season strip intro
+    story_eyebrow = models.CharField(max_length=80, blank=True)
+    story_title = models.CharField(max_length=160, blank=True)
+    story_body = models.TextField(blank=True)
+
     # Cinematic brand band
+    brand_band_eyebrow = models.CharField(max_length=80, blank=True)
     brand_band_title = models.CharField(max_length=160, blank=True)
     brand_band_body = models.TextField(blank=True)
     brand_band_image = models.ImageField(upload_to="site/", blank=True, null=True)

@@ -41,6 +41,22 @@ export function LockIcon({ className = "" }: IconProps) {
   );
 }
 
+export function CrossIcon({ className = "" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" className={`${base} ${className}`}>
+      <path d="M12 3v18M6.5 8.5h11" />
+    </svg>
+  );
+}
+
+export function StarBurstIcon({ className = "" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={`${base} ${className}`}>
+      <path d="M12 1.5 13.4 9.3 21 12l-7.6 2.7L12 22.5l-1.4-7.8L3 12l7.6-2.7L12 1.5Z" />
+    </svg>
+  );
+}
+
 export function StarIcon({ className = "" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={`${base} ${className}`}>

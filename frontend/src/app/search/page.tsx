@@ -50,7 +50,7 @@ export default async function SearchPage({
           <p className="text-taupe">
             {q
               ? "Nothing matched your search. Try a brand name (e.l.f., NYX) or a product type (mascara, lip oil)."
-              : "Type a product, brand or shade in the search bar above."}
+              : "Type a product, season or style in the search bar above."}
           </p>
           <Link href="/shop" className="btn-primary mt-8 inline-flex">
             Browse everything

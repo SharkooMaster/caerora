@@ -10,9 +10,11 @@ export interface NavItem {
   label: string;
 }
 
-export interface BrandItem {
+export interface SeasonNavItem {
   name: string;
-  count: number;
+  numeral: string;
+  slug: string;
+  subtitle?: string;
 }
 
 const MENU_EXTRA = [
@@ -24,11 +26,11 @@ const MENU_EXTRA = [
 export function Header({
   promoText,
   nav,
-  brands,
+  seasons,
 }: {
   promoText?: string;
   nav?: NavItem[];
-  brands?: BrandItem[];
+  seasons?: SeasonNavItem[];
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -36,7 +38,7 @@ export function Header({
   const searchRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const NAV: NavItem[] = [{ href: "/shop", label: "Shop" }, ...(nav ?? [])];
-  const BRANDS = brands ?? [];
+  const SEASONS = seasons ?? [];
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -61,7 +63,7 @@ export function Header({
 
   const searchForm = (
     <form onSubmit={submitSearch} className="flex w-full items-center gap-3">
-      <span className="h-4 w-4 shrink-0 text-taupe">
+      <span className="h-4 w-4 shrink-0 text-stone">
         <SearchIcon />
       </span>
       <input
@@ -69,13 +71,13 @@ export function Header({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         type="search"
-        placeholder={"Search products, brands, shades\u2026"}
+        placeholder={"Search tees, hoodies, collections\u2026"}
         aria-label="Search"
-        className="w-full bg-transparent text-sm text-espresso placeholder:text-taupe/70 focus:outline-none"
+        className="w-full bg-transparent text-sm text-midnight placeholder:text-stone/70 focus:outline-none"
       />
       <button
         type="submit"
-        className="shrink-0 text-[11px] uppercase tracking-widest text-espresso transition hover:text-rose"
+        className="shrink-0 text-[11px] uppercase tracking-widest text-midnight transition hover:text-gold"
       >
         Search
       </button>
@@ -84,61 +86,61 @@ export function Header({
 
   return (
     <>
-      {/* Shrine-style announcement bar: one bold offer with an icon, readable
-          size, high-contrast background. */}
-      <div className="flex items-center justify-center gap-2 bg-plum px-3 py-2.5 text-center text-xs font-medium tracking-wide text-ivory sm:text-sm">
-        <span aria-hidden className="text-champagne">&#10022;</span>
+      {/* Announcement bar: one bold offer, high-contrast midnight band. */}
+      <div className="flex items-center justify-center gap-2 bg-midnight px-3 py-2.5 text-center text-xs font-medium tracking-wide text-parchment sm:text-sm">
+        <span aria-hidden className="text-goldlight">&#10022;</span>
         <span>{promoText || "10% OFF your first order with code WELCOME10 \u2014 Free shipping over \u20ac45"}</span>
-        <span aria-hidden className="text-champagne">&#10022;</span>
+        <span aria-hidden className="text-goldlight">&#10022;</span>
       </div>
 
-      <header className="sticky top-0 z-40 border-b border-taupe/10 bg-ivory/85 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-stone/10 bg-parchment/85 backdrop-blur">
         <div className="container-page grid grid-cols-[1fr_auto_1fr] items-center gap-2 py-4">
           {/* Left: hamburger (mobile) / nav (desktop) */}
           <div className="flex items-center gap-6">
             <button
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
-              className="flex h-6 w-6 items-center justify-center text-espresso md:hidden"
+              className="flex h-6 w-6 items-center justify-center text-midnight md:hidden"
             >
               <MenuIcon />
             </button>
-            <nav className="hidden items-center gap-6 text-xs uppercase tracking-wider text-espresso md:flex">
+            <nav className="hidden items-center gap-6 text-xs uppercase tracking-wider text-midnight md:flex">
               {NAV.map((item) => (
-                <Link key={item.label} href={item.href} className="transition hover:text-rose">
+                <Link key={item.label} href={item.href} className="transition hover:text-gold">
                   {item.label}
                 </Link>
               ))}
-              {BRANDS.length > 0 && (
+              {SEASONS.length > 0 && (
                 <div className="group relative">
                   <button
-                    className="flex items-center gap-1 uppercase tracking-wider transition hover:text-rose"
+                    className="flex items-center gap-1 uppercase tracking-wider transition hover:text-gold"
                     aria-haspopup="true"
                   >
-                    Brands
+                    Seasons
                     <span className="h-3.5 w-3.5 transition-transform group-hover:rotate-180">
                       <ChevronDownIcon />
                     </span>
                   </button>
                   {/* Hover dropdown */}
-                  <div className="invisible absolute left-1/2 top-full z-50 w-64 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-                    <div className="overflow-hidden rounded-xl border border-taupe/10 bg-ivory shadow-soft">
-                      <ul className="py-2">
-                        {BRANDS.map((b) => (
-                          <li key={b.name}>
+                  <div className="invisible absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                    <div className="overflow-hidden rounded-xl border border-stone/10 bg-parchment shadow-soft">
+                      <ul className="max-h-[26rem] overflow-y-auto py-2">
+                        {SEASONS.map((s) => (
+                          <li key={s.slug}>
                             <Link
-                              href={`/shop?brand=${encodeURIComponent(b.name)}`}
-                              className="flex items-center justify-between px-5 py-2.5 text-xs normal-case tracking-normal text-espresso transition hover:bg-cream hover:text-plum"
+                              href={`/shop?season=${s.slug}`}
+                              className="flex items-baseline gap-3 px-5 py-2.5 text-xs normal-case tracking-normal text-midnight transition hover:bg-cream hover:text-navy"
                             >
-                              <span>{b.name}</span>
-                              <span className="text-[10px] text-taupe">{b.count}</span>
+                              <span className="w-7 shrink-0 font-serif text-sm text-gold">{s.numeral}.</span>
+                              <span className="flex-1">{s.name}</span>
+                              {s.subtitle && <span className="text-[10px] text-stone">{s.subtitle}</span>}
                             </Link>
                           </li>
                         ))}
                       </ul>
                       <Link
                         href="/shop"
-                        className="block border-t border-taupe/10 px-5 py-3 text-[11px] uppercase tracking-widest text-plum transition hover:bg-cream"
+                        className="block border-t border-stone/10 px-5 py-3 text-[11px] uppercase tracking-widest text-navy transition hover:bg-cream"
                       >
                         {"Shop everything \u2192"}
                       </Link>
@@ -160,14 +162,14 @@ export function Header({
               onClick={() => setSearchOpen((v) => !v)}
               aria-label="Search"
               aria-expanded={searchOpen}
-              className="flex h-6 w-6 items-center justify-center text-espresso transition hover:text-rose"
+              className="flex h-6 w-6 items-center justify-center text-midnight transition hover:text-gold"
             >
               {searchOpen ? <CloseIcon /> : <SearchIcon />}
             </button>
             <Link
               href="/account"
               aria-label="Account"
-              className="flex items-center gap-2 text-espresso transition hover:text-rose"
+              className="flex items-center gap-2 text-midnight transition hover:text-gold"
             >
               <span className="h-6 w-6">
                 <UserIcon />
@@ -179,7 +181,7 @@ export function Header({
 
         {/* Expanding search row */}
         <div
-          className={`overflow-hidden border-taupe/10 transition-all duration-300 ${
+          className={`overflow-hidden border-stone/10 transition-all duration-300 ${
             searchOpen ? "max-h-16 border-t" : "max-h-0"
           }`}
         >
@@ -193,62 +195,63 @@ export function Header({
         aria-hidden={!menuOpen}
       >
         <div
-          className={`absolute inset-0 bg-espresso/40 transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-midnight/40 transition-opacity duration-300 ${
             menuOpen ? "opacity-100" : "opacity-0"
           }`}
           onClick={() => setMenuOpen(false)}
         />
         <aside
-          className={`absolute left-0 top-0 flex h-full w-[82%] max-w-xs flex-col bg-ivory shadow-2xl transition-transform duration-300 ${
+          className={`absolute left-0 top-0 flex h-full w-[82%] max-w-xs flex-col bg-parchment shadow-2xl transition-transform duration-300 ${
             menuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="flex items-center justify-between border-b border-taupe/15 px-6 py-5">
-            <span className="font-serif text-xl tracking-[0.2em] text-espresso">CAERORA</span>
+          <div className="flex items-center justify-between border-b border-stone/15 px-6 py-5">
+            <span className="font-serif text-xl tracking-[0.2em] text-midnight">CAERORA</span>
             <button
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
-              className="h-6 w-6 text-taupe hover:text-espresso"
+              className="h-6 w-6 text-stone hover:text-midnight"
             >
               <CloseIcon />
             </button>
           </div>
-          <div className="border-b border-taupe/10 px-6 py-4">{searchForm}</div>
+          <div className="border-b border-stone/10 px-6 py-4">{searchForm}</div>
           <nav className="flex flex-col overflow-y-auto px-6 py-4">
             {NAV.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className="border-b border-taupe/10 py-4 font-serif text-xl text-espresso transition hover:text-rose"
+                className="border-b border-stone/10 py-4 font-serif text-xl text-midnight transition hover:text-gold"
               >
                 {item.label}
               </Link>
             ))}
-            {BRANDS.length > 0 && (
-              <div className="border-b border-taupe/10 py-4">
-                <p className="mb-2 text-[10px] uppercase tracking-widest text-taupe">Shop by brand</p>
+            {SEASONS.length > 0 && (
+              <div className="border-b border-stone/10 py-4">
+                <p className="mb-2 text-[10px] uppercase tracking-widest text-stone">Shop by season</p>
                 <div className="flex flex-col gap-2.5">
-                  {BRANDS.map((b) => (
+                  {SEASONS.map((s) => (
                     <Link
-                      key={b.name}
-                      href={`/shop?brand=${encodeURIComponent(b.name)}`}
+                      key={s.slug}
+                      href={`/shop?season=${s.slug}`}
                       onClick={() => setMenuOpen(false)}
-                      className="text-sm text-espresso transition hover:text-rose"
+                      className="flex items-baseline gap-2 text-sm text-midnight transition hover:text-gold"
                     >
-                      {b.name}
+                      <span className="w-7 shrink-0 font-serif text-gold">{s.numeral}.</span>
+                      {s.name}
                     </Link>
                   ))}
                 </div>
               </div>
             )}
-            <div className="mt-2 flex flex-col gap-3 pt-4 text-xs uppercase tracking-wider text-taupe">
+            <div className="mt-2 flex flex-col gap-3 pt-4 text-xs uppercase tracking-wider text-stone">
               {MENU_EXTRA.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="transition hover:text-espresso"
+                  className="transition hover:text-midnight"
                 >
                   {item.label}
                 </Link>
@@ -261,7 +264,7 @@ export function Header({
               onClick={() => setMenuOpen(false)}
               className="btn-primary w-full"
             >
-              Shop the collection
+              Shop the collections
             </Link>
           </div>
         </aside>

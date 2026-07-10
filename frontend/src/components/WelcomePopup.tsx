@@ -65,7 +65,7 @@ export function WelcomePopup() {
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-taupe">
           Join the list and we&rsquo;ll send your code right away &mdash; plus early access
-          to new drops. No spam, unsubscribe anytime.
+          when a new season drops. No spam, unsubscribe anytime.
         </p>
         <div className="mt-5">
           <NewsletterForm source="popup" />

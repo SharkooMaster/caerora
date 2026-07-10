@@ -27,6 +27,8 @@ export default function SiteContentPage() {
         promo_bar_text: c.promo_bar_text,
         hero_eyebrow: c.hero_eyebrow, hero_title: c.hero_title, hero_title_accent: c.hero_title_accent,
         hero_subtitle: c.hero_subtitle, hero_cta_label: c.hero_cta_label, hero_cta_href: c.hero_cta_href,
+        story_eyebrow: c.story_eyebrow, story_title: c.story_title, story_body: c.story_body,
+        brand_band_eyebrow: c.brand_band_eyebrow,
         brand_band_title: c.brand_band_title, brand_band_body: c.brand_band_body,
         newsletter_title: c.newsletter_title, newsletter_body: c.newsletter_body,
       });
@@ -56,7 +58,7 @@ export default function SiteContentPage() {
       <div className="space-y-6">
         <Card>
           <h3 className="mb-4 font-serif text-lg">Announcement bar</h3>
-          <input className="input" value={c.promo_bar_text} onChange={(e) => set("promo_bar_text", e.target.value)} placeholder="Free shipping over €45 · New season beauty in now" />
+          <input className="input" value={c.promo_bar_text} onChange={(e) => set("promo_bar_text", e.target.value)} placeholder="Free shipping over €45 · Season XIII out now" />
         </Card>
 
         <Card>
@@ -73,8 +75,20 @@ export default function SiteContentPage() {
         </Card>
 
         <Card>
+          <h3 className="mb-1 font-serif text-lg">The Complete Story (seasons strip)</h3>
+          <p className="mb-4 text-xs text-taupe">Intro copy above the thirteen-season strip on the homepage. The seasons themselves are managed under Seasons.</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div><label className="label">Eyebrow</label><input className="input" placeholder="Thirteen collections — one narrative" value={c.story_eyebrow} onChange={(e) => set("story_eyebrow", e.target.value)} /></div>
+            <div><label className="label">Title</label><input className="input" placeholder="The Complete Story" value={c.story_title} onChange={(e) => set("story_title", e.target.value)} /></div>
+            <div className="sm:col-span-2"><label className="label">Body</label><textarea className="input min-h-[60px]" value={c.story_body} onChange={(e) => set("story_body", e.target.value)} /></div>
+          </div>
+        </Card>
+
+        <Card>
           <h3 className="mb-4 font-serif text-lg">Brand band</h3>
-          <label className="label">Title</label>
+          <label className="label">Eyebrow</label>
+          <input className="input" placeholder="Life in the Spirit" value={c.brand_band_eyebrow} onChange={(e) => set("brand_band_eyebrow", e.target.value)} />
+          <label className="label mt-3">Title</label>
           <input className="input" value={c.brand_band_title} onChange={(e) => set("brand_band_title", e.target.value)} />
           <label className="label mt-3">Body</label>
           <textarea className="input min-h-[70px]" value={c.brand_band_body} onChange={(e) => set("brand_band_body", e.target.value)} />
